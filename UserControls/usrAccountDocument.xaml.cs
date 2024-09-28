@@ -802,7 +802,7 @@ namespace WpfCol
             }
             btnCancel_Click(null, null);
         }
-
+        //
         private void SearchTermTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             try
