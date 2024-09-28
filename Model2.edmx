@@ -1,0 +1,559 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ColDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AcDocument_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Debtor" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Creditor" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="fk_AcDoc_HeaderId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="fk_PreferentialId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="fk_MoeinId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AcDocument_Header">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Serial" Type="bigint" Nullable="false" />
+          <Property Name="NoDoument" Type="bigint" Nullable="false" />
+          <Property Name="fk_DocumentTypeId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="GroupCode" Type="int" Nullable="false" />
+          <Property Name="GroupName" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Col">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ColCode" Type="int" Nullable="false" />
+          <Property Name="ColName" Type="nvarchar(max)" />
+          <Property Name="Type" Type="tinyint" />
+          <Property Name="Action" Type="tinyint" />
+          <Property Name="fk_GroupId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PermissionView" Type="bit" />
+        </EntityType>
+        <EntityType Name="DocumentType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="IsManual" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Moein">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="MoeinCode" Type="int" Nullable="false" />
+          <Property Name="fk_ColId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="MoeinName" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Preferential">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PreferentialCode" Type="int" Nullable="false" />
+          <Property Name="fk_GroupId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PreferentialName" Type="nvarchar(max)" />
+          <Property Name="Mobile" Type="nvarchar(max)" />
+          <Property Name="Phone1" Type="nvarchar(max)" />
+          <Property Name="Phone2" Type="nvarchar(max)" />
+          <Property Name="Phone3" Type="nvarchar(max)" />
+          <Property Name="WebSite" Type="nvarchar(max)" />
+          <Property Name="Email" Type="nvarchar(max)" />
+          <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="tGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="GroupCode" Type="int" Nullable="false" />
+          <Property Name="GroupName" Type="nvarchar(max)" />
+        </EntityType>
+        <Association Name="FK_AcDocument_Detail_AcDocument_Header">
+          <End Role="AcDocument_Header" Type="Self.AcDocument_Header" Multiplicity="1" />
+          <End Role="AcDocument_Detail" Type="Self.AcDocument_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AcDocument_Header">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AcDocument_Detail">
+              <PropertyRef Name="fk_AcDoc_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AcDocument_Detail_Moein">
+          <End Role="Moein" Type="Self.Moein" Multiplicity="1" />
+          <End Role="AcDocument_Detail" Type="Self.AcDocument_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moein">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AcDocument_Detail">
+              <PropertyRef Name="fk_MoeinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AcDocument_Detail_Preferential">
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="1" />
+          <End Role="AcDocument_Detail" Type="Self.AcDocument_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AcDocument_Detail">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AcDocument_Header_DocumentType">
+          <End Role="DocumentType" Type="Self.DocumentType" Multiplicity="1" />
+          <End Role="AcDocument_Header" Type="Self.AcDocument_Header" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AcDocument_Header">
+              <PropertyRef Name="fk_DocumentTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Col_AGroup">
+          <End Role="AGroup" Type="Self.AGroup" Multiplicity="1" />
+          <End Role="Col" Type="Self.Col" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AGroup">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Col">
+              <PropertyRef Name="fk_GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Moein_Col">
+          <End Role="Col" Type="Self.Col" Multiplicity="1" />
+          <End Role="Moein" Type="Self.Moein" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Col">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Moein">
+              <PropertyRef Name="fk_ColId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Preferential_tGroup">
+          <End Role="tGroup" Type="Self.tGroup" Multiplicity="1" />
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tGroup">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Preferential">
+              <PropertyRef Name="fk_GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ColDbModelStoreContainer">
+          <EntitySet Name="AcDocument_Detail" EntityType="Self.AcDocument_Detail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AcDocument_Header" EntityType="Self.AcDocument_Header" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AGroup" EntityType="Self.AGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Col" EntityType="Self.Col" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentType" EntityType="Self.DocumentType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Moein" EntityType="Self.Moein" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Preferential" EntityType="Self.Preferential" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tGroup" EntityType="Self.tGroup" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AcDocument_Detail_AcDocument_Header" Association="Self.FK_AcDocument_Detail_AcDocument_Header">
+            <End Role="AcDocument_Header" EntitySet="AcDocument_Header" />
+            <End Role="AcDocument_Detail" EntitySet="AcDocument_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AcDocument_Detail_Moein" Association="Self.FK_AcDocument_Detail_Moein">
+            <End Role="Moein" EntitySet="Moein" />
+            <End Role="AcDocument_Detail" EntitySet="AcDocument_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AcDocument_Detail_Preferential" Association="Self.FK_AcDocument_Detail_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="AcDocument_Detail" EntitySet="AcDocument_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AcDocument_Header_DocumentType" Association="Self.FK_AcDocument_Header_DocumentType">
+            <End Role="DocumentType" EntitySet="DocumentType" />
+            <End Role="AcDocument_Header" EntitySet="AcDocument_Header" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Col_AGroup" Association="Self.FK_Col_AGroup">
+            <End Role="AGroup" EntitySet="AGroup" />
+            <End Role="Col" EntitySet="Col" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Moein_Col" Association="Self.FK_Moein_Col">
+            <End Role="Col" EntitySet="Col" />
+            <End Role="Moein" EntitySet="Moein" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Preferential_tGroup" Association="Self.FK_Preferential_tGroup">
+            <End Role="tGroup" EntitySet="tGroup" />
+            <End Role="Preferential" EntitySet="Preferential" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ColDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ColDbEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AcDocument_Detail" EntityType="ColDbModel.AcDocument_Detail" />
+          <EntitySet Name="AcDocument_Header" EntityType="ColDbModel.AcDocument_Header" />
+          <EntitySet Name="AGroup" EntityType="ColDbModel.AGroup" />
+          <EntitySet Name="Col" EntityType="ColDbModel.Col" />
+          <EntitySet Name="DocumentType" EntityType="ColDbModel.DocumentType" />
+          <EntitySet Name="Moein" EntityType="ColDbModel.Moein" />
+          <EntitySet Name="Preferential" EntityType="ColDbModel.Preferential" />
+          <EntitySet Name="tGroup" EntityType="ColDbModel.tGroup" />
+          <AssociationSet Name="FK_AcDocument_Detail_AcDocument_Header" Association="ColDbModel.FK_AcDocument_Detail_AcDocument_Header">
+            <End Role="AcDocument_Header" EntitySet="AcDocument_Header" />
+            <End Role="AcDocument_Detail" EntitySet="AcDocument_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AcDocument_Detail_Moein" Association="ColDbModel.FK_AcDocument_Detail_Moein">
+            <End Role="Moein" EntitySet="Moein" />
+            <End Role="AcDocument_Detail" EntitySet="AcDocument_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AcDocument_Detail_Preferential" Association="ColDbModel.FK_AcDocument_Detail_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="AcDocument_Detail" EntitySet="AcDocument_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AcDocument_Header_DocumentType" Association="ColDbModel.FK_AcDocument_Header_DocumentType">
+            <End Role="DocumentType" EntitySet="DocumentType" />
+            <End Role="AcDocument_Header" EntitySet="AcDocument_Header" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Col_AGroup" Association="ColDbModel.FK_Col_AGroup">
+            <End Role="AGroup" EntitySet="AGroup" />
+            <End Role="Col" EntitySet="Col" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Moein_Col" Association="ColDbModel.FK_Moein_Col">
+            <End Role="Col" EntitySet="Col" />
+            <End Role="Moein" EntitySet="Moein" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Preferential_tGroup" Association="ColDbModel.FK_Preferential_tGroup">
+            <End Role="tGroup" EntitySet="tGroup" />
+            <End Role="Preferential" EntitySet="Preferential" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="AcDocument_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Debtor" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Creditor" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="fk_AcDoc_HeaderId" Type="Guid" Nullable="false" />
+          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
+          <Property Name="fk_MoeinId" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="AcDocument_Header" Relationship="ColDbModel.FK_AcDocument_Detail_AcDocument_Header" FromRole="AcDocument_Detail" ToRole="AcDocument_Header" />
+          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_AcDocument_Detail_Moein" FromRole="AcDocument_Detail" ToRole="Moein" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_AcDocument_Detail_Preferential" FromRole="AcDocument_Detail" ToRole="Preferential" />
+        </EntityType>
+        <EntityType Name="AcDocument_Header">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Serial" Type="Int64" Nullable="false" />
+          <Property Name="NoDoument" Type="Int64" Nullable="false" />
+          <Property Name="fk_DocumentTypeId" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="AcDocument_Detail" Relationship="ColDbModel.FK_AcDocument_Detail_AcDocument_Header" FromRole="AcDocument_Header" ToRole="AcDocument_Detail" />
+          <NavigationProperty Name="DocumentType" Relationship="ColDbModel.FK_AcDocument_Header_DocumentType" FromRole="AcDocument_Header" ToRole="DocumentType" />
+        </EntityType>
+        <EntityType Name="AGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="GroupCode" Type="Int32" Nullable="false" />
+          <Property Name="GroupName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Col" Relationship="ColDbModel.FK_Col_AGroup" FromRole="AGroup" ToRole="Col" />
+        </EntityType>
+        <EntityType Name="Col">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ColCode" Type="Int32" Nullable="false" />
+          <Property Name="ColName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="Byte" />
+          <Property Name="Action" Type="Byte" />
+          <Property Name="fk_GroupId" Type="Guid" Nullable="false" />
+          <Property Name="PermissionView" Type="Boolean" />
+          <NavigationProperty Name="AGroup" Relationship="ColDbModel.FK_Col_AGroup" FromRole="Col" ToRole="AGroup" />
+          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_Moein_Col" FromRole="Col" ToRole="Moein" />
+        </EntityType>
+        <EntityType Name="DocumentType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsManual" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AcDocument_Header" Relationship="ColDbModel.FK_AcDocument_Header_DocumentType" FromRole="DocumentType" ToRole="AcDocument_Header" />
+        </EntityType>
+        <EntityType Name="Moein">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="MoeinCode" Type="Int32" Nullable="false" />
+          <Property Name="fk_ColId" Type="Guid" Nullable="false" />
+          <Property Name="MoeinName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AcDocument_Detail" Relationship="ColDbModel.FK_AcDocument_Detail_Moein" FromRole="Moein" ToRole="AcDocument_Detail" />
+          <NavigationProperty Name="Col" Relationship="ColDbModel.FK_Moein_Col" FromRole="Moein" ToRole="Col" />
+        </EntityType>
+        <EntityType Name="Preferential">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="PreferentialCode" Type="Int32" Nullable="false" />
+          <Property Name="fk_GroupId" Type="Guid" Nullable="false" />
+          <Property Name="PreferentialName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Mobile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Phone1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Phone2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Phone3" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WebSite" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AcDocument_Detail" Relationship="ColDbModel.FK_AcDocument_Detail_Preferential" FromRole="Preferential" ToRole="AcDocument_Detail" />
+          <NavigationProperty Name="tGroup" Relationship="ColDbModel.FK_Preferential_tGroup" FromRole="Preferential" ToRole="tGroup" />
+        </EntityType>
+        <EntityType Name="tGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="GroupCode" Type="Int32" Nullable="false" />
+          <Property Name="GroupName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_Preferential_tGroup" FromRole="tGroup" ToRole="Preferential" />
+        </EntityType>
+        <Association Name="FK_AcDocument_Detail_AcDocument_Header">
+          <End Type="ColDbModel.AcDocument_Header" Role="AcDocument_Header" Multiplicity="1" />
+          <End Type="ColDbModel.AcDocument_Detail" Role="AcDocument_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AcDocument_Header">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AcDocument_Detail">
+              <PropertyRef Name="fk_AcDoc_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AcDocument_Detail_Moein">
+          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="1" />
+          <End Type="ColDbModel.AcDocument_Detail" Role="AcDocument_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moein">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AcDocument_Detail">
+              <PropertyRef Name="fk_MoeinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AcDocument_Detail_Preferential">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="1" />
+          <End Type="ColDbModel.AcDocument_Detail" Role="AcDocument_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AcDocument_Detail">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AcDocument_Header_DocumentType">
+          <End Type="ColDbModel.DocumentType" Role="DocumentType" Multiplicity="1" />
+          <End Type="ColDbModel.AcDocument_Header" Role="AcDocument_Header" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AcDocument_Header">
+              <PropertyRef Name="fk_DocumentTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Col_AGroup">
+          <End Type="ColDbModel.AGroup" Role="AGroup" Multiplicity="1" />
+          <End Type="ColDbModel.Col" Role="Col" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AGroup">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Col">
+              <PropertyRef Name="fk_GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Moein_Col">
+          <End Type="ColDbModel.Col" Role="Col" Multiplicity="1" />
+          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Col">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Moein">
+              <PropertyRef Name="fk_ColId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Preferential_tGroup">
+          <End Type="ColDbModel.tGroup" Role="tGroup" Multiplicity="1" />
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tGroup">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Preferential">
+              <PropertyRef Name="fk_GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ColDbModelStoreContainer" CdmEntityContainer="ColDbEntities1">
+          <EntitySetMapping Name="AcDocument_Detail">
+            <EntityTypeMapping TypeName="ColDbModel.AcDocument_Detail">
+              <MappingFragment StoreEntitySet="AcDocument_Detail">
+                <ScalarProperty Name="fk_MoeinId" ColumnName="fk_MoeinId" />
+                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
+                <ScalarProperty Name="fk_AcDoc_HeaderId" ColumnName="fk_AcDoc_HeaderId" />
+                <ScalarProperty Name="Creditor" ColumnName="Creditor" />
+                <ScalarProperty Name="Debtor" ColumnName="Debtor" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AcDocument_Header">
+            <EntityTypeMapping TypeName="ColDbModel.AcDocument_Header">
+              <MappingFragment StoreEntitySet="AcDocument_Header">
+                <ScalarProperty Name="fk_DocumentTypeId" ColumnName="fk_DocumentTypeId" />
+                <ScalarProperty Name="NoDoument" ColumnName="NoDoument" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AGroup">
+            <EntityTypeMapping TypeName="ColDbModel.AGroup">
+              <MappingFragment StoreEntitySet="AGroup">
+                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="GroupCode" ColumnName="GroupCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Col">
+            <EntityTypeMapping TypeName="ColDbModel.Col">
+              <MappingFragment StoreEntitySet="Col">
+                <ScalarProperty Name="PermissionView" ColumnName="PermissionView" />
+                <ScalarProperty Name="fk_GroupId" ColumnName="fk_GroupId" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="ColName" ColumnName="ColName" />
+                <ScalarProperty Name="ColCode" ColumnName="ColCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocumentType">
+            <EntityTypeMapping TypeName="ColDbModel.DocumentType">
+              <MappingFragment StoreEntitySet="DocumentType">
+                <ScalarProperty Name="IsManual" ColumnName="IsManual" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Moein">
+            <EntityTypeMapping TypeName="ColDbModel.Moein">
+              <MappingFragment StoreEntitySet="Moein">
+                <ScalarProperty Name="MoeinName" ColumnName="MoeinName" />
+                <ScalarProperty Name="fk_ColId" ColumnName="fk_ColId" />
+                <ScalarProperty Name="MoeinCode" ColumnName="MoeinCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Preferential">
+            <EntityTypeMapping TypeName="ColDbModel.Preferential">
+              <MappingFragment StoreEntitySet="Preferential">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="WebSite" ColumnName="WebSite" />
+                <ScalarProperty Name="Phone3" ColumnName="Phone3" />
+                <ScalarProperty Name="Phone2" ColumnName="Phone2" />
+                <ScalarProperty Name="Phone1" ColumnName="Phone1" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="PreferentialName" ColumnName="PreferentialName" />
+                <ScalarProperty Name="fk_GroupId" ColumnName="fk_GroupId" />
+                <ScalarProperty Name="PreferentialCode" ColumnName="PreferentialCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tGroup">
+            <EntityTypeMapping TypeName="ColDbModel.tGroup">
+              <MappingFragment StoreEntitySet="tGroup">
+                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="GroupCode" ColumnName="GroupCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
