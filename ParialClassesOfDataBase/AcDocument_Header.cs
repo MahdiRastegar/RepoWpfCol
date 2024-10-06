@@ -8,6 +8,10 @@ namespace WpfCol
 {
     public partial class AcDocument_Header
     {
+        public void RefreshSumColumns()
+        {
+            _SumCreditor = _SumDebtor = null;
+        }
         Nullable<decimal> _SumDebtor;
         public Nullable<decimal> SumDebtor
         {

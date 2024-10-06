@@ -6,6 +6,7 @@ using Syncfusion.UI.Xaml.Grid.Helpers;
 using Syncfusion.UI.Xaml.ScrollAxis;
 using Syncfusion.Windows.Controls.Input;
 using Syncfusion.Windows.Shared;
+using Syncfusion.Windows.Tools.Controls;
 using Syncfusion.XlsIO.Parser.Biff_Records;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class usrAccountDocument : UserControl,ITabForm,ITabEdidGrid
+    public partial class usrRecieveMoney : UserControl,ITabForm, ITabEdidGrid
     {
         public bool DataGridIsFocused
         {
@@ -51,36 +52,38 @@ namespace WpfCol
                 return datagrid.IsFocused;
             }
         }
-        AcDocumentViewModel acDocumentViewModel;
+        RecieveMoneyViewModel acDocumentViewModel;
+        ObservableCollection<Bank> Banks = new ObservableCollection<Bank>();
         List<Mu> mus1 = new List<Mu>();
         List<Mu> mus2 = new List<Mu>();
-        public usrAccountDocument()
+        public usrRecieveMoney()
         {
-            AcDocument_Details = new ObservableCollection<AcDocument_Detail>();
-            acDocument_Headers = new ObservableCollection<AcDocument_Header>();
+            temp_recieveMoney_Details = new ObservableCollection<RecieveMoney_Detail>();
+            RecieveMoneyHeaders = new ObservableCollection<RecieveMoneyHeader>();
             InitializeComponent();
-            acDocumentViewModel = Resources["viewmodel"] as AcDocumentViewModel;
-            acDocumentViewModel.acDocument_Details.CollectionChanged += AcDocument_Details_CollectionChanged;
+            acDocumentViewModel = Resources["viewmodel"] as RecieveMoneyViewModel;
+            acDocumentViewModel.recieveMoney_Details.CollectionChanged += AcDocument_Details_CollectionChanged;
             txbCalender.Text = pcw1.SelectedDate.ToString();
         }
 
         Brush brush = null;
-        public ObservableCollection<AcDocument_Detail> AcDocument_Details { get; set; }
-        public ObservableCollection<AcDocument_Header> acDocument_Headers { get; set; }
+        public ObservableCollection<RecieveMoney_Detail> temp_recieveMoney_Details { get; set; }
+        public ObservableCollection<RecieveMoney_Detail> recieveMoney_Details { get; set; }
+        public ObservableCollection<RecieveMoneyHeader> RecieveMoneyHeaders { get; set; }
         private void Txt_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (e.Text == "\r")
             {
-                if ((sender as TextBox).Name == "txtNoDocumen")
-                {
-                    cmbType.Focus();
-                }
-                else
-                {
+                //if ((sender as TextBox).Name == "txtNoDocumen")
+                //{
+                //    cmbType.Focus();
+                //}
+                //else
+                //{
                     TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
                     request.Wrapped = true;
                     (sender as TextBox).MoveFocus(request);
-                }
+                //}
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     if (btnConfirm.IsFocused)
@@ -90,7 +93,7 @@ namespace WpfCol
                 }));
                 return;
             }            
-            if ((sender as TextBox).Name != "cmbType")
+            if ((sender as TextBox).Name != "txtDescription")
                 e.Handled = !IsTextAllowed(e.Text);            
         }
         private static readonly Regex _regex = new Regex("[^0-9]"); //regex that matches disallowed text
@@ -102,10 +105,12 @@ namespace WpfCol
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var db = new ColDbEntities1();
-            var temp = cmbType.SelectedIndex;
-            cmbType.ItemsSource = db.DocumentType.Where(y => y.IsManual).ToList();
             mus1.Clear();
             mus2.Clear();
+            Banks = acDocumentViewModel.Banks;
+            Banks.Clear();
+            db.Bank.ToList().ForEach(t => Banks.Add(t));
+
             var moeins = db.Moein.ToList();
             var preferentials = db.Preferential.ToList();
             foreach (var item in moeins)
@@ -117,8 +122,9 @@ namespace WpfCol
                 accountSearchClass.ColMoein = $"{item.Col.ColCode}{item.MoeinCode}";
                 mus1.Add(new Mu()
                 {
-                    Value = $"{item.Col.ColName}",
-                    Name = $"{item.Col.ColCode}",
+                    Id = item.Id,
+                    Value = $"{item.Col.ColCode}",
+                    Name = $"{item.Col.ColName}",
                     AdditionalEntity = accountSearchClass
                 });
             }
@@ -131,57 +137,51 @@ namespace WpfCol
                     Value = $"{item.PreferentialCode}"
                 });
             }
-            cmbType.SelectedIndex = 0;
-            if (temp > 0)
-                cmbType.SelectedIndex = temp;
+            
             if (AddedMode)
             {               
-                AcDocument_Details = acDocumentViewModel.acDocument_Details;
+                recieveMoney_Details = acDocumentViewModel.recieveMoney_Details;
                 //AcDocument_Details.Clear();
-                var y = db.AcDocument_Header.OrderByDescending(k => k.NoDoument).FirstOrDefault();
+                var y = db.RecieveMoneyHeader.OrderByDescending(k => k.ReceiptNumber).FirstOrDefault();
                 if (y == null)
                 {
-                    txtSerial.Text = txtNoDocumen.Text = "1";
+                    txtSerial.Text = "1";
                 }
                 else
                 {
-                    txtNoDocumen.Text = (y.NoDoument + 1).ToString();
-                    var yb = db.AcDocument_Header.OrderByDescending(k => k.NoDoument).FirstOrDefault();
-                    txtSerial.Text = (y.Serial + 1).ToString();
+                    txtSerial.Text = (y.ReceiptNumber + 1).ToString();
                 }
-                dataPager.Source = null;
-                dataPager.Source = AcDocument_Details;
             }
             else
             {
-                AcDocument_Details = acDocumentViewModel.acDocument_Details;
-                AcDocument_Details.Clear();
+                recieveMoney_Details = acDocumentViewModel.recieveMoney_Details;
+                recieveMoney_Details.Clear();
                 //AcDocument_Details.Clear();
-                var h = db.AcDocument_Detail.Where(u=>u.fk_AcDoc_HeaderId==id).ToList();
-                h.ForEach(u => AcDocument_Details.Add(u));
+                var h = db.RecieveMoney_Detail.Where(u=>u.fkHeaderId==id).ToList();
+                h.ForEach(u => recieveMoney_Details.Add(u));
                 RefreshDataGridForSetPersianNumber();
             }
-            if (acDocument_Headers.Count == 0)
+            if (RecieveMoneyHeaders.Count == 0)
             {
-                foreach (var item in db.AcDocument_Header.ToList())
+                foreach (var item in db.RecieveMoneyHeader.ToList())
                 {
-                    foreach (var item2 in item.AcDocument_Detail)
+                    /*foreach (var item2 in item.RecieveMoney_Detail)
                     {
                         SetAccountName(db, item2);
-                    }
-                    acDocument_Headers.Add(item);
+                    }*/
+                    RecieveMoneyHeaders.Add(item);
                 }
             }
             dataPager.Source = null;
-            dataPager.Source = acDocument_Headers;
+            dataPager.Source = RecieveMoneyHeaders;
             datagrid.SearchHelper.AllowFiltering = true;
             datagridSearch.SearchHelper.AllowFiltering = true;
             FirstLevelNestedGrid.SearchHelper.AllowFiltering = true;
-            cmbType.Focus();
             isCancel = true;
+            txtMoein.Focus();
         }
 
-        private static void SetAccountName(ColDbEntities1 db, AcDocument_Detail item2)
+        private static void SetAccountName(ColDbEntities1 db, RecieveMoney_Detail item2)
         {/*
             var strings = item2.AcCode.Split('-');
             var moein = int.Parse(strings[0]);
@@ -205,113 +205,119 @@ namespace WpfCol
                                     //    Sf_txtDoumentType.HasError = true;
                                     //    return;
                                     //}
-                                    //var acDocument_Detail = db.AcDocument_Detail.Find(id);
+                                    //var RecieveMoney_Detail = db.RecieveMoney_Detail.Find(id);
             
-                                    //var nacDocument_Detail = db.AcDocument_Detail.FirstOrDefault(g => g.fk_GroupId == col.Id && g.AcDocument_DetailName == txtNoDocumen.Text);
-                                    //if (acDocument_Detail?.Id != nacDocument_Detail?.Id && nacDocument_Detail != null)
+                                    //var nRecieveMoney_Detail = db.RecieveMoney_Detail.FirstOrDefault(g => g.fk_GroupId == col.Id && g.RecieveMoney_DetailName == txtNoDocumen.Text);
+                                    //if (RecieveMoney_Detail?.Id != nRecieveMoney_Detail?.Id && nRecieveMoney_Detail != null)
                                     //{
                                     //    Xceed.Wpf.Toolkit.MessageBox.Show("این نام تفضیلی و کد گروه از قبل وجود داشته است!");
                                     //    return;
                                     //}
-            var hg=db.DocumentType.FirstOrDefault(y=>y.Name==cmbType.Text);
-            if(hg==null)
-            {
-                Sf_txtDoumentType.HasError = true;
-                Sf_txtDoumentType.ErrorText = "این نوع سند وجود ندارد!";
-                return;
-            }
-            AcDocument_Header e_addHeader = null;
-            AcDocument_Header header = null;
+            
+            RecieveMoneyHeader e_addHeader = null;
+            RecieveMoneyHeader header = null;
             if (id == Guid.Empty)
             {
-                e_addHeader = new AcDocument_Header()
+                e_addHeader = new RecieveMoneyHeader()
                 {
                     Id = Guid.NewGuid(),
                     Date=pcw1.SelectedDate.ToDateTime(),
-                    NoDoument = long.Parse(txtNoDocumen.Text),
-                    Serial = long.Parse(txtSerial.Text),
-                    DocumentType = hg
+                    ReceiptNumber = int.Parse(txtSerial.Text),
+                    Description = txtDescription.Text,
+                    fk_MoeinId=(txtMoein.Tag as Mu).Id,
+                    fk_PreferentialId=(txtPreferential.Tag as Mu).Id
                 };
-                DbSet<AcDocument_Detail> details = null;
-                foreach (var item in AcDocument_Details)
+                DbSet<RecieveMoney_Detail> details = null;
+                foreach (var item in recieveMoney_Details)
                 {
-                    var en = new AcDocument_Detail()
+                    var en = new RecieveMoney_Detail()
                     {
                         fk_MoeinId = item.Moein.Id,
                         fk_PreferentialId = item.Preferential.Id,
-                        AcDocument_Header = e_addHeader,
-                        Creditor = item.Creditor,
-                        Debtor = item.Debtor,
-                        Description = item.Description,
-                        //AccountName = item.AccountName,
+                        RecieveMoneyHeader = e_addHeader,
+                        fkBank = item.Bank?.Id,
+                        BranchName = item.BranchName,
+                        Date = item.Date,
+                        Number = item.Number,
+                        Price = item.Price,
+                        MoneyType = item.MoneyType,
                         Id = Guid.NewGuid()
                     };
-                    db.AcDocument_Detail.Add(en);
+                    db.RecieveMoney_Detail.Add(en);
                 }
-                db.AcDocument_Header.Add(e_addHeader);
-                acDocument_Headers.Add(e_addHeader);
+                db.RecieveMoneyHeader.Add(e_addHeader);
+                RecieveMoneyHeaders.Add(e_addHeader);
+                e_addHeader.Moein = db.Moein.Find((txtMoein.Tag as Mu).Id);
+                e_addHeader.Preferential = db.Preferential.Find((txtPreferential.Tag as Mu).Id);
             }
             else
             {
-                var h = db.AcDocument_Detail.Where(v => v.fk_AcDoc_HeaderId == id);
-                header = acDocument_Headers.First(u => u.Id == id);
+                var h = db.RecieveMoney_Detail.Where(v => v.fkHeaderId == id);
+                header = RecieveMoneyHeaders.First(u => u.Id == id);
                 foreach (var item in h)
                 {
-                    db.AcDocument_Detail.Remove(item);
-                    header.AcDocument_Detail.Remove(header.AcDocument_Detail.First(x => x.Id == item.Id));
+                    db.RecieveMoney_Detail.Remove(item);
+                    header.RecieveMoney_Detail.Remove(header.RecieveMoney_Detail.First(x => x.Id == item.Id));
                 }
-                var e_Edidet = db.AcDocument_Header.Find(id);
-                e_Edidet.NoDoument = header.NoDoument = long.Parse(txtNoDocumen.Text);
+                var e_Edidet = db.RecieveMoneyHeader.Find(id);
+                e_Edidet.ReceiptNumber= header.ReceiptNumber = int.Parse(txtSerial.Text);
+                e_Edidet.Description= header.Description = txtDescription.Text;
+                e_Edidet.fk_MoeinId = (txtMoein.Tag as Mu).Id;
+                header.Moein = db.Moein.Find((txtMoein.Tag as Mu).Id);
+                e_Edidet.fk_PreferentialId = (txtPreferential.Tag as Mu).Id;
+                header.Preferential = db.Preferential.Find((txtPreferential.Tag as Mu).Id);
                 e_Edidet.Date = header.Date = pcw1.SelectedDate.ToDateTime();
-                e_Edidet.DocumentType = header.DocumentType = hg;
-                foreach (var item in AcDocument_Details)
+                foreach (var item in recieveMoney_Details)
                 {
-                    var en = new AcDocument_Detail()
+                    var en = new RecieveMoney_Detail()
                     {
+                        fkHeaderId = header.Id,
                         fk_MoeinId = item.Moein.Id,
                         fk_PreferentialId = item.Preferential.Id,
-                        AcDocument_Header = e_Edidet,
-                        Creditor = item.Creditor,
-                        Debtor = item.Debtor,
-                        Description = item.Description,
-                        //AccountName = item.AccountName,
+                        RecieveMoneyHeader = e_addHeader,
+                        fkBank = item.Bank?.Id,
+                        BranchName = item.BranchName,
+                        Date = item.Date,
+                        Number = item.Number,
+                        Price = item.Price,
+                        MoneyType = item.MoneyType,
                         Id = Guid.NewGuid()
                     };
-                    db.AcDocument_Detail.Add(en);
-                    header.AcDocument_Detail.Add(en);
+                    db.RecieveMoney_Detail.Add(en);
+                    header.RecieveMoney_Detail.Add(en);
                 }
-                //e_Edidet.fk_GroupId = acDocument_Detail.fk_GroupId = col.Id;
-                //e_Edidet.AcDocument_DetailName = acDocument_Detail.AcDocument_DetailName = txtNoDocumen.Text;
             }
             db.SaveChanges();
             if (header != null)
             {
                 int i = 0;
-                foreach (var item in header.AcDocument_Detail)
+                foreach (var item in header.RecieveMoney_Detail)
                 {
-                    item.Moein = AcDocument_Details[i].Moein;
-                    item.Preferential = AcDocument_Details[i].Preferential;
+                    item.Moein = recieveMoney_Details[i].Moein;
+                    item.Preferential = recieveMoney_Details[i].Preferential;
+                    item.Bank = recieveMoney_Details[i].Bank;
                     i++;
                 }
             }
             if(e_addHeader!=null)
             {
                 int i = 0;
-                foreach (var item in e_addHeader.AcDocument_Detail)
+                foreach (var item in e_addHeader.RecieveMoney_Detail)
                 {
-                    item.Moein = AcDocument_Details[i].Moein;
-                    item.Preferential = AcDocument_Details[i].Preferential;
+                    item.Moein = recieveMoney_Details[i].Moein;
+                    item.Preferential = recieveMoney_Details[i].Preferential;
+                    item.Bank = recieveMoney_Details[i].Bank;
                     i++;
                 }
             }
             datagrid.SelectedIndex = -1;
             datagrid.ClearFilters();
             datagrid.SearchHelper.ClearSearch();
-            if (AcDocument_Details.Count > 0)
+            if (recieveMoney_Details.Count > 0)
             {
                 datagrid.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    AcDocument_Details.Clear();
+                    recieveMoney_Details.Clear();
                 }));
                 RefreshDataGridForSetPersianNumber();
             }
@@ -333,18 +339,16 @@ namespace WpfCol
                 });
                 th.Start();
                 searchImage.Visibility = Visibility.Collapsed;
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت سند");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت");
                 searchImage.Visibility = Visibility.Visible;
                 this.gifImage.Visibility = Visibility.Collapsed;
-                txtNoDocumen.Text = (long.Parse(txtNoDocumen.Text) + 1).ToString();
                 txtSerial.Text = (long.Parse(txtSerial.Text) + 1).ToString();
 
-                cmbType.SelectedIndex = 0;
-                cmbType.Focus();
+                txtMoein.Focus();
             }
             else
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش سند");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش");
                 btnCancel_Click(null, null);
             }
                             
@@ -356,31 +360,32 @@ namespace WpfCol
         {
             var haserror = false;
             datagrid.BorderBrush = new  System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)ColorConverter.ConvertFromString("#FF808080"));
-
-            if (txtNoDocumen.Text.Trim() == "")
+            if (txtMoein.Text.Trim() == "")
             {
-                Sf_txtNoDocumen.HasError = true;
-                haserror = true;
-            }
-            else
-                Sf_txtNoDocumen.HasError = false;
-            if (cmbType.Text.Trim() == "")
-            {
-                Sf_txtDoumentType.HasError = true;
+                Sf_txtMoein.HasError = true;
                 haserror = true;
             }
             else
             {
-                Sf_txtDoumentType.HasError = false;
-                Sf_txtDoumentType.ErrorText = "";
+                Sf_txtMoein.HasError = false;
+                Sf_txtMoein.ErrorText = "";
             }
-            if (AcDocument_Details.Count == 0)//AcDocument_Details.Any(g => !viewModel.AllCommodities.Any(y => y.CommodityCode == g.CommodityCode)))
+            if (txtPreferential.Text.Trim() == "")
+            {
+                Sf_txtPreferential.HasError = true;
+                haserror = true;
+            }
+            else
+            {
+                Sf_txtPreferential.HasError = false;
+                Sf_txtPreferential.ErrorText = "";
+            }
+            if (recieveMoney_Details.Count == 0)//AcDocument_Details.Any(g => !viewModel.AllCommodities.Any(y => y.CommodityCode == g.CommodityCode)))
             {
                 datagrid.BorderBrush = Brushes.Red;
                 haserror = true;
             }
-            else if (AcDocument_Details.Any(t => t.ColeMoein == ""|| t.ColeMoein==null || t.PreferentialCode == "" || t.PreferentialCode == null || ((t.Creditor == 0 || t.Creditor == null)&& (t.Debtor == 0||t.Debtor==null))
-            || (t.Creditor != 0&&t.Creditor!=null && t.Debtor != 0 && t.Debtor != null)))
+            else if (recieveMoney_Details.Any(t =>t.Price==0 || t.ColeMoein == ""|| t.ColeMoein==null || t.PreferentialCode == "" || t.PreferentialCode == null ))
             {
                 datagrid.BorderBrush = Brushes.Red;
                 haserror = true;
@@ -479,7 +484,7 @@ namespace WpfCol
         {
             if (e.Key == Key.F1)
             {
-                if (datagrid.SelectionController.CurrentCellManager?.CurrentCell?.ColumnIndex == 0)
+                if (datagrid.SelectionController.CurrentCellManager?.CurrentCell?.ColumnIndex == 1)
                 {
                     dynamic y = null;
                     var element = (datagrid.SelectionController.CurrentCellManager.CurrentCell.Element as GridCell)
@@ -511,31 +516,11 @@ namespace WpfCol
                         });
                         th.Start();
                         return;
-                    }           
-                    var win = new winSearch(mus1);
-                    win.Closed+=(yf,rs)=>
-                    {
-                        datagrid.IsHitTestVisible = true;
-                    };
-                    win.Width = 640;
-                    win.datagrid.Columns[0].HeaderText = "کل";
-                    win.datagrid.Columns[1].HeaderText = "نام";
-                    win.datagrid.Columns[1].Width = 255;
-                    win.datagrid.Columns[0].Width = 100;
-                    win.datagrid.Columns.Add(new GridTextColumn() {TextAlignment= TextAlignment.Center, HeaderText = "معین", MappingName = "AdditionalEntity.Moein", Width = 100, AllowSorting = true });
-                    win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "نام", MappingName = "AdditionalEntity.MoeinName", AllowSorting = true });
-                    win.datagrid.AllowResizingColumns = true;
-                    win.Tag = this;
-                    win.ParentTextBox = y;
-                    win.SearchTermTextBox.Text = "";
-                    win.SearchTermTextBox.Select(1, 0);
-                    win.Owner = MainWindow.Current;
-                    window = win;
-                    win.Show();
-                    win.Focus();
+                    }
+                    ShowSearchMoein(y);
                     datagrid.IsHitTestVisible = false;
                 }
-                else if (datagrid.SelectionController.CurrentCellManager?.CurrentCell?.ColumnIndex == 1)
+                else if (datagrid.SelectionController.CurrentCellManager?.CurrentCell?.ColumnIndex == 2)
                 {
                     dynamic y = null;
                     var element = (datagrid.SelectionController.CurrentCellManager.CurrentCell.Element as GridCell)
@@ -559,34 +544,61 @@ namespace WpfCol
                             return;
                         }
                     }
-                    var win = new winSearch(mus2);
-                    win.Closed += (yf, rs) =>
-                    {
-                        datagrid.IsHitTestVisible = true;
-                    };
-                    win.Width = 640;                    
-                    win.Tag = this;
-                    win.ParentTextBox = y;
-                    win.SearchTermTextBox.Text = "";
-                    win.SearchTermTextBox.Select(1, 0);
-                    win.Owner = MainWindow.Current;
-                    window = win;
-                    win.Show();
-                    win.Focus();
+                    ShowSearchPreferential(y);
                     datagrid.IsHitTestVisible = false;
                 }
             }           
-        }     
+        }
+        public void SetEnterToNextCell(RowColumnIndex? rowColumn=null)
+        {
+            var dataGrid = datagrid;
+
+            // پیدا کردن سطر و ستون فعلی
+            var currentCell = datagrid.SelectionController.CurrentCellManager?.CurrentCell;
+            if (currentCell != null||rowColumn!=null)
+            {
+                int currentRowIndex = rowColumn==null? currentCell.RowIndex:rowColumn.Value.RowIndex;
+                int currentColumnIndex = rowColumn == null ? currentCell.ColumnIndex : rowColumn.Value.ColumnIndex;
+
+                // افزایش اندیس ستون
+                currentColumnIndex++;
+
+                // اگر به انتهای ستون‌ها رسیدیم، به سطر بعد بروید
+                if (currentColumnIndex >= dataGrid.Columns.Count)
+                {
+                    currentColumnIndex = 0; // به اولین ستون برگردید
+                    currentRowIndex++; // به سطر بعد بروید
+                }
+
+                // اگر به انتهای سطرها رسیدیم، به اولین سطر برگردید
+                if (currentRowIndex >= recieveMoney_Details.Count+2)
+                {
+                    currentRowIndex = 0; // به اولین سطر برگردید
+                }
+
+                //Updates the PressedRowColumnIndex value in the GridBaseSelectionController.
+                try
+                {
+                    if (currentColumnIndex == 2)
+                        (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex+1));
+                    else if (currentColumnIndex == 5 && ((datagrid.GetRecordAtRowIndex(currentRowIndex) as AcDocument_Detail)?.Debtor ?? 0) != 0)
+                        (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex+1, 0));
+                    else
+                        (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex));
+                }
+                catch { }
+            }
+        }
         private void datagrid_CurrentCellEndEdit(object sender, Syncfusion.UI.Xaml.Grid.CurrentCellEndEditEventArgs e)
         {
             isCancel = false;
             CalDebCre();
 
-            if (window == null && datagrid.GetRecordAtRowIndex(e.RowColumnIndex.RowIndex) is AcDocument_Detail acDocument_Detail)
+            if (window == null && datagrid.GetRecordAtRowIndex(e.RowColumnIndex.RowIndex) is RecieveMoney_Detail acDocument_Detail)
             {
                 if ((CurrentCellText ?? "") != "")
                 {
-                    if (e.RowColumnIndex.ColumnIndex == 0)
+                    if (e.RowColumnIndex.ColumnIndex == 1)
                     {
                         var db = new ColDbEntities1();
                         var mu = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == CurrentCellText);
@@ -600,7 +612,7 @@ namespace WpfCol
                             acDocument_Detail.Moein = moein;
                         }
                     }
-                    else if(e.RowColumnIndex.ColumnIndex == 1)
+                    else if(e.RowColumnIndex.ColumnIndex == 2)
                     {
                         var db = new ColDbEntities1();
                         var mu = mus2.Find(t => t.Value == CurrentCellText);
@@ -626,6 +638,15 @@ namespace WpfCol
                 });
                 th.Start();
             }
+            else
+            {
+                StateLoadView = true;
+                datagrid.Dispatcher.BeginInvoke(new Action(async () =>
+                {
+                    await Task.Delay(50);
+                    StateLoadView = false;
+                }), DispatcherPriority.Render);
+            }
         }
 
         private void btnTransferOfExcel_Click(object sender, RoutedEventArgs e)
@@ -641,14 +662,6 @@ namespace WpfCol
             }         
         }
 
-        private void cmbType_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key ==  Key.Enter)
-            {                
-                btnConfirm.Focus();
-                return;
-            }
-        }
         bool isCancel = true;
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
@@ -674,30 +687,33 @@ namespace WpfCol
             var db = new ColDbEntities1();
             if (!AddedMode)
             {
-                var e_Edidet = db.AcDocument_Header.Find(id);
-                var header = acDocument_Headers.FirstOrDefault(o => o.Id == id);
-                header.AcDocument_Detail.Clear();
-                foreach (var item in e_Edidet.AcDocument_Detail)
+                var e_Edidet = db.RecieveMoneyHeader.Find(id);
+                var header = RecieveMoneyHeaders.FirstOrDefault(o => o.Id == id);
+                header.RecieveMoney_Detail.Clear();
+                foreach (var item in e_Edidet.RecieveMoney_Detail)
                 {
-                    header.AcDocument_Detail.Add(item);
+                    header.RecieveMoney_Detail.Add(item);
                     SetAccountName(db, item);
                 }
                 AddedMode = true;                
-                column1.Width = new GridLength(225);
+                column1.Width = new GridLength(170);
+                column2.Width = new GridLength(225);
                 datagrid.AllowEditing = datagrid.AllowDeleting = true;
                 datagrid.AddNewRowPosition = Syncfusion.UI.Xaml.Grid.AddNewRowPosition.Bottom;
             }
             datagrid.Visibility = Visibility.Visible;
             datagridSearch.Visibility = Visibility.Collapsed;
             gridConfirm.Visibility = Visibility.Visible;
-            cmbType.IsReadOnly = false;
-            txtNoDocumen.Text = "";
-            Sf_txtNoDocumen.HasError = false;
-            Sf_txtDoumentType.HasError = false;
-            Sf_txtDoumentType.ErrorText = "";
+            Sf_txtMoein.HasError = Sf_txtPreferential.HasError = false;
+            datagrid.BorderBrush = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)ColorConverter.ConvertFromString("#FF808080"));
+            txtMoein.Text= string.Empty;
+            txtPreferential.Text= string.Empty;
+            txtDescription.Text= string.Empty;
+            txbMoein.Text= string.Empty;
+            txbPreferential.Text= string.Empty;
             //txtCodeAcDocument_Detail.Text = (en.AcDocument_DetailCode + 1).ToString();
-            
-            cmbType.Focus();
+
+            txtMoein.Focus();
             datagrid.SelectedIndex = -1;
             datagrid.ClearFilters();
             //datagrid.TableSummaryRows.Clear();
@@ -706,27 +722,26 @@ namespace WpfCol
             dataPager.Visibility = Visibility.Collapsed;
             gridDelete.Visibility = Visibility.Hidden;
             borderEdit.Visibility = Visibility.Hidden;
-            cmbType.SelectedIndex = 0;
             txtSerial.Text = "";
             datagrid.BorderBrush = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)ColorConverter.ConvertFromString("#FF808080"));
-            if (AcDocument_Details.Count > 0)
+            if (recieveMoney_Details.Count > 0)
             {
                 datagrid.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    AcDocument_Details.Clear();
+                    recieveMoney_Details.Clear();
                 }));
                 RefreshDataGridForSetPersianNumber();
             }
-            var y = db.AcDocument_Header.OrderByDescending(k => k.NoDoument).FirstOrDefault();
+
+            var y = db.RecieveMoneyHeader.OrderByDescending(k => k.ReceiptNumber).FirstOrDefault();
             if (y == null)
             {
-                txtSerial.Text = txtNoDocumen.Text = "1";
+                txtSerial.Text = "1";
             }
             else
             {
-                txtNoDocumen.Text = (y.NoDoument + 1).ToString();
-                var yb = db.AcDocument_Header.OrderByDescending(k => k.NoDoument).FirstOrDefault();
-                txtSerial.Text = (y.Serial + 1).ToString();
+                var yb = db.RecieveMoneyHeader.OrderByDescending(k => k.ReceiptNumber).FirstOrDefault();
+                txtSerial.Text = (y.ReceiptNumber + 1).ToString();
             }
             isCancel = true;
             id = Guid.Empty;
@@ -762,14 +777,14 @@ namespace WpfCol
                 return;
             }
             var db = new ColDbEntities1();
-            AcDocument_Details.ForEach(o =>
-            db.AcDocument_Detail.Remove(db.AcDocument_Detail.Find(o.Id)));
-            db.AcDocument_Header.Remove(db.AcDocument_Header.Find(id));
+            recieveMoney_Details.ForEach(o =>
+            db.RecieveMoney_Detail.Remove(db.RecieveMoney_Detail.Find(o.Id)));
+            db.RecieveMoneyHeader.Remove(db.RecieveMoneyHeader.Find(id));
             db.SaveChanges();
-            AcDocument_Details.Remove((datagrid.SelectedItem as AcDocument_Detail));
+            recieveMoney_Details.Remove((datagrid.SelectedItem as RecieveMoney_Detail));
             try
             {
-                acDocument_Headers.Remove(acDocument_Headers.First(f => f.Id == id));
+                RecieveMoneyHeaders.Remove(RecieveMoneyHeaders.First(f => f.Id == id));
             }
             catch
             {
@@ -784,6 +799,7 @@ namespace WpfCol
             {
                 if (datagrid.Visibility == Visibility.Visible)
                 {
+                    datagrid.SelectedIndex = -1;
                     datagrid.SearchHelper.Search(SearchTermTextBox.Text);
                 }
                 else
@@ -855,13 +871,16 @@ namespace WpfCol
             var list = new List<int>();
             foreach (var item in datagridSearch.View?.Records)
             {
-                var tt = item.Data as AcDocument_Header;
-                if (!tt.AcDocument_Detail.Any(i => i.Description?.ToLower().Contains(SearchTermTextBox.Text.ToLower())==true ||
+                var tt = item.Data as RecieveMoneyHeader;
+                if (!tt.RecieveMoney_Detail.Any(i =>
                 i.Name.ToLower().Contains(SearchTermTextBox.Text.ToLower()) ||
-                i.Creditor2?.ToString().ToLower().Contains(SearchTermTextBox.Text.ToLower()) == true ||
+                i.Price2?.ToString().ToLower().Contains(SearchTermTextBox.Text.ToLower()) == true ||
                 i.ColeMoein.ToLower().Contains(SearchTermTextBox.Text.ToLower()) ||
                 i.PreferentialCode.ToLower().Contains(SearchTermTextBox.Text.ToLower()) ||
-                i.Debtor2?.ToString().ToLower().Contains(SearchTermTextBox.Text.ToLower()) == true))
+                i.BranchName?.ToString().ToLower().Contains(SearchTermTextBox.Text.ToLower()) == true||
+                i.Number?.ToString().ToLower().Contains(SearchTermTextBox.Text.ToLower()) == true||
+                i.GetMoneyType?.ToString().ToLower().Contains(SearchTermTextBox.Text.ToLower()) == true||
+                i.Bank?.Name?.ToString().ToLower().Contains(SearchTermTextBox.Text.ToLower()) == true))
                 {
                     //datagridSearch.View.Records.Remove(item);
                     list.Add(ir);
@@ -910,12 +929,12 @@ namespace WpfCol
             
             var db = new ColDbEntities1();
             //db.AcDocument_Detail.Where(ex)
-            var count = db.AcDocument_Detail.Count();
-            var F = db.AcDocument_Detail.OrderBy(d=>d.Id).Skip(10 * e.NewPageIndex).Take(10).ToList();
+            var count = db.RecieveMoney_Detail.Count();
+            var F = db.RecieveMoney_Detail.OrderBy(d=>d.Id).Skip(10 * e.NewPageIndex).Take(10).ToList();
             int j = 0;
             for (int i = 10 * e.NewPageIndex; i < 10 * (e.NewPageIndex + 1)&&i<count; i++)
             {
-                AcDocument_Details[i] = F[j];
+                recieveMoney_Details[i] = F[j];
                 j++;
             }
         }
@@ -959,45 +978,66 @@ namespace WpfCol
 
         public void SetNull()
         {
-            if(window!=null&&(window as winSearch).ParentTextBox is AcDocument_Detail)
+            if(window!=null)
             {
-                var y = (window as winSearch).ParentTextBox as AcDocument_Detail;
-                //((datagrid.SelectionController.CurrentCellManager.CurrentCell.Element as GridCell).Content as FrameworkElement).DataContext = null;
-                //((datagrid.SelectionController.CurrentCellManager.CurrentCell.Element as GridCell).Content as FrameworkElement).DataContext = y;
-                var detail = y;
-                var v = datagrid.SelectionController.CurrentCellManager.CurrentCell;
-                if ((window as winSearch)?.MuText != null)
+                if ((window as winSearch).ParentTextBox is RecieveMoney_Detail)
                 {
-                    datagrid.Dispatcher.BeginInvoke(new Action(() =>
-                    {                        
-                        //MMM
-                        var th = new Thread(() =>
+                    var y = (window as winSearch).ParentTextBox as RecieveMoney_Detail;
+                    //((datagrid.SelectionController.CurrentCellManager.CurrentCell.Element as GridCell).Content as FrameworkElement).DataContext = null;
+                    //((datagrid.SelectionController.CurrentCellManager.CurrentCell.Element as GridCell).Content as FrameworkElement).DataContext = y;
+                    var detail = y;
+                    var v = datagrid.SelectionController.CurrentCellManager.CurrentCell;
+                    if ((window as winSearch)?.MuText != null)
+                    {
+                        datagrid.Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            Thread.Sleep(100);
-                            Dispatcher.Invoke(() =>
+                            //MMM
+                            var th = new Thread(() =>
                             {
-                                var i = 1;
-                                if (v.ColumnIndex == 1)
-                                    i++;
-                                if (datagrid.SelectedIndex == -1)
+                                Thread.Sleep(100);
+                                Dispatcher.Invoke(() =>
                                 {
-                                    datagrid.GetAddNewRowController().CommitAddNew();
-                                    datagrid.View.Refresh();
-                                    datagrid.SelectedIndex = datagrid.GetLastRowIndex() - 1;
-                                    (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(v.RowIndex - 1, v.ColumnIndex + i));
-                                }
-                                else
-                                {
-                                    datagrid.View.Refresh();
-                                    (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(v.RowIndex, v.ColumnIndex + i));
-                                }
-                                //MMM
-                                datagrid.IsHitTestVisible = true;
+                                    var i = 1;
+                                    if (v.ColumnIndex == 2)
+                                        i++;
+                                    if (datagrid.SelectedIndex == -1)
+                                    {
+                                        datagrid.GetAddNewRowController().CommitAddNew();
+                                        datagrid.View.Refresh();
+                                        datagrid.SelectedIndex = datagrid.GetLastRowIndex() - 1;
+                                        (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(v.RowIndex - 1, v.ColumnIndex + i));
+                                    }
+                                    else
+                                    {
+                                        datagrid.View.Refresh();
+                                        (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(v.RowIndex, v.ColumnIndex + i));
+                                    }
+                                    //MMM
+                                    datagrid.IsHitTestVisible = true;
+                                });
                             });
-                        });
-                        th.Start();
-                        //datagrid.SelectCells(datagrid.GetRecordAtRowIndex(datagrid.SelectedIndex-1), datagrid.Columns[1], datagrid.GetRecordAtRowIndex(datagrid.SelectedIndex), datagrid.Columns[2]);
-                    }));
+                            th.Start();
+                            //datagrid.SelectCells(datagrid.GetRecordAtRowIndex(datagrid.SelectedIndex-1), datagrid.Columns[1], datagrid.GetRecordAtRowIndex(datagrid.SelectedIndex), datagrid.Columns[2]);
+                        }));
+                    }
+                }
+                else if ((window as winSearch).ParentTextBox is TextBox textBox && textBox.Tag.ToString() != "True")
+                {
+                    if (textBox.Name == "txtMoein")
+                    {
+                        txbMoein.Text = ((textBox.Tag as Mu).AdditionalEntity as AccountSearchClass).MoeinName;
+                    }
+                    else
+                    {
+                        txbPreferential.Text = (textBox.Tag as Mu).Name;
+                    }
+                    datagrid.Dispatcher.BeginInvoke(new Action(async () =>
+                    {
+                        await Task.Delay(100);
+                        TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+                        request.Wrapped = true;
+                        textBox.MoveFocus(request);
+                    }), DispatcherPriority.Background);
                 }
             }
             window = null;
@@ -1016,6 +1056,11 @@ namespace WpfCol
 
         private void datagrid_AddNewRowInitiating(object sender, Syncfusion.UI.Xaml.Grid.AddNewRowInitiatingEventArgs e)
         {
+            return;
+            if(e.NewObject is RecieveMoney_Detail recieveMoney_Detail && recieveMoney_Detail.MoneyType==0 && recieveMoney_Detail.Moein==null)
+            {
+                
+            }
             /*
             var h = acDocumentViewModel.acDocument_Details.FirstOrDefault(q => q.AcCode == ctext);
             if (h != null)
@@ -1047,34 +1092,55 @@ namespace WpfCol
                     };
                     searchImage.Opacity = 1;
                     gridDelete.Visibility = Visibility.Visible;
-                    AcDocument_Details.Clear();
-                    var header = datagridSearch.SelectedItem as AcDocument_Header;
+                    recieveMoney_Details.Clear();
+                    temp_recieveMoney_Details.Clear();
+                    var header = datagridSearch.SelectedItem as RecieveMoneyHeader;
                     id = header.Id;
-                    header.AcDocument_Detail.ForEach(t => AcDocument_Details.Add(t));
-                    cmbType.SelectedItem = (cmbType.ItemsSource as List<DocumentType>).First(u => u.Id == header.DocumentType.Id);
+                    //header.RecieveMoney_Detail.ForEach(t => temp_recieveMoney_Details.Add(t.DeepClone()));
+                    header.RecieveMoney_Detail.ForEach(t => recieveMoney_Details.Add(t));
+                    //cmbType.SelectedItem = (cmbType.ItemsSource as List<DocumentType>).First(u => u.Id == header.DocumentType.Id);
                     pcw1.SelectedDate = new PersianCalendarWPF.PersianDate(header.Date);
                     txbCalender.Text = pcw1.SelectedDate.ToString();
-                    txtNoDocumen.Text = header.NoDoument.ToString();
-                    txtSerial.Text = header.Serial.ToString();
+                    Sf_txtMoein.HasError = Sf_txtPreferential.HasError = false;
+                    datagrid.BorderBrush = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)ColorConverter.ConvertFromString("#FF808080"));
+
+                    txtSerial.Text = header.ReceiptNumber.ToString();
+                    txtMoein.Text = $"{header.Moein.Col.ColCode}{header.Moein.MoeinCode}";
+                    txbMoein.Text = header.Moein.MoeinName;
+                    txtMoein.Tag = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == txtMoein.Text);
+                    txtPreferential.Text = header.Preferential.PreferentialCode.ToString();
+                    txbPreferential.Text = header.Preferential.PreferentialName;
+                    txtPreferential.Tag = mus2.Find(t => t.Value == txtPreferential.Text);
+                    txtDescription.Text = header.Description;
+
                     datagrid.AllowEditing = datagrid.AllowDeleting = true;
                     datagrid.AddNewRowPosition = Syncfusion.UI.Xaml.Grid.AddNewRowPosition.Bottom;
                     datagrid.Visibility = Visibility.Visible;
                     dataPager.Visibility = Visibility.Collapsed;
-                    datagrid.SearchHelper.ClearSearch();
+                    try
+                    {
+                        datagrid.SearchHelper.ClearSearch();
+                    }
+                    catch { }
                     SearchTermTextBox.TextChanged-= SearchTermTextBox_TextChanged;
                     SearchTermTextBox.Text = "";
                     SearchTermTextBox.TextChanged+= SearchTermTextBox_TextChanged;
                     datagridSearch.Visibility = Visibility.Collapsed;
                     gridConfirm.Visibility = Visibility.Visible;
-                    cmbType.IsReadOnly = false;
-                    Sf_txtNoDocumen.HasError = false;
-                    Sf_txtDoumentType.HasError = false;
-                    Sf_txtDoumentType.ErrorText = "";
-                    column1.Width = new GridLength(225);
+                    column1.Width = new GridLength(170);
+                    column2.Width = new GridLength(225);
                     borderEdit.Visibility = Visibility.Visible;
                     RefreshDataGridForSetPersianNumber();
-                    datagrid.SelectedIndex = AcDocument_Details.Count - 1;
+                    datagrid.SelectedIndex = recieveMoney_Details.Count - 1;
                     isCancel = true;
+                    StateLoadView = true;
+                    datagrid.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render,
+                new Action(async () =>
+                {
+                    await Task.Delay(200);
+                    StateLoadView = false;
+                    datagrid.Focus();
+                }));
                 }
                 else
                 {
@@ -1088,12 +1154,12 @@ namespace WpfCol
                     if(!AddedMode)
                     {
                         var db = new ColDbEntities1();
-                        var e_Edidet = db.AcDocument_Header.Find(id);
-                        var header = acDocument_Headers.FirstOrDefault(o => o.Id == id);
-                        header.AcDocument_Detail.Clear();
-                        foreach (var item in e_Edidet.AcDocument_Detail)
+                        var e_Edidet = db.RecieveMoneyHeader.Find(id);
+                        var header = RecieveMoneyHeaders.FirstOrDefault(o => o.Id == id);
+                        header.RecieveMoney_Detail.Clear();
+                        foreach (var item in e_Edidet.RecieveMoney_Detail)
                         {
-                            header.AcDocument_Detail.Add(item);
+                            header.RecieveMoney_Detail.Add(item);
                             SetAccountName(db, item);
                         }
                     }
@@ -1101,7 +1167,7 @@ namespace WpfCol
                     datagridSearch.SortColumnDescriptions.Clear();
                     datagridSearch.SortColumnDescriptions.Add(new SortColumnDescription()
                     {
-                        ColumnName = "Serial",
+                        ColumnName = "ReceiptNumber",
                         SortDirection = System.ComponentModel.ListSortDirection.Descending
                     });
                     datagridSearch.SearchHelper.ClearSearch();
@@ -1109,12 +1175,7 @@ namespace WpfCol
                     SearchTermTextBox.Text = "";
                     datagridSearch.SelectedItem = null;
                     var t = dataPager.Source;
-                    foreach (var item in t as ObservableCollection<AcDocument_Header>)
-                    {
-                        item.RefreshSumColumns();
-                    }
                     dataPager.Source = null;
-                    datagridSearch.SelectedIndex = 0;
                     borderEdit.Visibility = gridDelete.Visibility = Visibility.Collapsed;
                     datagrid.Visibility = Visibility.Collapsed;
                     datagridSearch.Visibility = Visibility.Visible;
@@ -1130,7 +1191,7 @@ namespace WpfCol
                         }), DispatcherPriority.Render);
                     }), DispatcherPriority.Render);
                     gridConfirm.Visibility = Visibility.Collapsed;
-                    if ((t as ObservableCollection<AcDocument_Header>).Count == 0)
+                    if ((t as ObservableCollection<RecieveMoneyHeader>).Count == 0)
                         searchImage.Opacity = .6;
                     searchImage.Source = new BitmapImage(new Uri("pack://application:,,,/Images/dataedit.png"));
                     searchImage.ToolTip = "ویرایش";
@@ -1142,6 +1203,7 @@ namespace WpfCol
                         A = 240
                     };
                     column1.Width = new GridLength(0);
+                    column2.Width = new GridLength(0);
                     datagrid.AllowEditing = datagrid.AllowDeleting = false;
                     datagrid.AddNewRowPosition = Syncfusion.UI.Xaml.Grid.AddNewRowPosition.None;
                     AddedMode = false;
@@ -1149,6 +1211,12 @@ namespace WpfCol
                 new Action(() =>
                 {
                     SetHide_EmptyDetails();
+                }));
+                    datagrid.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render,
+                new Action(async () =>
+                {
+                    await Task.Delay(50);
+                    datagridSearch.SelectedIndex = 0;
                 }));
                 }
             }
@@ -1175,31 +1243,31 @@ namespace WpfCol
 
         private void datagrid_RowValidated(object sender, RowValidatedEventArgs e)
         {
-            var detail = e.RowData as AcDocument_Detail;
-            if (datagrid.SelectedIndex!=-1&& detail.ColeMoein == null && detail.PreferentialCode == null && detail.Debtor == null && detail.Creditor == null && detail.Description == null)
+            var detail = e.RowData as RecieveMoney_Detail;
+            if (datagrid.SelectedIndex!=-1&& detail.MoneyType==0&&detail.Moein==null)
             {
-                AcDocument_Details.Remove(detail);
+                recieveMoney_Details.Remove(detail);
                 return;
             }
             var currentCell = datagrid.SelectionController.CurrentCellManager?.CurrentCell;
             if (window != null)
                 (window as winSearch).ParentTextBox = detail;
-            if (currentCell?.ColumnIndex == 4 && (detail.Debtor ?? 0) != 0)
+            /*if (currentCell?.ColumnIndex == 4 && (detail.Debtor ?? 0) != 0)
                 detail.Creditor = null;
             if (currentCell?.ColumnIndex == 5 && (detail.Creditor ?? 0) != 0)
-                detail.Debtor = null;
+                detail.Debtor = null;*/
         }
 
         private void AcDocument_Details_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            var detail = AcDocument_Details.LastOrDefault();
+            var detail = recieveMoney_Details.LastOrDefault();
             if (detail == null)
                 return;
-            if (detail.ColeMoein == null && detail.PreferentialCode == null && detail.Debtor == null && detail.Creditor == null && detail.Description == null)
+            if ((Keyboard.IsKeyDown(Key.Enter) || datagrid.SelectedIndex != -1 || CurrentRowColumnIndex.ColumnIndex != 0) && detail.MoneyType != 3 && detail.ColeMoein == null && detail.PreferentialCode == null)
             {
                 datagrid.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    AcDocument_Details.Remove(detail);
+                    recieveMoney_Details.Remove(detail);
                 }));
             }
             datagrid.Dispatcher.BeginInvoke(new Action(() =>
@@ -1210,34 +1278,29 @@ namespace WpfCol
 
         private void CalDebCre()
         {
-            if (datagrid.SelectionController.CurrentCellManager?.CurrentCell?.ColumnIndex >= 4)
-            {
-                var t = datagrid.ItemsSource;
-                datagrid.ItemsSource = null;
-                datagrid.ItemsSource = t;
-            }
+            //if (datagrid.SelectionController.CurrentCellManager?.CurrentCell?.ColumnIndex >= 4)
+            //{
+            //    var t = datagrid.ItemsSource;
+            //    datagrid.ItemsSource = null;
+            //    datagrid.ItemsSource = t;
+            //}
             datagrid.View?.Refresh();
             return;
 
-            var c = AcDocument_Details.Sum(y => y.Creditor);
-            var d = AcDocument_Details.Sum(y => y.Debtor);
-            {
-                datagrid.TableSummaryRows[0].SummaryColumns.Add(new GridSummaryColumn() {Name="hfgh", Format = "{Sum:N0}", MappingName = "Debtor", SummaryType = Syncfusion.Data.SummaryType.DoubleAggregate });
+            //var c = AcDocument_Details.Sum(y => y.Creditor);
+            //var d = AcDocument_Details.Sum(y => y.Debtor);
+            //{
+            //    datagrid.TableSummaryRows[0].SummaryColumns.Add(new GridSummaryColumn() {Name="hfgh", Format = "{Sum:N0}", MappingName = "Debtor", SummaryType = Syncfusion.Data.SummaryType.DoubleAggregate });
 
-            }
-            datagrid.TableSummaryRows.Clear();
-            var gridSummaryRow = new Syncfusion.UI.Xaml.Grid.GridSummaryRow();            
-            var Tafazol = AcDocument_Details.Sum(y => y.Debtor) - AcDocument_Details.Sum(y => y.Creditor);
-            if (Tafazol != null)
-            {
-                var sign = Tafazol.Value >= 0 ? "" : "منفی";
-                datagrid.TableSummaryRows.Add(new Syncfusion.UI.Xaml.Grid.GridSummaryRow() { Title = $"اختلاف : {string.Format("{0:#,###}", Math.Abs(Tafazol.Value))} {sign}" });
-            }
-        }
-
-        private void cmbType_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            isCancel = false;
+            //}
+            //datagrid.TableSummaryRows.Clear();
+            //var gridSummaryRow = new Syncfusion.UI.Xaml.Grid.GridSummaryRow();            
+            //var Tafazol = AcDocument_Details.Sum(y => y.Debtor) - AcDocument_Details.Sum(y => y.Creditor);
+            //if (Tafazol != null)
+            //{
+            //    var sign = Tafazol.Value >= 0 ? "" : "منفی";
+            //    datagrid.TableSummaryRows.Add(new Syncfusion.UI.Xaml.Grid.GridSummaryRow() { Title = $"اختلاف : {string.Format("{0:#,###}", Math.Abs(Tafazol.Value))} {sign}" });
+            //}
         }
 
         private void datagridSearch_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -1393,6 +1456,21 @@ namespace WpfCol
     
         private void datagrid_CurrentCellBeginEdit(object sender, CurrentCellBeginEditEventArgs e)
         {
+            if(datagrid.SelectedIndex==-1)
+            {
+                e.Cancel = true;
+                Xceed.Wpf.Toolkit.MessageBox.Show("ابتدا باید نوع وجه  را تعیین کنید!");
+            }
+            else if((datagrid.SelectionController.CurrentCellManager?.CurrentCell.Element as GridCell)?.DataContext is RecieveMoney_Detail recieveMoney_Detail)
+            {
+                if (recieveMoney_Detail.MoneyType != 3)
+                {
+                    if (e.RowColumnIndex.ColumnIndex == 1 || e.RowColumnIndex.ColumnIndex == 2)
+                        e.Cancel = true;                    
+                    else if(recieveMoney_Detail.MoneyType!=1&& e.RowColumnIndex.ColumnIndex>=5&& e.RowColumnIndex.ColumnIndex<=7)
+                        e.Cancel = true;
+                }
+            }
             if (SearchTermTextBox.Text != "")
             {
                 datagrid.SearchHelper.ClearSearch();
@@ -1405,20 +1483,20 @@ namespace WpfCol
         private void datagrid_CurrentCellValueChanged(object sender, CurrentCellValueChangedEventArgs e)
         {
             var textBox = (datagrid.SelectionController.CurrentCellManager?.CurrentCell.Element as GridCell).Content as TextBox;
-            if (textBox.Text != "" && e.Record is AcDocument_Detail detail && detail.GetType().GetProperty(e.Column.MappingName).GetValue(detail)?.ToString() != textBox.Text && !Keyboard.IsKeyDown(Key.Enter))
+            if (textBox.Text != "" && e.Record is RecieveMoney_Detail detail && detail.GetType().GetProperty(e.Column.MappingName).GetValue(detail)?.ToString() != textBox.Text && !Keyboard.IsKeyDown(Key.Enter))
                 CurrentCellText = textBox.Text;
         }
 
         private void datagrid_RowValidating(object sender, RowValidatingEventArgs e)
         {
-            if (e.RowData is AcDocument_Detail detail)
+            if (e.RowData is RecieveMoney_Detail detail)
             {
                 var dataColumn = datagrid.SelectionController.CurrentCellManager?.CurrentCell;
                 var textBox = (dataColumn.Element as GridCell).Content as TextBox;
                 if (textBox == null)
                     return;
                 var u = textBox.Text == "" ? CurrentCellText : textBox.Text;
-                if (dataColumn.ColumnIndex == 0)
+                if (dataColumn.ColumnIndex == 1)
                 {
                     var mu = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == u);
                     if (mu == null)
@@ -1427,7 +1505,7 @@ namespace WpfCol
                         e.ErrorMessages.Add("ColeMoein", "چنین کل و معینی وجود ندارد!");
                     }
                 }
-                else if (dataColumn.ColumnIndex == 1)
+                else if (dataColumn.ColumnIndex == 2)
                 {
                     var mu = mus2.Find(t => t.Value == u);
                     if (mu == null)
@@ -1475,6 +1553,263 @@ namespace WpfCol
                 }
             }
         }
+        bool StateLoadView = false;
+        private void ComboBoxAdv_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (StateLoadView || Keyboard.IsKeyDown(Key.Delete))
+                return;
+            var comboBoxAdv = sender as Syncfusion.Windows.Tools.Controls.ComboBoxAdv;
+            var hg = comboBoxAdv.SelectedIndex;
+            switch (comboBoxAdv.SelectedIndex)
+            {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+            }
+            var v = datagrid.SelectionController.CurrentCellManager.CurrentCell;
+            if (v != null)
+                CurrentRowColumnIndex = new RowColumnIndex(v.RowIndex-1, v.ColumnIndex);
+            if (v != null&&hg!=-1)
+            {
+                if (datagrid.SelectedIndex == -1)
+                {
+                    var gridAddNewRowController = datagrid.GetAddNewRowController();
+                    try
+                    {
+                        gridAddNewRowController.AddNew();
+                    }
+                    catch { }
+                    datagrid.GetAddNewRowController().CommitAddNew(true);
+                    datagrid.View.Refresh();
+                    (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(datagrid.GetLastRowIndex(), v.ColumnIndex + hg == 3 ? 1 : 4));
+                    datagrid.Dispatcher.BeginInvoke(new Action(async () =>
+                    {
+                        await Task.Delay(50);
+                        var dataColumn = datagrid.SelectionController.CurrentCellManager.CurrentCell;
+                        if (dataColumn == null)
+                            return;
+                        var recieveMoney_Detail = (dataColumn.Element as GridCell).DataContext as RecieveMoney_Detail;
+                        recieveMoney_Detail.MoneyType = (byte)hg;
+                        var db = new ColDbEntities1();
+                        var tMoein = db.Moein.Include("Col");
+                        switch (recieveMoney_Detail.MoneyType)
+                        {
+                            case 0:
+                                recieveMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == 1 && d.Col.ColCode == 12);
+                                recieveMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == 140001);
+                                break;
+                            case 1:
+                                recieveMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == 1 && d.Col.ColCode == 12);
+                                recieveMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == 140002);
+                                break;
+                            case 2:
+                                recieveMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == 1 && d.Col.ColCode == 12);
+                                recieveMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == 140003);
+                                break;
+                            case 3:
+                                recieveMoney_Detail.Moein = null;
+                                recieveMoney_Detail.Preferential = null;
+                                break;
+                        }
+                        datagrid.View.Refresh();
+                    }), DispatcherPriority.Render);
+                }
+                else
+                {
+                    var recieveMoney_Detail = (v.Element as GridCell).DataContext as RecieveMoney_Detail;
+                    if (recieveMoney_Detail != comboBoxAdv.DataContext||v.ColumnIndex!=0)
+                        return;
+                    recieveMoney_Detail.MoneyType = (byte)hg;                    
+                    var db = new ColDbEntities1();
+                    var tMoein = db.Moein.Include("Col");
+                    switch (recieveMoney_Detail.MoneyType)
+                    {
+                        case 0:
+                            recieveMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == 1 && d.Col.ColCode == 12);
+                            recieveMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == 140001);
+                            break;
+                        case 1:
+                            recieveMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == 1 && d.Col.ColCode == 12);
+                            recieveMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == 140002);
+                            break;
+                        case 2:
+                            recieveMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == 1 && d.Col.ColCode == 12);
+                            recieveMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == 140003);
+                            break;
+                        case 3:
+                            recieveMoney_Detail.Moein = null;
+                            recieveMoney_Detail.Preferential = null;
+                            break;
+                    }
+                    switch (recieveMoney_Detail.MoneyType)
+                    {
+                        case 0:
+                        case 2:
+                            recieveMoney_Detail.Bank = null;
+                            recieveMoney_Detail.Date = null;
+                            recieveMoney_Detail.Number = null;
+                            break;                                                  
+                    }
+                    StateLoadView = true;
+                    (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(datagrid.SelectedIndex+1, v.ColumnIndex + hg == 3 ? 1 : 4));
+                    datagrid.View.Refresh();
+                    datagrid.Dispatcher.BeginInvoke(new Action(async () =>
+                    {
+                        await Task.Delay(50);
+                        StateLoadView = false;
+                        datagrid.Focus();
+                    }), DispatcherPriority.Render);
+                }
+            }
+        }
+
+        private void txtDescription_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            isCancel = false;
+        }
+
+        private void txtMoein_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F1)
+            {
+                txtMoein.Tag = true;
+                ShowSearchMoein(txtMoein);
+            }
+        }
+
+        private void ShowSearchMoein(dynamic y)
+        {
+            var win = new winSearch(mus1);
+            win.Closed += (yf, rs) =>
+            {
+                datagrid.IsHitTestVisible = true;
+            };
+            win.Width = 640;
+            win.datagrid.Columns[0].HeaderText = "نام";
+            win.datagrid.Columns[1].HeaderText = "کل";
+            win.datagrid.Columns[0].Width = 255;
+            win.datagrid.Columns[1].Width = 100;
+            win.datagrid.Columns.MoveTo(0, 1);
+            win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "معین", MappingName = "AdditionalEntity.Moein", Width = 100, AllowSorting = true });
+            win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "نام", MappingName = "AdditionalEntity.MoeinName", AllowSorting = true });
+            win.datagrid.AllowResizingColumns = true;
+            win.Tag = this;
+            win.ParentTextBox = y;
+            win.SearchTermTextBox.Text = "";
+            win.SearchTermTextBox.Select(1, 0);
+            win.Owner = MainWindow.Current;
+            window = win;
+            win.Show();
+            win.Focus();
+        }
+
+        private void txtPreferential_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F1)
+            {
+                txtPreferential.Tag = true;
+                ShowSearchPreferential(txtPreferential);
+            }
+        }
+
+        private void ShowSearchPreferential(dynamic y)
+        {
+            var win = new winSearch(mus2);
+            win.Closed += (yf, rs) =>
+            {
+                datagrid.IsHitTestVisible = true;
+            };
+            win.Width = 640;
+            win.Tag = this;
+            win.ParentTextBox = y;
+            win.SearchTermTextBox.Text = "";
+            win.SearchTermTextBox.Select(1, 0);
+            win.Owner = MainWindow.Current;
+            window = win;
+            win.Show();
+            win.Focus();
+        }
+
+        private void datagrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var currentCell = datagrid.SelectionController.CurrentCellManager?.CurrentCell;
+            if (currentCell != null && (currentCell.Element as GridCell)?.IsMouseOver == true && currentCell.ColumnIndex == 7 && ((currentCell.Element as GridCell).Content as ContentControl)?.Content is TextBlock)
+            {
+                var recieveMoney_Detail = (currentCell.Element as GridCell).DataContext as RecieveMoney_Detail;
+                if (recieveMoney_Detail == null)
+                    return;
+                if (!(recieveMoney_Detail.MoneyType == 0 || recieveMoney_Detail.MoneyType == 2))
+                {
+                    e.Handled = true;
+                    keybd_event(VK_F2, 0, 0, UIntPtr.Zero); // فشار دادن کلید
+                    Thread.Sleep(50); // تاخیر برای شبیه‌سازی فشار دادن
+                    keybd_event(VK_F2, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); // آزاد کردن کلید
+                }
+            }
+        }
+
+        private void ComboBoxAdv_Loaded(object sender, RoutedEventArgs e)
+        {
+            var comboBoxAdv = sender as Syncfusion.Windows.Tools.Controls.ComboBoxAdv;
+            if(comboBoxAdv.DataContext is RecieveMoney_Detail recieveMoney_Detail)
+            {
+                comboBoxAdv.SelectedIndex = recieveMoney_Detail.MoneyType;              
+            }
+        }
+
+        private void ComboBoxAdv_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var comboBoxAdv = sender as Syncfusion.Windows.Tools.Controls.ComboBoxAdv;
+            if (comboBoxAdv.DataContext==null)
+            {
+                comboBoxAdv.SelectedIndex = -1;
+            }
+        }
+
+        private void txtMoein_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtMoein.Text == "")
+            {
+                txbMoein.Text = string.Empty;
+                return;
+            }
+            var mu = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == txtMoein.Text);
+            if (mu == null)
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("چنین کل و معینی وجود ندارد!");
+                txtMoein.Text = txbMoein.Text = string.Empty;
+            }
+            else
+            {
+                txtMoein.Tag = mu;
+                txbMoein.Text = (mu.AdditionalEntity as AccountSearchClass).MoeinName;
+            }
+        }
+
+        private void txtPreferential_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtPreferential.Text == "")
+            {
+                txbPreferential.Text = string.Empty;
+                return;
+            }
+            var mu = mus2.Find(t => t.Value == txtPreferential.Text);
+            if (mu == null)
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("چنین تفضیلی وجود ندارد!");
+                txtPreferential.Text = txbPreferential.Text = string.Empty;
+            }
+            else
+            {
+                txtPreferential.Tag = mu;
+                txbPreferential.Text = mu.Name;
+            }
+        }
 
         private void persianCalendarE_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -1494,47 +1829,6 @@ namespace WpfCol
         {
             rl1 = true;
             RightClick();
-        }
-
-        public void SetEnterToNextCell(RowColumnIndex? rowColumn = null)
-        {
-            var dataGrid = datagrid;
-
-            // پیدا کردن سطر و ستون فعلی
-            var currentCell = datagrid.SelectionController.CurrentCellManager?.CurrentCell;
-            if (currentCell != null)
-            {
-                int currentRowIndex = rowColumn == null ? currentCell.RowIndex : rowColumn.Value.RowIndex;
-                int currentColumnIndex = rowColumn == null ? currentCell.ColumnIndex : rowColumn.Value.ColumnIndex;
-
-                // افزایش اندیس ستون
-                currentColumnIndex++;
-
-                // اگر به انتهای ستون‌ها رسیدیم، به سطر بعد بروید
-                if (currentColumnIndex >= dataGrid.Columns.Count)
-                {
-                    currentColumnIndex = 0; // به اولین ستون برگردید
-                    currentRowIndex++; // به سطر بعد بروید
-                }
-
-                // اگر به انتهای سطرها رسیدیم، به اولین سطر برگردید
-                if (currentRowIndex >= AcDocument_Details.Count + 2)
-                {
-                    currentRowIndex = 0; // به اولین سطر برگردید
-                }
-
-                //Updates the PressedRowColumnIndex value in the GridBaseSelectionController.
-                try
-                {
-                    if (currentColumnIndex == 2)
-                        (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex + 1));
-                    else if (currentColumnIndex == 5 && ((datagrid.GetRecordAtRowIndex(currentRowIndex) as AcDocument_Detail)?.Debtor ?? 0) != 0)
-                        (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex + 1, 0));
-                    else
-                        (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex));
-                }
-                catch { }
-            }
         }
     }
 }

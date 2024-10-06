@@ -226,6 +226,9 @@
     <Compile Include="AGroup.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
+    <Compile Include="Bank.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
     <Compile Include="Col.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
@@ -234,7 +237,23 @@
     <Compile Include="DocumentType.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\ISearch.cs" />
+    <Compile Include="Interfaces\ITabEdidGrid.cs" />
+    <Compile Include="ParialClassesOfDataBase\RecieveMoneyHeader.cs" />
+    <Compile Include="ParialClassesOfDataBase\RecieveMoney_Detail.cs" />
     <Compile Include="ParialClassesOfDataBase\AcDocument_Header.cs" />
+    <Compile Include="RecieveMoneyHeader.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RecieveMoney_Detail.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Treasury\usrRecieveMoney.xaml.cs">
+      <DependentUpon>usrRecieveMoney.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Treasury\usrBank.xaml.cs">
+      <DependentUpon>usrBank.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utility\AdvancedFilterControl2.cs" />
     <Compile Include="Utility\CustomRowStyleConverter.cs" />
     <Compile Include="Utility\ExtensionMethods.cs" />
@@ -293,12 +312,10 @@
     <Compile Include="UserControls\winCol.xaml.cs">
       <DependentUpon>winCol.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\winCommodity.xaml.cs">
-      <DependentUpon>winCommodity.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Utility\MyTemplateSelector.cs" />
     <Compile Include="Utility\visibilitySummaryColumnConverter.cs" />
     <Compile Include="Utility\captionSummaryColumnConverter.cs" />
+    <Compile Include="ViewModels\RecieveMoneyViewModel.cs" />
     <Compile Include="ViewModels\AcDocumentViewModel.cs" />
     <Compile Include="ViewModels\ComboboxViewModel.cs" />
     <Page Include="MainWindow.xaml">
@@ -314,6 +331,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="toolsWindow\winSearch.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Treasury\usrRecieveMoney.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Treasury\usrBank.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -344,10 +369,6 @@
     <Page Include="UserControls\winCol.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\winCommodity.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

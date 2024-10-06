@@ -224,13 +224,45 @@ namespace WpfCol
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if ((tabcontrol.SelectedItem as TabItemExt)?.Content is usrAccountDocument usrAccountDocument)
+            if ((tabcontrol.SelectedItem as TabItemExt)?.Content is ITabEdidGrid usrAccountDocument)
             {
-                if (usrAccountDocument.datagrid.IsFocused && e.Key == Key.Enter)
+                if (usrAccountDocument.DataGridIsFocused && e.Key == Key.Enter)
                 {
                     usrAccountDocument.SetEnterToNextCell();
                     e.Handled = true;
                 }
+            }
+        }
+
+        private void rbnBank_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "بانک");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "بانک" };
+                item.Content = new usrBank();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnRecieveMoney_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "دریافت وجه");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "دریافت وجه" };
+                item.Content = new usrRecieveMoney();
+                tabcontrol.Items.Add(item);
             }
         }
     }

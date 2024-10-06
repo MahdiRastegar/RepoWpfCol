@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Media;
 using System.Windows;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace WpfCol
 {
@@ -284,6 +286,26 @@ namespace WpfCol
             char[] charArray = result.ToCharArray();
             Array.Reverse(charArray);
             return new string(charArray);
+        }
+        public static T DeepClone<T>(this T obj)
+        {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+
+            using (StringWriter stringWriter = new StringWriter())
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+
+                // سریال‌سازی به XML
+                serializer.Serialize(stringWriter, obj);
+                string xmlData = stringWriter.ToString();
+
+                using (StringReader stringReader = new StringReader(xmlData))
+                {
+                    // دی‌سریال‌سازی و ایجاد کپی عمیق
+                    return (T)serializer.Deserialize(stringReader);
+                }
+            }
         }
     }
 }

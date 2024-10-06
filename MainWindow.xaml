@@ -11,7 +11,7 @@
             <RowDefinition Name="row" Height="197" MinHeight="77"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Syncfusion:Ribbon RibbonStateChanged="ribbon_RibbonStateChanged" FontSize="12" Panel.ZIndex="0" x:Name="ribbon" Syncfusion:Ribbon.IsAutoSizeFormEnabled="True" FlowDirection="RightToLeft"  RenderTransformOrigin="1,0" Margin="262,0,0,0">
+        <Syncfusion:Ribbon RibbonStateChanged="ribbon_RibbonStateChanged" FontSize="11.2" Panel.ZIndex="0" x:Name="ribbon" Syncfusion:Ribbon.IsAutoSizeFormEnabled="True" FlowDirection="RightToLeft"  RenderTransformOrigin="1,0" Margin="262,0,0,0">
             <Syncfusion:Ribbon.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleX="1.3" ScaleY="1.3"/>
@@ -35,6 +35,13 @@
                     <Syncfusion:RibbonButton  Name="rbnAcDoc" Click="rbnAcDoc_Click" SizeForm="Large" Label=" سند حسابداری"/>
                     <Syncfusion:RibbonSeparator/>
                     <Syncfusion:RibbonButton Name="rbnAcType" Click="rbnAcType_Click" SizeForm="Large" Label="نوع سند"/>
+                </Syncfusion:RibbonBar>
+            </Syncfusion:RibbonTab>
+            <Syncfusion:RibbonTab Name="rbnTreasury" Caption="خزانه داری">
+                <Syncfusion:RibbonBar Name="barTreasury" Width="100" Header="">
+                    <Syncfusion:RibbonButton  Name="rbnBank" Click="rbnBank_Click" SizeForm="Large" Label="بانک"/>
+                    <Syncfusion:RibbonSeparator/>
+                    <Syncfusion:RibbonButton Name="rbnRecieveMoney" Click="rbnRecieveMoney_Click" SizeForm="Large" Label="دریافت وجه"/>
                 </Syncfusion:RibbonBar>
             </Syncfusion:RibbonTab>
         </Syncfusion:Ribbon>

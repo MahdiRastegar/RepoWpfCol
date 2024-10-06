@@ -33,5 +33,8 @@ namespace WpfCol
         public virtual DbSet<Moein> Moein { get; set; }
         public virtual DbSet<Preferential> Preferential { get; set; }
         public virtual DbSet<tGroup> tGroup { get; set; }
+        public virtual DbSet<Bank> Bank { get; set; }
+        public virtual DbSet<RecieveMoney_Detail> RecieveMoney_Detail { get; set; }
+        public virtual DbSet<RecieveMoneyHeader> RecieveMoneyHeader { get; set; }
     }
 }

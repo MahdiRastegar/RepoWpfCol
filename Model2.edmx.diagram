@@ -20,6 +20,15 @@
         <AssociationConnector Association="ColDbModel.FK_Col_AGroup" />
         <AssociationConnector Association="ColDbModel.FK_Moein_Col" />
         <AssociationConnector Association="ColDbModel.FK_Preferential_tGroup" />
+        <EntityTypeShape EntityType="ColDbModel.Bank" Width="1.5" PointX="11.25" PointY="8.5" />
+        <EntityTypeShape EntityType="ColDbModel.RecieveMoney_Detail" Width="1.5" PointX="13.5" PointY="4.5" />
+        <EntityTypeShape EntityType="ColDbModel.RecieveMoneyHeader" Width="1.5" PointX="11.25" PointY="4.875" />
+        <AssociationConnector Association="ColDbModel.FK_RecieveMoney_Detail_Bank" />
+        <AssociationConnector Association="ColDbModel.FK_RecieveMoney_Detail_Moein" />
+        <AssociationConnector Association="ColDbModel.FK_RecieveMoneyHeader_Moein" />
+        <AssociationConnector Association="ColDbModel.FK_RecieveMoney_Detail_Preferential" />
+        <AssociationConnector Association="ColDbModel.FK_RecieveMoneyHeader_Preferential" />
+        <AssociationConnector Association="ColDbModel.FK_RecieveMoney_Detail_RecieveMoneyHeader" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1,16 +1,19 @@
-﻿using System;
+﻿using Syncfusion.Windows.Tools.Controls;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xceed.Wpf.Toolkit.PropertyGrid.Editors;
 
 namespace WpfCol
 {
-    public partial class AcDocument_Detail
-    {        
+    public partial class RecieveMoney_Detail
+    {
         private string _Name;
         public string Name
-        { 
+        {
             get
             {
                 if (Preferential == null || Moein == null)
@@ -53,24 +56,32 @@ namespace WpfCol
             }
             set { _PreferentialCode = value; }
         }
-        //_PreferentialName = $"{Preferential.PreferentialName}-{Account.Moein.MoeinName}";
-        public string Debtor2
+        public string GetMoneyType
         {
             get
             {
-                if (Debtor == null)
-                    return null;
-                return Debtor.ToComma();
+                switch (MoneyType)
+                {
+                    case 0:
+                        return "نقد";
+                    case 1:
+                        return "چک";
+                    case 2:
+                        return "تخفیف";
+                    case 3:
+                        return "سایر";
+                }
+                return null;
             }
-            set { }
+            set { }                
         }
-        public string Creditor2
+        public string Price2
         {
             get
             {
-                if (Creditor == null)
+                if (Price == 0)
                     return null;
-                return Creditor.ToComma();
+                return (Price as decimal?).ToComma();
             }
             set { }
         }

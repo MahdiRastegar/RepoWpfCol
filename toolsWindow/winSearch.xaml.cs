@@ -64,23 +64,33 @@ namespace WpfCol.Windows.toolWindows
             if(datagrid.SelectionController.CurrentCellManager.CurrentCell!=null)
             {
                 MuText = ((datagrid.SelectionController.CurrentCellManager.CurrentCell?.Element as GridCell)?.DataContext as Mu);
-                if(!(ParentTextBox is TextBox))
+                if (!(ParentTextBox is TextBox))
                 {
                     var db = new ColDbEntities1();
                     if (MuText.AdditionalEntity is AccountSearchClass accountSearchClass)
                     {
-                        (ParentTextBox as AcDocument_Detail).Moein = db.Moein.Find(accountSearchClass.Id);
+                        ParentTextBox.Moein = db.Moein.Find(accountSearchClass.Id);
                     }
                     else
-                        (ParentTextBox as AcDocument_Detail).Preferential = db.Preferential.Find(MuText.Id);
+                        ParentTextBox.Preferential = db.Preferential.Find(MuText.Id);
                     //ParentTextBox.Text = $"{MuText.Name}-{(MuText.AdditionalEntity as AccountSearchClass).Tafzili}";
                     //ParentTextBox.AccountName = $"{MuText.Value}-{(MuText.AdditionalEntity as AccountSearchClass).T_Name}";
                     //ParentTextBox.AccountName = $"{(MuText.AdditionalEntity as AccountSearchClass).T_Name}-{MuText.Value.Split('-')[1]}";
                 }
                 else if (datagrid.Columns.Count == 1)
                     ParentTextBox.Text = MuText.Name;
+                else if (ParentTextBox.Tag != null)
+                {
+                    if (MuText.AdditionalEntity != null)
+                        ParentTextBox.Text = (MuText.AdditionalEntity as ISearch).Result;
+                    else
+                        ParentTextBox.Text = MuText.Value;
+                    ParentTextBox.Tag = MuText;
+                }
                 else
+                {
                     ParentTextBox.Text = MuText.Value;
+                }
                 Close();
             }
         }
@@ -111,10 +121,10 @@ namespace WpfCol.Windows.toolWindows
                     var db = new ColDbEntities1();
                     if (MuText.AdditionalEntity is AccountSearchClass accountSearchClass)
                     {
-                        (ParentTextBox as AcDocument_Detail).Moein = db.Moein.Find(accountSearchClass.Id);
+                        ParentTextBox.Moein = db.Moein.Find(accountSearchClass.Id);
                     }
                     else
-                        (ParentTextBox as AcDocument_Detail).Preferential = db.Preferential.Find(MuText.Id);
+                        ParentTextBox.Preferential = db.Preferential.Find(MuText.Id);
                     //ParentTextBox.Text = $"{MuText.Name}-{(MuText.AdditionalEntity as AccountSearchClass).Tafzili}";
                     //ParentTextBox.AccountName = $"{MuText.Value}-{(MuText.AdditionalEntity as AccountSearchClass).T_Name}";
                     //ParentTextBox.AccountName = $"{(MuText.AdditionalEntity as AccountSearchClass).T_Name}-{MuText.Value.Split('-')[1]}";
@@ -141,18 +151,28 @@ namespace WpfCol.Windows.toolWindows
                         var db = new ColDbEntities1();
                         if (MuText.AdditionalEntity is AccountSearchClass accountSearchClass)
                         {
-                            (ParentTextBox as AcDocument_Detail).Moein = db.Moein.Find(accountSearchClass.Id);
+                            ParentTextBox.Moein = db.Moein.Find(accountSearchClass.Id);
                         }
                         else
-                            (ParentTextBox as AcDocument_Detail).Preferential = db.Preferential.Find(MuText.Id);
+                            ParentTextBox.Preferential = db.Preferential.Find(MuText.Id);
                         //ParentTextBox.Text = $"{MuText.Name}-{(MuText.AdditionalEntity as AccountSearchClass).Tafzili}";
                         //ParentTextBox.AccountName = $"{MuText.Value}-{(MuText.AdditionalEntity as AccountSearchClass).T_Name}";
                         //ParentTextBox.AccountName = $"{(MuText.AdditionalEntity as AccountSearchClass).T_Name}-{MuText.Value.Split('-')[1]}";
                     }
                     else if (datagrid.Columns.Count == 1)
                         ParentTextBox.Text = MuText.Name;
+                    else if (ParentTextBox.Tag != null)
+                    {
+                        if (MuText.AdditionalEntity != null)
+                            ParentTextBox.Text = (MuText.AdditionalEntity as ISearch).Result;
+                        else
+                            ParentTextBox.Text = MuText.Value;
+                        ParentTextBox.Tag = MuText;
+                    }
                     else
+                    {
                         ParentTextBox.Text = MuText.Value;
+                    }
                     Close();
                 }
                 else
@@ -167,8 +187,18 @@ namespace WpfCol.Windows.toolWindows
                         }
                         else if (datagrid.Columns.Count == 1)
                             ParentTextBox.Text = MuText.Name;
+                        else if (ParentTextBox.Tag != null)
+                        {
+                            if (MuText.AdditionalEntity != null)
+                                ParentTextBox.Text = (MuText.AdditionalEntity as ISearch).Result;
+                            else
+                                ParentTextBox.Text = MuText.Value;
+                            ParentTextBox.Tag = MuText;
+                        }
                         else
+                        {
                             ParentTextBox.Text = MuText.Value;
+                        }
                         Close();
                     }));
                 }
