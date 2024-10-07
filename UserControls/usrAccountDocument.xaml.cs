@@ -674,13 +674,16 @@ namespace WpfCol
             var db = new ColDbEntities1();
             if (!AddedMode)
             {
-                var e_Edidet = db.AcDocument_Header.Find(id);
-                var header = acDocument_Headers.FirstOrDefault(o => o.Id == id);
-                header.AcDocument_Detail.Clear();
-                foreach (var item in e_Edidet.AcDocument_Detail)
+                if (id != Guid.Empty)
                 {
-                    header.AcDocument_Detail.Add(item);
-                    SetAccountName(db, item);
+                    var e_Edidet = db.AcDocument_Header.Find(id);
+                    var header = acDocument_Headers.FirstOrDefault(o => o.Id == id);
+                    header.AcDocument_Detail.Clear();
+                    foreach (var item in e_Edidet.AcDocument_Detail)
+                    {
+                        header.AcDocument_Detail.Add(item);
+                        SetAccountName(db, item);
+                    }
                 }
                 AddedMode = true;                
                 column1.Width = new GridLength(225);

@@ -687,13 +687,16 @@ namespace WpfCol
             var db = new ColDbEntities1();
             if (!AddedMode)
             {
-                var e_Edidet = db.RecieveMoneyHeader.Find(id);
-                var header = RecieveMoneyHeaders.FirstOrDefault(o => o.Id == id);
-                header.RecieveMoney_Detail.Clear();
-                foreach (var item in e_Edidet.RecieveMoney_Detail)
+                if (id != Guid.Empty)
                 {
-                    header.RecieveMoney_Detail.Add(item);
-                    SetAccountName(db, item);
+                    var e_Edidet = db.RecieveMoneyHeader.Find(id);
+                    var header = RecieveMoneyHeaders.FirstOrDefault(o => o.Id == id);
+                    header.RecieveMoney_Detail.Clear();
+                    foreach (var item in e_Edidet.RecieveMoney_Detail)
+                    {
+                        header.RecieveMoney_Detail.Add(item);
+                        SetAccountName(db, item);
+                    }
                 }
                 AddedMode = true;                
                 column1.Width = new GridLength(170);
