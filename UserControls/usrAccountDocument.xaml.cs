@@ -1060,6 +1060,7 @@ namespace WpfCol
                     datagrid.AddNewRowPosition = Syncfusion.UI.Xaml.Grid.AddNewRowPosition.Bottom;
                     datagrid.Visibility = Visibility.Visible;
                     dataPager.Visibility = Visibility.Collapsed;
+                    testsearch.Text = "جستجو...";
                     datagrid.SearchHelper.ClearSearch();
                     SearchTermTextBox.TextChanged-= SearchTermTextBox_TextChanged;
                     SearchTermTextBox.Text = "";
