@@ -265,5 +265,21 @@ namespace WpfCol
                 tabcontrol.Items.Add(item);
             }
         }
+
+        private void rbnPaymentMoney_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "پرداخت وجه");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "پرداخت وجه" };
+                item.Content = new usrPaymentMoney();
+                tabcontrol.Items.Add(item);
+            }
+        }
     }
 }

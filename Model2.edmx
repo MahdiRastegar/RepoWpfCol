@@ -71,6 +71,32 @@
           <Property Name="fk_ColId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="MoeinName" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="PaymentMoney_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="fkHeaderId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="BranchName" Type="nvarchar(max)" />
+          <Property Name="Number" Type="nvarchar(max)" />
+          <Property Name="fkBank" Type="uniqueidentifier" />
+          <Property Name="Date" Type="date" />
+          <Property Name="MoneyType" Type="tinyint" Nullable="false" />
+          <Property Name="fk_PreferentialId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="fk_MoeinId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PaymentMoneyHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ReceiptNumber" Type="int" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="fk_PreferentialId" Type="uniqueidentifier" />
+          <Property Name="fk_MoeinId" Type="uniqueidentifier" />
+          <Property Name="Description" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="Preferential">
           <Key>
             <PropertyRef Name="Id" />
@@ -194,6 +220,78 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PaymentMoney_Detail_Bank">
+          <End Role="Bank" Type="Self.Bank" Multiplicity="0..1" />
+          <End Role="PaymentMoney_Detail" Type="Self.PaymentMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bank">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoney_Detail">
+              <PropertyRef Name="fkBank" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoney_Detail_Moein">
+          <End Role="Moein" Type="Self.Moein" Multiplicity="1" />
+          <End Role="PaymentMoney_Detail" Type="Self.PaymentMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moein">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoney_Detail">
+              <PropertyRef Name="fk_MoeinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoney_Detail_PaymentMoneyHeader">
+          <End Role="PaymentMoneyHeader" Type="Self.PaymentMoneyHeader" Multiplicity="1" />
+          <End Role="PaymentMoney_Detail" Type="Self.PaymentMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PaymentMoneyHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoney_Detail">
+              <PropertyRef Name="fkHeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoney_Detail_Preferential">
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="1" />
+          <End Role="PaymentMoney_Detail" Type="Self.PaymentMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoney_Detail">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoneyHeader_Moein">
+          <End Role="Moein" Type="Self.Moein" Multiplicity="0..1" />
+          <End Role="PaymentMoneyHeader" Type="Self.PaymentMoneyHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moein">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoneyHeader">
+              <PropertyRef Name="fk_MoeinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoneyHeader_Preferential">
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="0..1" />
+          <End Role="PaymentMoneyHeader" Type="Self.PaymentMoneyHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoneyHeader">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Preferential_tGroup">
           <End Role="tGroup" Type="Self.tGroup" Multiplicity="1" />
           <End Role="Preferential" Type="Self.Preferential" Multiplicity="*" />
@@ -286,6 +384,8 @@
           <EntitySet Name="Col" EntityType="Self.Col" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DocumentType" EntityType="Self.DocumentType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Moein" EntityType="Self.Moein" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PaymentMoney_Detail" EntityType="Self.PaymentMoney_Detail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PaymentMoneyHeader" EntityType="Self.PaymentMoneyHeader" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Preferential" EntityType="Self.Preferential" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RecieveMoney_Detail" EntityType="Self.RecieveMoney_Detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RecieveMoneyHeader" EntityType="Self.RecieveMoneyHeader" Schema="dbo" store:Type="Tables" />
@@ -313,6 +413,30 @@
           <AssociationSet Name="FK_Moein_Col" Association="Self.FK_Moein_Col">
             <End Role="Col" EntitySet="Col" />
             <End Role="Moein" EntitySet="Moein" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoney_Detail_Bank" Association="Self.FK_PaymentMoney_Detail_Bank">
+            <End Role="Bank" EntitySet="Bank" />
+            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoney_Detail_Moein" Association="Self.FK_PaymentMoney_Detail_Moein">
+            <End Role="Moein" EntitySet="Moein" />
+            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoney_Detail_PaymentMoneyHeader" Association="Self.FK_PaymentMoney_Detail_PaymentMoneyHeader">
+            <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
+            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoney_Detail_Preferential" Association="Self.FK_PaymentMoney_Detail_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoneyHeader_Moein" Association="Self.FK_PaymentMoneyHeader_Moein">
+            <End Role="Moein" EntitySet="Moein" />
+            <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoneyHeader_Preferential" Association="Self.FK_PaymentMoneyHeader_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
           </AssociationSet>
           <AssociationSet Name="FK_Preferential_tGroup" Association="Self.FK_Preferential_tGroup">
             <End Role="tGroup" EntitySet="tGroup" />
@@ -411,6 +535,32 @@
             <End Role="RecieveMoneyHeader" EntitySet="RecieveMoneyHeader" />
             <End Role="RecieveMoney_Detail" EntitySet="RecieveMoney_Detail" />
           </AssociationSet>
+          <EntitySet Name="PaymentMoney_Detail" EntityType="ColDbModel.PaymentMoney_Detail" />
+          <EntitySet Name="PaymentMoneyHeader" EntityType="ColDbModel.PaymentMoneyHeader" />
+          <AssociationSet Name="FK_PaymentMoney_Detail_Bank" Association="ColDbModel.FK_PaymentMoney_Detail_Bank">
+            <End Role="Bank" EntitySet="Bank" />
+            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoney_Detail_Moein" Association="ColDbModel.FK_PaymentMoney_Detail_Moein">
+            <End Role="Moein" EntitySet="Moein" />
+            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoneyHeader_Moein" Association="ColDbModel.FK_PaymentMoneyHeader_Moein">
+            <End Role="Moein" EntitySet="Moein" />
+            <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoney_Detail_PaymentMoneyHeader" Association="ColDbModel.FK_PaymentMoney_Detail_PaymentMoneyHeader">
+            <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
+            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoney_Detail_Preferential" Association="ColDbModel.FK_PaymentMoney_Detail_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoneyHeader_Preferential" Association="ColDbModel.FK_PaymentMoneyHeader_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AcDocument_Detail">
           <Key>
@@ -483,6 +633,8 @@
           <NavigationProperty Name="Col" Relationship="ColDbModel.FK_Moein_Col" FromRole="Moein" ToRole="Col" />
           <NavigationProperty Name="RecieveMoney_Detail" Relationship="ColDbModel.FK_RecieveMoney_Detail_Moein" FromRole="Moein" ToRole="RecieveMoney_Detail" />
           <NavigationProperty Name="RecieveMoneyHeader" Relationship="ColDbModel.FK_RecieveMoneyHeader_Moein" FromRole="Moein" ToRole="RecieveMoneyHeader" />
+          <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_PaymentMoney_Detail_Moein" FromRole="Moein" ToRole="PaymentMoney_Detail" />
+          <NavigationProperty Name="PaymentMoneyHeader" Relationship="ColDbModel.FK_PaymentMoneyHeader_Moein" FromRole="Moein" ToRole="PaymentMoneyHeader" />
         </EntityType>
         <EntityType Name="Preferential">
           <Key>
@@ -504,6 +656,8 @@
           <NavigationProperty Name="tGroup" Relationship="ColDbModel.FK_Preferential_tGroup" FromRole="Preferential" ToRole="tGroup" />
           <NavigationProperty Name="RecieveMoney_Detail" Relationship="ColDbModel.FK_RecieveMoney_Detail_Preferential" FromRole="Preferential" ToRole="RecieveMoney_Detail" />
           <NavigationProperty Name="RecieveMoneyHeader" Relationship="ColDbModel.FK_RecieveMoneyHeader_Preferential" FromRole="Preferential" ToRole="RecieveMoneyHeader" />
+          <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_PaymentMoney_Detail_Preferential" FromRole="Preferential" ToRole="PaymentMoney_Detail" />
+          <NavigationProperty Name="PaymentMoneyHeader" Relationship="ColDbModel.FK_PaymentMoneyHeader_Preferential" FromRole="Preferential" ToRole="PaymentMoneyHeader" />
         </EntityType>
         <EntityType Name="tGroup">
           <Key>
@@ -605,6 +759,7 @@
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="RecieveMoney_Detail" Relationship="ColDbModel.FK_RecieveMoney_Detail_Bank" FromRole="Bank" ToRole="RecieveMoney_Detail" />
+          <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_PaymentMoney_Detail_Bank" FromRole="Bank" ToRole="PaymentMoney_Detail" />
         </EntityType>
         <EntityType Name="RecieveMoney_Detail">
           <Key>
@@ -708,6 +863,111 @@
             </Principal>
             <Dependent Role="RecieveMoney_Detail">
               <PropertyRef Name="fkHeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PaymentMoney_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="fkHeaderId" Type="Guid" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="BranchName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="fkBank" Type="Guid" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="MoneyType" Type="Byte" Nullable="false" />
+          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
+          <Property Name="fk_MoeinId" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Bank" Relationship="ColDbModel.FK_PaymentMoney_Detail_Bank" FromRole="PaymentMoney_Detail" ToRole="Bank" />
+          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_PaymentMoney_Detail_Moein" FromRole="PaymentMoney_Detail" ToRole="Moein" />
+          <NavigationProperty Name="PaymentMoneyHeader" Relationship="ColDbModel.FK_PaymentMoney_Detail_PaymentMoneyHeader" FromRole="PaymentMoney_Detail" ToRole="PaymentMoneyHeader" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_PaymentMoney_Detail_Preferential" FromRole="PaymentMoney_Detail" ToRole="Preferential" />
+        </EntityType>
+        <EntityType Name="PaymentMoneyHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ReceiptNumber" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="fk_PreferentialId" Type="Guid" />
+          <Property Name="fk_MoeinId" Type="Guid" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_PaymentMoneyHeader_Moein" FromRole="PaymentMoneyHeader" ToRole="Moein" />
+          <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_PaymentMoney_Detail_PaymentMoneyHeader" FromRole="PaymentMoneyHeader" ToRole="PaymentMoney_Detail" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_PaymentMoneyHeader_Preferential" FromRole="PaymentMoneyHeader" ToRole="Preferential" />
+        </EntityType>
+        <Association Name="FK_PaymentMoney_Detail_Bank">
+          <End Type="ColDbModel.Bank" Role="Bank" Multiplicity="0..1" />
+          <End Type="ColDbModel.PaymentMoney_Detail" Role="PaymentMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Bank">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoney_Detail">
+              <PropertyRef Name="fkBank" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoney_Detail_Moein">
+          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="1" />
+          <End Type="ColDbModel.PaymentMoney_Detail" Role="PaymentMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moein">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoney_Detail">
+              <PropertyRef Name="fk_MoeinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoneyHeader_Moein">
+          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="0..1" />
+          <End Type="ColDbModel.PaymentMoneyHeader" Role="PaymentMoneyHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moein">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoneyHeader">
+              <PropertyRef Name="fk_MoeinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoney_Detail_PaymentMoneyHeader">
+          <End Type="ColDbModel.PaymentMoneyHeader" Role="PaymentMoneyHeader" Multiplicity="1" />
+          <End Type="ColDbModel.PaymentMoney_Detail" Role="PaymentMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PaymentMoneyHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoney_Detail">
+              <PropertyRef Name="fkHeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoney_Detail_Preferential">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="1" />
+          <End Type="ColDbModel.PaymentMoney_Detail" Role="PaymentMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoney_Detail">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoneyHeader_Preferential">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="0..1" />
+          <End Type="ColDbModel.PaymentMoneyHeader" Role="PaymentMoneyHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoneyHeader">
+              <PropertyRef Name="fk_PreferentialId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -836,6 +1096,34 @@
           <EntitySetMapping Name="RecieveMoneyHeader">
             <EntityTypeMapping TypeName="ColDbModel.RecieveMoneyHeader">
               <MappingFragment StoreEntitySet="RecieveMoneyHeader">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="fk_MoeinId" ColumnName="fk_MoeinId" />
+                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="ReceiptNumber" ColumnName="ReceiptNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PaymentMoney_Detail">
+            <EntityTypeMapping TypeName="ColDbModel.PaymentMoney_Detail">
+              <MappingFragment StoreEntitySet="PaymentMoney_Detail">
+                <ScalarProperty Name="fk_MoeinId" ColumnName="fk_MoeinId" />
+                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
+                <ScalarProperty Name="MoneyType" ColumnName="MoneyType" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="fkBank" ColumnName="fkBank" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="BranchName" ColumnName="BranchName" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="fkHeaderId" ColumnName="fkHeaderId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PaymentMoneyHeader">
+            <EntityTypeMapping TypeName="ColDbModel.PaymentMoneyHeader">
+              <MappingFragment StoreEntitySet="PaymentMoneyHeader">
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="fk_MoeinId" ColumnName="fk_MoeinId" />
                 <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />

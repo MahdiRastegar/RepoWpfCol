@@ -12,21 +12,24 @@ namespace WpfCol
     using System;
     using System.Collections.Generic;
     
-    public partial class Bank
+    public partial class PaymentMoneyHeader
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Bank()
+        public PaymentMoneyHeader()
         {
-            this.RecieveMoney_Detail = new HashSet<RecieveMoney_Detail>();
             this.PaymentMoney_Detail = new HashSet<PaymentMoney_Detail>();
         }
     
         public System.Guid Id { get; set; }
-        public string Name { get; set; }
+        public int ReceiptNumber { get; set; }
+        public System.DateTime Date { get; set; }
+        public Nullable<System.Guid> fk_PreferentialId { get; set; }
+        public Nullable<System.Guid> fk_MoeinId { get; set; }
+        public string Description { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RecieveMoney_Detail> RecieveMoney_Detail { get; set; }
+        public virtual Moein Moein { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PaymentMoney_Detail> PaymentMoney_Detail { get; set; }
+        public virtual Preferential Preferential { get; set; }
     }
 }

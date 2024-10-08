@@ -239,20 +239,31 @@
     </Compile>
     <Compile Include="Interfaces\ISearch.cs" />
     <Compile Include="Interfaces\ITabEdidGrid.cs" />
+    <Compile Include="ParialClassesOfDataBase\PaymentMoneyHeader.cs" />
     <Compile Include="ParialClassesOfDataBase\RecieveMoneyHeader.cs" />
+    <Compile Include="ParialClassesOfDataBase\PaymentMoney_Detail.cs" />
     <Compile Include="ParialClassesOfDataBase\RecieveMoney_Detail.cs" />
     <Compile Include="ParialClassesOfDataBase\AcDocument_Header.cs" />
+    <Compile Include="PaymentMoneyHeader.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PaymentMoney_Detail.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
     <Compile Include="RecieveMoneyHeader.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
     <Compile Include="RecieveMoney_Detail.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Treasury\usrBank.xaml.cs">
+      <DependentUpon>usrBank.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Treasury\usrRecieveMoney.xaml.cs">
       <DependentUpon>usrRecieveMoney.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Treasury\usrBank.xaml.cs">
-      <DependentUpon>usrBank.xaml</DependentUpon>
+    <Compile Include="UserControls\Treasury\usrPaymentMoney.xaml.cs">
+      <DependentUpon>usrPaymentMoney.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility\AdvancedFilterControl2.cs" />
     <Compile Include="Utility\CustomRowStyleConverter.cs" />
@@ -315,6 +326,7 @@
     <Compile Include="Utility\MyTemplateSelector.cs" />
     <Compile Include="Utility\visibilitySummaryColumnConverter.cs" />
     <Compile Include="Utility\captionSummaryColumnConverter.cs" />
+    <Compile Include="ViewModels\PaymentMoneyViewModel.cs" />
     <Compile Include="ViewModels\RecieveMoneyViewModel.cs" />
     <Compile Include="ViewModels\AcDocumentViewModel.cs" />
     <Compile Include="ViewModels\ComboboxViewModel.cs" />
@@ -334,13 +346,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\Treasury\usrRecieveMoney.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="UserControls\Treasury\usrBank.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Treasury\usrRecieveMoney.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="UserControls\Treasury\usrPaymentMoney.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="UserControls\usrAGroup.xaml">
       <Generator>MSBuild:Compile</Generator>

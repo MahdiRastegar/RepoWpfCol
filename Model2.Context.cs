@@ -36,5 +36,7 @@ namespace WpfCol
         public virtual DbSet<Bank> Bank { get; set; }
         public virtual DbSet<RecieveMoney_Detail> RecieveMoney_Detail { get; set; }
         public virtual DbSet<RecieveMoneyHeader> RecieveMoneyHeader { get; set; }
+        public virtual DbSet<PaymentMoney_Detail> PaymentMoney_Detail { get; set; }
+        public virtual DbSet<PaymentMoneyHeader> PaymentMoneyHeader { get; set; }
     }
 }

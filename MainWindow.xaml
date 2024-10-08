@@ -38,10 +38,11 @@
                 </Syncfusion:RibbonBar>
             </Syncfusion:RibbonTab>
             <Syncfusion:RibbonTab Name="rbnTreasury" Caption="خزانه داری">
-                <Syncfusion:RibbonBar Name="barTreasury" Width="100" Header="">
+                <Syncfusion:RibbonBar Name="barTreasury" Width="137" Header="">
                     <Syncfusion:RibbonButton  Name="rbnBank" Click="rbnBank_Click" SizeForm="Large" Label="بانک"/>
                     <Syncfusion:RibbonSeparator/>
                     <Syncfusion:RibbonButton Name="rbnRecieveMoney" Click="rbnRecieveMoney_Click" SizeForm="Large" Label="دریافت وجه"/>
+                    <Syncfusion:RibbonButton Name="rbnPaymentMoney" Click="rbnPaymentMoney_Click" SizeForm="Large" Label="پرداخت وجه"/>
                 </Syncfusion:RibbonBar>
             </Syncfusion:RibbonTab>
         </Syncfusion:Ribbon>
