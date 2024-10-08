@@ -721,6 +721,7 @@ namespace WpfCol
             datagrid.ClearFilters();
             //datagrid.TableSummaryRows.Clear();
             datagrid.SearchHelper.ClearSearch();
+            testsearch.Text = "جستجو...";
             SearchTermTextBox.Text = "";
             dataPager.Visibility = Visibility.Collapsed;
             gridDelete.Visibility = Visibility.Hidden;
