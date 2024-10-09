@@ -58,7 +58,7 @@ namespace WpfCol
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var db=new ColDbEntities1();
-            var M = db.Bank.ToList();
+            var M = db.Bank.AsNoTracking().ToList();
             datagrid.ItemsSource = M;
             datagrid.SearchHelper.AllowFiltering = true;
             txtGroupName.Focus();

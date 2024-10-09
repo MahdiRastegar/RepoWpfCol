@@ -61,9 +61,22 @@ namespace WpfCol
             temp_paymentMoney_Details = new ObservableCollection<PaymentMoney_Detail>();
             PaymentMoneyHeaders = new ObservableCollection<PaymentMoneyHeader>();
             InitializeComponent();
+            Unloaded += UsrPaymentMoney_Unloaded;
             acDocumentViewModel = Resources["viewmodel"] as PaymentMoneyViewModel;
             acDocumentViewModel.paymentMoney_Details.CollectionChanged += AcDocument_Details_CollectionChanged;
             txbCalender.Text = pcw1.SelectedDate.ToString();
+        }
+
+        private void UsrPaymentMoney_Unloaded(object sender, RoutedEventArgs e)
+        {
+            PaymentMoneyHeaders.Clear();
+            paymentMoney_Details.Clear();
+            datagridSearch.Dispose();
+            dataPager.Dispose();
+            DataContext = null;
+            acDocumentViewModel.paymentMoney_Details.CollectionChanged -= AcDocument_Details_CollectionChanged;
+            acDocumentViewModel = null;
+            GC.Collect();
         }
 
         Brush brush = null;
@@ -160,17 +173,6 @@ namespace WpfCol
                 var h = db.PaymentMoney_Detail.Where(u=>u.fkHeaderId==id).ToList();
                 h.ForEach(u => paymentMoney_Details.Add(u));
                 RefreshDataGridForSetPersianNumber();
-            }
-            if (PaymentMoneyHeaders.Count == 0)
-            {
-                foreach (var item in db.PaymentMoneyHeader.ToList())
-                {
-                    /*foreach (var item2 in item.PaymentMoney_Detail)
-                    {
-                        SetAccountName(db, item2);
-                    }*/
-                    PaymentMoneyHeaders.Add(item);
-                }
             }
             dataPager.Source = null;
             dataPager.Source = PaymentMoneyHeaders;
@@ -1156,7 +1158,8 @@ namespace WpfCol
                             return;
                         }
                     }
-                    if(!AddedMode)
+                    FillHeaders();
+                    if (!AddedMode)
                     {
                         var db = new ColDbEntities1();
                         var e_Edidet = db.PaymentMoneyHeader.Find(id);
@@ -1224,6 +1227,24 @@ namespace WpfCol
                     datagridSearch.SelectedIndex = 0;
                 }));
                 }
+            }
+        }
+
+        private void FillHeaders()
+        {
+            if (PaymentMoneyHeaders.Count == 0)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                var db = new ColDbEntities1();
+                foreach (var item in db.PaymentMoneyHeader.Include(u=>u.PaymentMoney_Detail).AsNoTracking().ToList())
+                {
+                    /*foreach (var item2 in item.PaymentMoney_Detail)
+                    {
+                        SetAccountName(db, item2);
+                    }*/
+                    PaymentMoneyHeaders.Add(item);
+                }
+                Mouse.OverrideCursor = null;
             }
         }
 

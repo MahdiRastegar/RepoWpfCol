@@ -59,9 +59,22 @@ namespace WpfCol
             AcDocument_Details = new ObservableCollection<AcDocument_Detail>();
             acDocument_Headers = new ObservableCollection<AcDocument_Header>();
             InitializeComponent();
+            this.Unloaded += UsrAccountDocument_Unloaded;
             acDocumentViewModel = Resources["viewmodel"] as AcDocumentViewModel;
             acDocumentViewModel.acDocument_Details.CollectionChanged += AcDocument_Details_CollectionChanged;
             txbCalender.Text = pcw1.SelectedDate.ToString();
+        }
+
+        private void UsrAccountDocument_Unloaded(object sender, RoutedEventArgs e)
+        {
+            acDocument_Headers.Clear();
+            AcDocument_Details.Clear();
+            datagridSearch.Dispose();
+            dataPager.Dispose();
+            DataContext = null;
+            acDocumentViewModel.acDocument_Details.CollectionChanged -= AcDocument_Details_CollectionChanged;
+            acDocumentViewModel = null;
+            GC.Collect();
         }
 
         Brush brush = null;
@@ -161,17 +174,8 @@ namespace WpfCol
                 h.ForEach(u => AcDocument_Details.Add(u));
                 RefreshDataGridForSetPersianNumber();
             }
-            if (acDocument_Headers.Count == 0)
-            {
-                foreach (var item in db.AcDocument_Header.ToList())
-                {
-                    foreach (var item2 in item.AcDocument_Detail)
-                    {
-                        SetAccountName(db, item2);
-                    }
-                    acDocument_Headers.Add(item);
-                }
-            }
+            acDocument_Headers.Clear();
+            
             dataPager.Source = null;
             dataPager.Source = acDocument_Headers;
             datagrid.SearchHelper.AllowFiltering = true;
@@ -1089,7 +1093,8 @@ namespace WpfCol
                             return;
                         }
                     }
-                    if(!AddedMode)
+                    FillHeaders();
+                    if (!AddedMode)
                     {
                         var db = new ColDbEntities1();
                         var e_Edidet = db.AcDocument_Header.Find(id);
@@ -1155,6 +1160,24 @@ namespace WpfCol
                     SetHide_EmptyDetails();
                 }));
                 }
+            }
+        }
+
+        private void FillHeaders()
+        {
+            if (acDocument_Headers.Count == 0)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                var db = new ColDbEntities1();
+                foreach (var item in db.AcDocument_Header.Include(h => h.AcDocument_Detail).AsNoTracking().ToList())
+                {
+                    foreach (var item2 in item.AcDocument_Detail)
+                    {
+                        SetAccountName(db, item2);
+                    }
+                    acDocument_Headers.Add(item);
+                }
+                Mouse.OverrideCursor = null;
             }
         }
 

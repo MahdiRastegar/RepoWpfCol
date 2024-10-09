@@ -70,7 +70,7 @@ namespace WpfCol
             Preferentials = new ObservableCollection<Preferential>();
             var db = new ColDbEntities1();
             var count = db.Preferential.Count();
-            var h = db.Preferential.ToList();
+            var h = db.Preferential.AsNoTracking().ToList();
             //var h = db.Preferential.Take(10).ToList();
             //if(count>10)
             //{

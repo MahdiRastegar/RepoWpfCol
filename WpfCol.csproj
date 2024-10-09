@@ -34,6 +34,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ClosedXML, Version=0.102.2.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
       <HintPath>packages\ClosedXML.0.102.2\lib\netstandard2.0\ClosedXML.dll</HintPath>
@@ -302,25 +310,25 @@
     <Compile Include="toolsWindow\winSearch.xaml.cs">
       <DependentUpon>winSearch.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\usrAGroup.xaml.cs">
+    <Compile Include="UserControls\Definitions\usrAGroup.xaml.cs">
       <DependentUpon>usrAGroup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\usrGroup.xaml.cs">
+    <Compile Include="UserControls\Definitions\usrGroup.xaml.cs">
       <DependentUpon>usrGroup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\usrAcType.xaml.cs">
+    <Compile Include="UserControls\Finance\usrAcType.xaml.cs">
       <DependentUpon>usrAcType.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\usrAccountDocument.xaml.cs">
+    <Compile Include="UserControls\Finance\usrAccountDocument.xaml.cs">
       <DependentUpon>usrAccountDocument.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\usrPreferential.xaml.cs">
+    <Compile Include="UserControls\Definitions\usrPreferential.xaml.cs">
       <DependentUpon>usrPreferential.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\winMoein.xaml.cs">
+    <Compile Include="UserControls\Definitions\winMoein.xaml.cs">
       <DependentUpon>winMoein.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\winCol.xaml.cs">
+    <Compile Include="UserControls\Definitions\winCol.xaml.cs">
       <DependentUpon>winCol.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility\MyTemplateSelector.cs" />
@@ -358,31 +366,31 @@
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
-    <Page Include="UserControls\usrAGroup.xaml">
+    <Page Include="UserControls\Definitions\usrAGroup.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\usrGroup.xaml">
+    <Page Include="UserControls\Definitions\usrGroup.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\usrAcType.xaml">
+    <Page Include="UserControls\Finance\usrAcType.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\usrAccountDocument.xaml">
+    <Page Include="UserControls\Finance\usrAccountDocument.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\usrPreferential.xaml">
+    <Page Include="UserControls\Definitions\usrPreferential.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\winMoein.xaml">
+    <Page Include="UserControls\Definitions\winMoein.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\winCol.xaml">
+    <Page Include="UserControls\Definitions\winCol.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

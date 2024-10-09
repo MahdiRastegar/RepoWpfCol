@@ -72,7 +72,7 @@ namespace WpfCol
             Moeins = new ObservableCollection<Moein>();
             var db = new ColDbEntities1();
             var count = db.Moein.Count();
-            var h = db.Moein.ToList();
+            var h = db.Moein.AsNoTracking().ToList();
             //var h = db.Moein.Take(10).ToList();
             //if(count>10)
             //{
@@ -360,7 +360,7 @@ namespace WpfCol
         bool isCancel = true;
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            if (txtMoeinName.Text.Trim() == "" && txtCol.Text.Trim() == "")
+            if (isCancel && id == Guid.Empty)
             {
                 return;
             }

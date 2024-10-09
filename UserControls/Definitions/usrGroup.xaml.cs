@@ -58,7 +58,7 @@ namespace WpfCol
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var db=new ColDbEntities1();
-            var M = db.tGroup.ToList();
+            var M = db.tGroup.AsNoTracking().ToList();
             var en = db.tGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
             if (en != null)
                 txtGroup.Text = (en.GroupCode+1).ToString();

@@ -23,9 +23,9 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class usrAcType : UserControl,ITabForm
+    public partial class usrAGroup : UserControl,ITabForm
     {
-        public usrAcType()
+        public usrAGroup()
         {
             InitializeComponent();            
         }
@@ -58,10 +58,15 @@ namespace WpfCol
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var db=new ColDbEntities1();
-            var M = db.DocumentType.ToList();
+            var M = db.AGroup.AsNoTracking().ToList();
+            var en = db.AGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
+            if (en != null)
+                txtGroup.Text = (en.GroupCode+1).ToString();
+            else
+                txtGroup.Text = "1";
             datagrid.ItemsSource = M;
             datagrid.SearchHelper.AllowFiltering = true;
-            txtAcType.Focus();
+            txtGroupName.Focus();
         }
 
         private void btnConfirm_Click(object sender, RoutedEventArgs e)
@@ -71,36 +76,21 @@ namespace WpfCol
             if (haserror)
                 return;
             var db = new ColDbEntities1();
-            //var g = (datagrid.SelectedItem.GetType().GetProperty("Name").GetValue(datagrid.SelectedItem));
-            var group = db.DocumentType.Find(txtAcType.Tag as Guid?);
+            var i = int.Parse(txtGroup.Text);
+            var group = db.AGroup.FirstOrDefault(h => h.GroupCode == i);
             if (group == null)
-            {
-                if (db.DocumentType.Any(h => h.IsManual && h.Name == txtAcType.Text))
-                {
-                    Sf_txtVra.HasError = true;
-                    Sf_txtVra.ErrorText = "نوع سند تکراریست!";
-                    return;
-                }
-                db.DocumentType.Add(new DocumentType()
+                db.AGroup.Add(new AGroup()
                 {
                     Id = Guid.NewGuid(),
-                    Name = txtAcType.Text,
-                    IsManual = true
+                    GroupCode = int.Parse(txtGroup.Text),
+                    GroupName = txtGroupName.Text
                 });
-            }
             else
             {
-                var f = db.DocumentType.FirstOrDefault(h => h.IsManual && h.Name == txtAcType.Text);
-                if (f!=null&& (txtAcType.Tag as Guid?) != f.Id)
-                {
-                    Sf_txtVra.HasError = true;
-                    Sf_txtVra.ErrorText = "این نام قبلا ثبت شده";
-                    return;
-                }
-                group.Name = txtAcType.Text;
+                group.GroupName = txtGroupName.Text;
             }
             db.SaveChanges();
-            var M = db.DocumentType.ToList();
+            var M = db.AGroup.ToList();
             datagrid.ItemsSource = M;
             if (group == null)
                 Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت گروه");
@@ -110,21 +100,22 @@ namespace WpfCol
             }
             btnCancel_Click(null, null);
 
-            txtAcType.Text = "";
-            txtAcType.Tag = Guid.Empty;
+            txtGroupName.Text = "";
             isCancel = true;
             datagrid.SelectedIndex = -1;
             datagrid.ClearFilters();
             gridDelete.Visibility = Visibility.Hidden;
             borderEdit.Visibility = Visibility.Hidden;
-            if (group == null)                
-                txtAcType.Focus();
+            if (group != null)
+                txtGroup.Focus();
+            else
+                txtGroupName.Focus();
         }
 
         private bool GetError()
         {
             bool haserror = false;
-            if (txtAcType.Text.Trim() == "")
+            if (txtGroupName.Text.Trim() == "")
             {
                 Sf_txtVra.HasError = true;
                 haserror = true;
@@ -240,7 +231,7 @@ namespace WpfCol
         bool isCancel = true;
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            if(txtAcType.Text.Trim()=="")
+            if(txtGroupName.Text.Trim()=="")
             {
                 return;
             }
@@ -248,12 +239,16 @@ namespace WpfCol
             {
                 return;
             }
-            txtAcType.Text = "";
-            txtAcType.Tag = Guid.Empty;
+            txtGroupName.Text = "";
             Sf_txtVra.HasError = false;
             isCancel = true;
             var db = new ColDbEntities1();
-            txtAcType.Focus();
+            var en = db.AGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
+            if (en != null)
+                txtGroup.Text = (en.GroupCode + 1).ToString();
+            else
+                txtGroup.Text = "1";
+            txtGroupName.Focus();
             datagrid.SelectedIndex = -1;
             datagrid.ClearFilters();
             gridDelete.Visibility = Visibility.Hidden;
@@ -274,9 +269,9 @@ namespace WpfCol
         {
             if (isCancel&&datagrid.SelectedItem!=null) 
             {
-                var group = datagrid.SelectedItem as DocumentType;
-                txtAcType.Text = group.Name;
-                txtAcType.Tag = group.Id;
+                var group = datagrid.SelectedItem as AGroup;
+                txtGroup.Text = group.GroupCode.ToString();
+                txtGroupName.Text = group.GroupName;
                 gridDelete.Visibility = Visibility.Visible;
                 isCancel = true;
                 borderEdit.Visibility = Visibility.Visible;
@@ -293,9 +288,9 @@ namespace WpfCol
                 return;
             }
             var db = new ColDbEntities1();
-            db.DocumentType.Remove(db.DocumentType.Find((datagrid.SelectedItem as DocumentType).Id));
+            db.AGroup.Remove(db.AGroup.Find((datagrid.SelectedItem as AGroup).Id));
             db.SaveChanges();
-            (datagrid.ItemsSource as List<DocumentType>).Remove((datagrid.SelectedItem as DocumentType));
+            (datagrid.ItemsSource as List<AGroup>).Remove((datagrid.SelectedItem as AGroup));
             var u = datagrid.ItemsSource;
             datagrid.ItemsSource = null;
             datagrid.ItemsSource = u;
@@ -318,7 +313,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "گروه تفضیلی");
+            var item = list.FirstOrDefault(u => u.Header == "گروه حساب");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             return true;
         }

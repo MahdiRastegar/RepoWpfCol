@@ -1,5 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using Syncfusion.Data.Extensions;
+using Syncfusion.XlsIO.Parser.Biff_Records;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +16,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WpfCol.Interfaces;
-using WpfCol.Windows.toolWindows;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace WpfCol
@@ -24,9 +23,9 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class winCol : UserControl,ITabForm
+    public partial class usrAcType : UserControl,ITabForm
     {
-        public winCol()
+        public usrAcType()
         {
             InitializeComponent();            
         }
@@ -40,8 +39,8 @@ namespace WpfCol
                 TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
                 request.Wrapped = true;
                 (sender as TextBox).MoveFocus(request);*/
-                cmbType.Focus();
-                cmbType.IsDropDownOpen = true;
+                btnConfirm.Focus();
+                btnConfirm_Click(null, null);
                 return;
             }
             /*
@@ -59,10 +58,10 @@ namespace WpfCol
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var db=new ColDbEntities1();
-            var M = db.Col.ToList();            
+            var M = db.DocumentType.AsNoTracking().ToList();
             datagrid.ItemsSource = M;
             datagrid.SearchHelper.AllowFiltering = true;
-            txtGroup.Focus();
+            txtAcType.Focus();
         }
 
         private void btnConfirm_Click(object sender, RoutedEventArgs e)
@@ -72,104 +71,67 @@ namespace WpfCol
             if (haserror)
                 return;
             var db = new ColDbEntities1();
-            var g = int.Parse(txtGroup.Text);
-            var group = db.AGroup.FirstOrDefault(h => h.GroupCode == g);
+            //var g = (datagrid.SelectedItem.GetType().GetProperty("Name").GetValue(datagrid.SelectedItem));
+            var group = db.DocumentType.Find(txtAcType.Tag as Guid?);
             if (group == null)
             {
-                Sf_txtGreoup.ErrorText = "این کد گروه وجود ندارد";
-                Sf_txtGreoup.HasError = true;
-                return;
-            }
-
-
-            var i = int.Parse(txtCol.Text);
-            var col = db.Col.FirstOrDefault(h => h.ColCode == i);
-            if (col == null)
-            {
-                datagrid.SortColumnDescriptions.Clear();
-                db.Col.Add(new Col()
+                if (db.DocumentType.Any(h => h.IsManual && h.Name == txtAcType.Text))
+                {
+                    Sf_txtVra.HasError = true;
+                    Sf_txtVra.ErrorText = "نوع سند تکراریست!";
+                    return;
+                }
+                db.DocumentType.Add(new DocumentType()
                 {
                     Id = Guid.NewGuid(),
-                    ColCode = i,
-                    ColName = txtColName.Text,
-                    Type = (byte)cmbType.SelectedIndex,
-                    Action = (byte)cmbAction.SelectedIndex,
-                    PermissionView = checkbox.IsChecked,
-                    fk_GroupId = group.Id
+                    Name = txtAcType.Text,
+                    IsManual = true
                 });
             }
             else
             {
-                col.Type = (byte)cmbType.SelectedIndex;
-                col.ColName = txtColName.Text;
-                col.Action = (byte)cmbAction.SelectedIndex;
-                col.PermissionView = checkbox.IsChecked;
+                var f = db.DocumentType.FirstOrDefault(h => h.IsManual && h.Name == txtAcType.Text);
+                if (f!=null&& (txtAcType.Tag as Guid?) != f.Id)
+                {
+                    Sf_txtVra.HasError = true;
+                    Sf_txtVra.ErrorText = "این نام قبلا ثبت شده";
+                    return;
+                }
+                group.Name = txtAcType.Text;
             }
             db.SaveChanges();
-            var M = db.Col.ToList();
+            var M = db.DocumentType.ToList();
             datagrid.ItemsSource = M;
-            if (col == null)
-            {
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت کل");
-                cmbAction.SelectedIndex = cmbType.SelectedIndex = -1;
-                checkbox.IsChecked = false;
-            }
+            if (group == null)
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت گروه");
             else
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش کل");
-                btnCancel_Click(null, null);
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش گروه");
             }
+            btnCancel_Click(null, null);
 
-            txtColName.Text = "";
-            cmbType.SelectedIndex = -1;
+            txtAcType.Text = "";
+            txtAcType.Tag = Guid.Empty;
             isCancel = true;
             datagrid.SelectedIndex = -1;
             datagrid.ClearFilters();
             gridDelete.Visibility = Visibility.Hidden;
             borderEdit.Visibility = Visibility.Hidden;
-            if (col != null)
-                txtCol.Focus();
-            else
-            {
-                txtCol.Text = (i + 1).ToString();
-                txtColName.Focus();
-            }
+            if (group == null)                
+                txtAcType.Focus();
         }
 
         private bool GetError()
         {
             bool haserror = false;
-            if (txtColName.Text.Trim() == "")
+            if (txtAcType.Text.Trim() == "")
             {
                 Sf_txtVra.HasError = true;
                 haserror = true;
             }
             else
                 Sf_txtVra.HasError = false;
-            if (cmbType.SelectedIndex == -1)
-            {
-                Sf_txtName.HasError = true;
-                haserror = true;
-            }
-            else
-                Sf_txtName.HasError = false;
-            if (cmbAction.SelectedIndex == -1)
-            {
-                Sf_Actin.HasError = true;
-                haserror = true;
-            }
-            else
-                Sf_Actin.HasError = false;
-            if (txtGroup.Text.Trim() == "")
-            {
-                Sf_txtGreoup.HasError = true;
-                haserror = true;
-            }
-            else
-            {
-                Sf_txtGreoup.HasError = false;
-                Sf_txtGreoup.ErrorText = "";
-            }
+           
             return haserror;
         }
 
@@ -267,52 +229,18 @@ namespace WpfCol
 
         }
         bool forceClose = false;
-        public static System.Windows.Window window;
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
+            if(e.Key == Key.Escape)
             {
                 CloseForm();
             }
-            else if (e.Key == Key.F1 && txtGroup.IsFocused)
-            {
-                if (window != null)
-                    return;
-                /*Point relativePoint = y.TransformToAncestor(this)
-                          .Transform(new Point(this.Left+Width, this.Top-Height));*/
-                isCancel = false;
-                Point relativePoint = new Point(MainWindow.Current.Left + Width - 500, MainWindow.Current.Top + 50);
-                if (MainWindow.Current.WindowState == WindowState.Maximized)
-                    relativePoint = txtGroup.TransformToAncestor(this)
-                          .Transform(new Point(530, 0));
-                var db = new ColDbEntities1();
-                var list = db.AGroup.ToList().Select(r => new Mu() { Name = r.GroupName, Value = r.GroupCode.ToString() }).ToList();
-                var win = new winSearch(list);
-                win.Tag = this;
-                win.ParentTextBox = txtGroup;
-                win.SearchTermTextBox.Text = txtGroup.Text;
-                win.SearchTermTextBox.Select(1, 0);
-                win.Owner = MainWindow.Current;
-                //win.Left = relativePoint.X - 60;
-                //win.Top = relativePoint.Y + 95;
-                window = win;
-                win.Show();win.Focus();
-            }
         }
-
-        private void cmbType_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                cmbAction.IsDropDownOpen = true;
-                cmbAction.Focus();
-                return;
-            }
-        }
+    
         bool isCancel = true;
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            if (txtColName.Text.Trim() == "" && cmbType.SelectedIndex == -1 && cmbAction.SelectedIndex == -1 && txtGroup.Text.Trim() == "")
+            if(txtAcType.Text.Trim()=="")
             {
                 return;
             }
@@ -320,13 +248,12 @@ namespace WpfCol
             {
                 return;
             }
-            txtCol.Text = txtGroupName.Text = txtGroup.Text = txtColName.Text = txtColName.Text = "";
-            cmbAction.SelectedIndex= cmbType.SelectedIndex = -1;
+            txtAcType.Text = "";
+            txtAcType.Tag = Guid.Empty;
             Sf_txtVra.HasError = false;
-            Sf_txtName.HasError = false;
-            txtGroup.IsReadOnly = false;
-            checkbox.IsChecked = false;
-            isCancel = true;           
+            isCancel = true;
+            var db = new ColDbEntities1();
+            txtAcType.Focus();
             datagrid.SelectedIndex = -1;
             datagrid.ClearFilters();
             gridDelete.Visibility = Visibility.Hidden;
@@ -338,7 +265,7 @@ namespace WpfCol
             isCancel = false;
         }
 
-        private void txtColName_TextChanged(object sender, TextChangedEventArgs e)
+        private void txtGroupName_TextChanged(object sender, TextChangedEventArgs e)
         {
             isCancel = false;
         }
@@ -347,15 +274,9 @@ namespace WpfCol
         {
             if (isCancel&&datagrid.SelectedItem!=null) 
             {
-                var col = datagrid.SelectedItem as Col;
-                txtGroup.Text = col.AGroup.GroupCode.ToString();
-                txtGroupName.Text = col.AGroup.GroupName;
-                cmbAction.SelectedIndex = (int)col.Action;
-                txtCol.Text = col.ColCode.ToString();
-                checkbox.IsChecked = col.PermissionView;
-                txtGroup.IsReadOnly = true;
-                txtColName.Text = col.ColName;
-                cmbType.SelectedIndex = (int)col.Type;
+                var group = datagrid.SelectedItem as DocumentType;
+                txtAcType.Text = group.Name;
+                txtAcType.Tag = group.Id;
                 gridDelete.Visibility = Visibility.Visible;
                 isCancel = true;
                 borderEdit.Visibility = Visibility.Visible;
@@ -372,9 +293,9 @@ namespace WpfCol
                 return;
             }
             var db = new ColDbEntities1();
-            db.Col.Remove(db.Col.Find((datagrid.SelectedItem as Col).Id));
+            db.DocumentType.Remove(db.DocumentType.Find((datagrid.SelectedItem as DocumentType).Id));
             db.SaveChanges();
-            (datagrid.ItemsSource as List<Col>).Remove((datagrid.SelectedItem as Col));
+            (datagrid.ItemsSource as List<DocumentType>).Remove((datagrid.SelectedItem as DocumentType));
             var u = datagrid.ItemsSource;
             datagrid.ItemsSource = null;
             datagrid.ItemsSource = u;
@@ -397,7 +318,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "حساب کل");
+            var item = list.FirstOrDefault(u => u.Header == "گروه تفضیلی");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             return true;
         }
@@ -431,51 +352,7 @@ namespace WpfCol
 
         public void SetNull()
         {
-            window = null;
 
-            try
-            {
-                var db = new ColDbEntities1();
-                var g = int.Parse(txtGroup.Text);
-
-                var y = db.AGroup.FirstOrDefault(gs => gs.GroupCode == g);
-                if (y != null)
-                    txtColName.Focus();
-            }
-            catch { }
-        }
-
-        private void cmAction_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                btnConfirm.Focus();
-                return;
-            }
-        }
-
-        private void txtGroup_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (!isCancel)
-                try
-                {
-                    var db = new ColDbEntities1();
-                    var g = int.Parse(txtGroup.Text);
-                    var group = db.AGroup.FirstOrDefault(gs => gs.GroupCode == g);
-                    txtGroupName.Text = group.GroupName;
-                    try
-                    {
-                        txtCol.Text = (db.Col.Where(u => u.AGroup.GroupCode == g).Max(y => y.ColCode) + 1).ToString();
-                    }
-                    catch
-                    {
-                        txtCol.Text = ((group.GroupCode * 10) + 1).ToString();
-                    }
-                }
-                catch
-                {
-                    //txtCodePreferential.Text = "1";
-                }
         }
     }
 }
