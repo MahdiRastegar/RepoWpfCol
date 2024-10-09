@@ -42,7 +42,7 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class usrAccountDocument : UserControl,ITabForm,ITabEdidGrid
+    public partial class usrAccountDocument : UserControl,ITabForm,ITabEdidGrid,IDisposable
     {
         public bool DataGridIsFocused
         {
@@ -59,13 +59,12 @@ namespace WpfCol
             AcDocument_Details = new ObservableCollection<AcDocument_Detail>();
             acDocument_Headers = new ObservableCollection<AcDocument_Header>();
             InitializeComponent();
-            this.Unloaded += UsrAccountDocument_Unloaded;
             acDocumentViewModel = Resources["viewmodel"] as AcDocumentViewModel;
             acDocumentViewModel.acDocument_Details.CollectionChanged += AcDocument_Details_CollectionChanged;
             txbCalender.Text = pcw1.SelectedDate.ToString();
         }
 
-        private void UsrAccountDocument_Unloaded(object sender, RoutedEventArgs e)
+        public void Dispose()
         {
             acDocument_Headers.Clear();
             AcDocument_Details.Clear();
@@ -174,8 +173,6 @@ namespace WpfCol
                 h.ForEach(u => AcDocument_Details.Add(u));
                 RefreshDataGridForSetPersianNumber();
             }
-            acDocument_Headers.Clear();
-            
             dataPager.Source = null;
             dataPager.Source = acDocument_Headers;
             datagrid.SearchHelper.AllowFiltering = true;

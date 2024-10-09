@@ -43,7 +43,7 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class usrRecieveMoney : UserControl,ITabForm, ITabEdidGrid
+    public partial class usrRecieveMoney : UserControl,ITabForm, ITabEdidGrid,IDisposable
     {
         public bool DataGridIsFocused
         {
@@ -61,13 +61,12 @@ namespace WpfCol
             temp_recieveMoney_Details = new ObservableCollection<RecieveMoney_Detail>();
             RecieveMoneyHeaders = new ObservableCollection<RecieveMoneyHeader>();
             InitializeComponent();
-            Unloaded += UsrRecieveMoney_Unloaded;
             acDocumentViewModel = Resources["viewmodel"] as RecieveMoneyViewModel;
             acDocumentViewModel.recieveMoney_Details.CollectionChanged += AcDocument_Details_CollectionChanged;
             txbCalender.Text = pcw1.SelectedDate.ToString();
         }
 
-        private void UsrRecieveMoney_Unloaded(object sender, RoutedEventArgs e)
+        public void Dispose()
         {
             RecieveMoneyHeaders.Clear();
             recieveMoney_Details.Clear();
@@ -952,7 +951,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "سند حسابداری");
+            var item = list.FirstOrDefault(u => u.Header == "دریافت وجه");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             return true;
         }

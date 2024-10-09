@@ -43,7 +43,7 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class usrPaymentMoney : UserControl,ITabForm, ITabEdidGrid
+    public partial class usrPaymentMoney : UserControl,ITabForm, ITabEdidGrid,IDisposable
     {
         public bool DataGridIsFocused
         {
@@ -61,13 +61,12 @@ namespace WpfCol
             temp_paymentMoney_Details = new ObservableCollection<PaymentMoney_Detail>();
             PaymentMoneyHeaders = new ObservableCollection<PaymentMoneyHeader>();
             InitializeComponent();
-            Unloaded += UsrPaymentMoney_Unloaded;
             acDocumentViewModel = Resources["viewmodel"] as PaymentMoneyViewModel;
             acDocumentViewModel.paymentMoney_Details.CollectionChanged += AcDocument_Details_CollectionChanged;
             txbCalender.Text = pcw1.SelectedDate.ToString();
         }
-
-        private void UsrPaymentMoney_Unloaded(object sender, RoutedEventArgs e)
+        
+        public void Dispose()
         {
             PaymentMoneyHeaders.Clear();
             paymentMoney_Details.Clear();
@@ -77,7 +76,7 @@ namespace WpfCol
             acDocumentViewModel.paymentMoney_Details.CollectionChanged -= AcDocument_Details_CollectionChanged;
             acDocumentViewModel = null;
             GC.Collect();
-        }
+        }  
 
         Brush brush = null;
         public ObservableCollection<PaymentMoney_Detail> temp_paymentMoney_Details { get; set; }
@@ -952,7 +951,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "سند حسابداری");
+            var item = list.FirstOrDefault(u => u.Header == "پرداخت وجه");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             return true;
         }

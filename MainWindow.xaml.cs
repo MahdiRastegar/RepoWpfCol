@@ -113,6 +113,7 @@ namespace WpfCol
 
         private void tabcontrol_TabClosed(object sender, CloseTabEventArgs e)
         {
+            (e.TargetTabItem.Content as IDisposable)?.Dispose();
             tabcontrol.Items.Remove(e.TargetTabItem);
         }
 
