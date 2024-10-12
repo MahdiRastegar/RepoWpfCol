@@ -393,7 +393,8 @@ namespace WpfCol
                 datagrid.BorderBrush = Brushes.Red;
                 haserror = true;
             }
-            else if (paymentMoney_Details.Any(t => t.Price == 0 || t.ColeMoein == "" || t.ColeMoein == null || t.PreferentialCode == "" || t.PreferentialCode == null))
+            else if (paymentMoney_Details.Any(t => t.Price == 0 || t.ColeMoein == "" || t.ColeMoein == null || t.PreferentialCode == "" || t.PreferentialCode == null) ||
+                paymentMoney_Details.Any(t => t.MoneyType == 1 && (t.Date == null || t.Bank == null || t.Number == null || t.Number == "")))
             {
                 datagrid.BorderBrush = Brushes.Red;
                 haserror = true;
