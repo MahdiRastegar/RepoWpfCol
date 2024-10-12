@@ -461,6 +461,15 @@ FontFamily="{StaticResource IranSans}" Width="27"
             <Syncfusion:SfTextInputLayout Visibility="Visible" Name="Sf_txtSerial" OutlineCornerRadius="8" Hint="شماره رسید" Grid.Row="1"  VerticalAlignment="Center" Margin="20 20 20 -20" Grid.Column="0"  HorizontalAlignment="Stretch">
                 <TextBox Name="txtSerial" VerticalContentAlignment="Center"  IsEnabled="True" IsReadOnly="True" Margin="0" FontSize="18"/>
             </Syncfusion:SfTextInputLayout>
+            <TextBlock Text="حساب دریافت کننده :" Grid.Row="2" HorizontalAlignment="Center" Margin="0 10">
+                <TextBlock.Foreground>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFD0D5FF"/>
+                        <GradientStop Color="#FF001BFF" Offset="1"/>
+                        <GradientStop Color="#FF4D5FFF" Offset="0.6"/>
+                    </LinearGradientBrush>
+                </TextBlock.Foreground>
+            </TextBlock>
             <Syncfusion:SfTextInputLayout Name="Sf_txtMoein" OutlineCornerRadius="8" Hint="کل معین" Grid.Row="2"  VerticalAlignment="Center" Margin="20 20 20 -20"  HorizontalAlignment="Stretch">
                 <TextBox Name="txtMoein" VerticalContentAlignment="Center" PreviewKeyDown="txtMoein_PreviewKeyDown" LostFocus="txtMoein_LostFocus" Tag="true" PreviewTextInput="Txt_PreviewTextInput" TextChanged="txtDescription_TextChanged" IsEnabled="True" Margin="0" FontSize="18"/>
             </Syncfusion:SfTextInputLayout>
@@ -469,8 +478,8 @@ FontFamily="{StaticResource IranSans}" Width="27"
             </Syncfusion:SfTextInputLayout>
             <TextBlock Name="txbMoein" Grid.Row="3" Margin="20 0" VerticalAlignment="Center"/>
             <TextBlock Name="txbPreferential" Grid.Row="3" Grid.Column="1" Margin="20 0" VerticalAlignment="Center"/>
-            <Syncfusion:SfTextInputLayout Name="Sf_Description"  OutlineCornerRadius="8" Hint="توضیحات" Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="20 0"  HorizontalAlignment="Stretch">
-                <TextBox Name="txtDescription" TextChanged="txtDescription_TextChanged" VerticalScrollBarVisibility="Auto" MaxHeight="167.5" VerticalContentAlignment="Center" AcceptsReturn="True" IsEnabled="True" IsReadOnly="False" PreviewTextInput="Txt_PreviewTextInput" Margin="0" FontSize="18"/>
+            <Syncfusion:SfTextInputLayout Name="Sf_Description"  OutlineCornerRadius="8" Hint="بابت" Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="20 0"  HorizontalAlignment="Stretch">
+                <TextBox Name="txtDescription" TextChanged="txtDescription_TextChanged" VerticalScrollBarVisibility="Auto" MaxHeight="167.5" VerticalContentAlignment="Center" IsEnabled="True" IsReadOnly="False" PreviewTextInput="Txt_PreviewTextInput" Margin="0" FontSize="18"/>
             </Syncfusion:SfTextInputLayout>
             <DockPanel VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="20 0"  HorizontalAlignment="Stretch"/>
             <DockPanel  Grid.Row="5" Grid.ColumnSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="15 0 15 -15">
@@ -586,7 +595,7 @@ FontFamily="{StaticResource IranSans}" Width="27"
                 <Image Name="gifImage" Visibility="Collapsed" Width="144" Height="81" HorizontalAlignment="Right" Grid.Row="5" Grid.RowSpan="2" VerticalAlignment="Bottom" Margin="0,0,13,-65" Grid.Column="3"/>
                 <Syncfusion:SfDataGrid CurrentCellBeginEdit="datagrid_CurrentCellBeginEdit" AddNewRowInitiating="datagrid_AddNewRowInitiating" ItemsSource="{Binding paymentMoney_Details}" PreviewMouseDown="datagrid_PreviewMouseDown" DataContext="{Binding  Source={StaticResource viewmodel}}" RowValidated="datagrid_RowValidated" RowValidating="datagrid_RowValidating"
                                        CurrentCellValueChanged="datagrid_CurrentCellValueChanged" Visibility="Visible" Grid.Row="1" AllowSorting="False" AddNewRowPosition="Bottom" AddNewRowText="حذف ردیف : Delete"                                       
-                                       SelectionChanged="datagrid_SelectionChanged" AllowDeleting="True" CurrentCellEndEdit="datagrid_CurrentCellEndEdit" PreviewKeyDown="datagrid_PreviewKeyDown" FontSize="14" RowHeight="30" ShowRowHeader="False" AllowFiltering="False" AllowEditing="True" AllowResizingColumns="True" HeaderStyle="{StaticResource headerStyle}" Margin="20 5 15 15" Name="datagrid" HeaderRowHeight="40" HorizontalAlignment="Stretch" MinHeight="80" AutoGenerateColumns="False" FlowDirection="RightToLeft">
+                                       SelectionChanged="datagrid_SelectionChanged" SelectionChanging="datagrid_SelectionChanging" AllowDeleting="True" CurrentCellEndEdit="datagrid_CurrentCellEndEdit" PreviewKeyDown="datagrid_PreviewKeyDown" FontSize="14" RowHeight="30" ShowRowHeader="False" AllowFiltering="False" AllowEditing="True" AllowResizingColumns="True" HeaderStyle="{StaticResource headerStyle}" Margin="20 5 15 15" Name="datagrid" HeaderRowHeight="40" HorizontalAlignment="Stretch" MinHeight="80" AutoGenerateColumns="False" FlowDirection="RightToLeft">
                     <Syncfusion:SfDataGrid.CellStyle>
                         <Style TargetType="Syncfusion:GridCell">
                             <Setter Property="Background" Value="{Binding UpdateSourceTrigger=PropertyChanged,Converter={StaticResource DeleteRowStyleConverter},ConverterParameter=Background}"/>
@@ -602,11 +611,11 @@ FontFamily="{StaticResource IranSans}" Width="27"
                         <Syncfusion:GridTemplateColumn HeaderText="نوع وجه" Width="100" MappingName="MoneyType">
                             <Syncfusion:GridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Syncfusion:ComboBoxAdv Loaded="ComboBoxAdv_Loaded" SelectionChanged="ComboBoxAdv_SelectionChanged" GotFocus="ComboBoxAdv_GotFocus">
-                                        <Syncfusion:ComboBoxItemAdv Content="نقد" />
-                                        <Syncfusion:ComboBoxItemAdv Content="چک" />
-                                        <Syncfusion:ComboBoxItemAdv Content="تخفیف" />
-                                        <Syncfusion:ComboBoxItemAdv Content="سایر" />
+                                    <Syncfusion:ComboBoxAdv Loaded="ComboBoxAdv_Loaded" SelectionChanged="ComboBoxAdv_SelectionChanged" GotFocus="ComboBoxAdv_GotFocus" PreviewKeyDown="ComboBoxAdv_PreviewKeyDown">
+                                        <Syncfusion:ComboBoxItemAdv Content="1-نقد" />
+                                        <Syncfusion:ComboBoxItemAdv Content="2-چک" />
+                                        <Syncfusion:ComboBoxItemAdv Content="3-تخفیف" />
+                                        <Syncfusion:ComboBoxItemAdv Content="4-سایر" />
                                     </Syncfusion:ComboBoxAdv>
                                 </DataTemplate>
                             </Syncfusion:GridTemplateColumn.CellTemplate>

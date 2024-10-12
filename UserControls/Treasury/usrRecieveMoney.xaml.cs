@@ -86,16 +86,23 @@ namespace WpfCol
         {
             if (e.Text == "\r")
             {
-                //if ((sender as TextBox).Name == "txtNoDocumen")
-                //{
-                //    cmbType.Focus();
-                //}
-                //else
-                //{
-                    TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
-                    request.Wrapped = true;
-                    (sender as TextBox).MoveFocus(request);
-                //}
+                if ((sender as TextBox).Name == "txtDescription")
+                {                    
+                    datagrid.Focus();
+                    Dispatcher.BeginInvoke(new Action(async ()=>
+                    {
+                        await Task.Delay(10);
+                        keybd_event(VK_Down, 0, 0, UIntPtr.Zero); // فشار دادن کلید
+                        Thread.Sleep(50); // تاخیر برای شبیه‌سازی فشار دادن
+                        keybd_event(VK_Down, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); // آزاد کردن کلید 
+                        var g = datagrid.GetChildOfType<ComboBoxAdv>();
+                        var gridCell = g.GetParentOfType<GridCell>();
+                        (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(gridCell.ColumnBase.RowIndex, gridCell.ColumnBase.ColumnIndex));
+                        await Task.Delay(10);
+                        g.Focus();
+                        g.IsDropDownOpen = true;
+                    }),DispatcherPriority.Render);
+                }
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     if (btnConfirm.IsFocused)
@@ -477,6 +484,7 @@ namespace WpfCol
 
         // کلیدهای مجازی
         const byte VK_F2 = 0x71; // کد کلید F2
+        const byte VK_Down = 0x28; // کد مجازی برای کلید جهت پایین
         const uint KEYEVENTF_KEYUP = 0x0002; // نشان دهنده آزاد کردن کلید
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -550,15 +558,16 @@ namespace WpfCol
                 }
             }           
         }
-        public void SetEnterToNextCell(RowColumnIndex? rowColumn=null)
+        int tempSelectedIndex = -1;
+        public void SetEnterToNextCell(RowColumnIndex? rowColumn = null)
         {
             var dataGrid = datagrid;
 
             // پیدا کردن سطر و ستون فعلی
             var currentCell = datagrid.SelectionController.CurrentCellManager?.CurrentCell;
-            if (currentCell != null||rowColumn!=null)
+            if (currentCell != null || rowColumn != null)
             {
-                int currentRowIndex = rowColumn==null? currentCell.RowIndex:rowColumn.Value.RowIndex;
+                int currentRowIndex = rowColumn == null ? currentCell.RowIndex : rowColumn.Value.RowIndex;
                 int currentColumnIndex = rowColumn == null ? currentCell.ColumnIndex : rowColumn.Value.ColumnIndex;
 
                 // افزایش اندیس ستون
@@ -572,7 +581,7 @@ namespace WpfCol
                 }
 
                 // اگر به انتهای سطرها رسیدیم، به اولین سطر برگردید
-                if (currentRowIndex >= recieveMoney_Details.Count+2)
+                if (currentRowIndex >= recieveMoney_Details.Count + 2)
                 {
                     currentRowIndex = 0; // به اولین سطر برگردید
                 }
@@ -581,13 +590,62 @@ namespace WpfCol
                 try
                 {
                     if (currentColumnIndex == 2)
-                        (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex+1));
-                    else if (currentColumnIndex == 5 && ((datagrid.GetRecordAtRowIndex(currentRowIndex) as AcDocument_Detail)?.Debtor ?? 0) != 0)
-                        (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex+1, 0));
+                        (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex + 1));
+                    else if (tempSelectedIndex != -1)
+                    {
+                        var recieveMoney_Detail = recieveMoney_Details[tempSelectedIndex];
+                        switch (recieveMoney_Detail.MoneyType)
+                        {
+                            case 0:
+                            case 2:
+                                if (currentColumnIndex == 5)
+                                    (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex + 1, currentColumnIndex=0));
+                                else
+                                    (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex));
+                                break;
+                            case 1:
+                                (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex));
+                                break;
+                            case 3:
+                                if (currentColumnIndex == 5)
+                                    (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex + 1));
+                                else if (currentColumnIndex == 7)
+                                    (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex + 1, currentColumnIndex=0));
+                                else
+                                    (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex));
+                                break;
+                        }
+                    }
                     else
                         (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex));
                 }
                 catch { }
+                if(currentColumnIndex == 0)
+                {
+                    datagrid.Dispatcher.BeginInvoke(new Action(async () =>
+                    {
+                        await Task.Delay(50);
+                        var comboBoxAdvs = datagrid.GetChildsOfType<ComboBoxAdv>();
+                        ComboBoxAdv comboBoxAdv=null;
+                        int i = 0;
+                        foreach (var item in comboBoxAdvs)
+                        {
+                            var gridCell = item.GetParentOfType<GridCell>();
+                            if (gridCell == datagrid.SelectionController.CurrentCellManager?.CurrentCell.Element)
+                            {
+                                comboBoxAdv= comboBoxAdvs[i];
+                                break;
+                            }
+                            i++;
+                        }
+                        if (comboBoxAdv != null)
+                        {
+                            await Task.Delay(10);
+                            comboBoxAdv.Focus();
+                            comboBoxAdv.IsDropDownOpen = true;
+                        }
+                    }), DispatcherPriority.Render);
+                }
             }
         }
         private void datagrid_CurrentCellEndEdit(object sender, Syncfusion.UI.Xaml.Grid.CurrentCellEndEditEventArgs e)
@@ -633,9 +691,12 @@ namespace WpfCol
             {
                 var th = new Thread(() =>
                 {
+                    StateLoadView=true;
                     Thread.Sleep(30);
                     Dispatcher.Invoke(new Action(() =>
                     SetEnterToNextCell(this.CurrentRowColumnIndex)));
+                    Thread.Sleep(30);
+                    StateLoadView=false;
                 });
                 th.Start();
             }
@@ -1491,10 +1552,12 @@ namespace WpfCol
                 if (recieveMoney_Detail.MoneyType != 3)
                 {
                     if (e.RowColumnIndex.ColumnIndex == 1 || e.RowColumnIndex.ColumnIndex == 2)
-                        e.Cancel = true;                    
-                    else if(recieveMoney_Detail.MoneyType!=1&& e.RowColumnIndex.ColumnIndex>=5&& e.RowColumnIndex.ColumnIndex<=7)
+                        e.Cancel = true;
+                    else if (recieveMoney_Detail.MoneyType != 1 && e.RowColumnIndex.ColumnIndex >= 5)
                         e.Cancel = true;
                 }
+                else if (e.RowColumnIndex.ColumnIndex == 5 || e.RowColumnIndex.ColumnIndex == 7 || e.RowColumnIndex.ColumnIndex == 8)
+                    e.Cancel = true;
             }
             if (SearchTermTextBox.Text != "")
             {
@@ -1642,6 +1705,7 @@ namespace WpfCol
                                 break;
                         }
                         datagrid.View.Refresh();
+                        datagrid.Focus();
                     }), DispatcherPriority.Render);
                 }
                 else
@@ -1834,6 +1898,35 @@ namespace WpfCol
                 txtPreferential.Tag = mu;
                 txbPreferential.Text = mu.Name;
             }
+        }
+
+        private void ComboBoxAdv_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var comboBoxAdv = sender as ComboBoxAdv; 
+            switch(e.Key) 
+            {
+                case Key.NumPad1:
+                case Key.D1:                   
+                    comboBoxAdv.SelectedIndex = 0;
+                    break;
+                case Key.NumPad2:
+                case Key.D2:
+                    comboBoxAdv.SelectedIndex = 1;
+                    break;
+                case Key.NumPad3:
+                case Key.D3:
+                    comboBoxAdv.SelectedIndex = 2;
+                    break;
+                case Key.NumPad4:
+                case Key.D4:
+                    comboBoxAdv.SelectedIndex = 3;
+                    break;
+            }
+        }
+
+        private void datagrid_SelectionChanging(object sender, GridSelectionChangingEventArgs e)
+        {
+            tempSelectedIndex = datagrid.SelectedIndex;
         }
 
         private void persianCalendarE_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)

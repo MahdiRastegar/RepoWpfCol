@@ -63,13 +63,13 @@ namespace WpfCol
                 switch (MoneyType)
                 {
                     case 0:
-                        return "نقد";
+                        return "1-نقد";
                     case 1:
-                        return "چک";
+                        return "2-چک";
                     case 2:
-                        return "تخفیف";
+                        return "3-تخفیف";
                     case 3:
-                        return "سایر";
+                        return "4-سایر";
                 }
                 return null;
             }
