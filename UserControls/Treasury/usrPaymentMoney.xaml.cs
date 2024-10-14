@@ -103,6 +103,12 @@ namespace WpfCol
                         g.IsDropDownOpen = true;
                     }), DispatcherPriority.Render);
                 }
+                else
+                {
+                    TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+                    request.Wrapped = true;
+                    (sender as TextBox).MoveFocus(request);
+                }
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     if (btnConfirm.IsFocused)
@@ -393,8 +399,10 @@ namespace WpfCol
                 datagrid.BorderBrush = Brushes.Red;
                 haserror = true;
             }
-            else if (paymentMoney_Details.Any(t => t.Price == 0 || t.ColeMoein == "" || t.ColeMoein == null || t.PreferentialCode == "" || t.PreferentialCode == null) ||
-                paymentMoney_Details.Any(t => t.MoneyType == 1 && (t.Date == null || t.Bank == null || t.Number == null || t.Number == "")))
+            //else if (paymentMoney_Details.Any(t => t.Price == 0 || t.ColeMoein == "" || t.ColeMoein == null || t.PreferentialCode == "" || t.PreferentialCode == null) ||
+            //    paymentMoney_Details.Any(t => t.MoneyType == 1 && (t.Date == null || t.Bank == null || t.Number == null||t.Number=="")))
+            else if (paymentMoney_Details.Any(t => t.Error != string.Empty))
+            //else if (datagrid.GetChildsByName<Border>("PART_InValidCellBorder").Any(g => g.Visibility == Visibility.Visible))
             {
                 datagrid.BorderBrush = Brushes.Red;
                 haserror = true;
@@ -590,7 +598,7 @@ namespace WpfCol
                 //Updates the PressedRowColumnIndex value in the GridBaseSelectionController.
                 try
                 {
-                    if (currentColumnIndex == 2)
+                    if (currentColumnIndex == 3)
                         (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex + 1));
                     else if (tempSelectedIndex != -1)
                     {
@@ -737,6 +745,7 @@ namespace WpfCol
                 return;
             }
             searchImage.Visibility = Visibility.Visible;
+            searchGrid.Visibility = Visibility.Collapsed;
             searchImage.Source = new BitmapImage(new Uri("pack://application:,,,/Images/Data.png"));
             searchImage.ToolTip = "جستجو";
             GStop1.Color = new Color()
@@ -1013,7 +1022,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "دریافت وجه");
+            var item = list.FirstOrDefault(u => u.Header == "پرداخت وجه");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             return true;
         }
@@ -1159,6 +1168,7 @@ namespace WpfCol
                     };
                     searchImage.Opacity = 1;
                     gridDelete.Visibility = Visibility.Visible;
+                    searchGrid.Visibility = Visibility.Collapsed;
                     paymentMoney_Details.Clear();
                     temp_paymentMoney_Details.Clear();
                     var header = datagridSearch.SelectedItem as PaymentMoneyHeader;
@@ -1246,6 +1256,7 @@ namespace WpfCol
                     var t = dataPager.Source;
                     dataPager.Source = null;
                     borderEdit.Visibility = gridDelete.Visibility = Visibility.Collapsed;
+                    searchGrid.Visibility = Visibility.Visible;
                     datagrid.Visibility = Visibility.Collapsed;
                     datagridSearch.Visibility = Visibility.Visible;
                     dataPager.Visibility = Visibility.Visible;
@@ -1290,10 +1301,10 @@ namespace WpfCol
                 }
             }
         }
-
+        bool LoadedFill = false;
         private void FillHeaders()
         {
-            if (PaymentMoneyHeaders.Count == 0)
+            if (!LoadedFill)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 var db = new ColDbEntities1();
@@ -1305,6 +1316,7 @@ namespace WpfCol
                     }*/
                     PaymentMoneyHeaders.Add(item);
                 }
+                LoadedFill = true;
                 Mouse.OverrideCursor = null;
             }
         }
@@ -1684,6 +1696,7 @@ namespace WpfCol
                             return;
                         var paymentMoney_Detail = (dataColumn.Element as GridCell).DataContext as PaymentMoney_Detail;
                         paymentMoney_Detail.MoneyType = (byte)hg;
+                        paymentMoney_Detail.ClearErrors();
                         var db = new ColDbEntities1();
                         var tMoein = db.Moein.Include("Col");
                         switch (paymentMoney_Detail.MoneyType)
@@ -1715,6 +1728,7 @@ namespace WpfCol
                     if (paymentMoney_Detail != comboBoxAdv.DataContext || v.ColumnIndex != 0)
                         return;
                     paymentMoney_Detail.MoneyType = (byte)hg;
+                    paymentMoney_Detail.ClearErrors();
                     var db = new ColDbEntities1();
                     var tMoein = db.Moein.Include("Col");
                     switch (paymentMoney_Detail.MoneyType)
@@ -1852,6 +1866,14 @@ namespace WpfCol
             }
         }
 
+        private void ComboBoxAdv_DropDownOpened(object sender, EventArgs e)
+        {
+            var comboBoxAdv = sender as Syncfusion.Windows.Tools.Controls.ComboBoxAdv;
+            if (comboBoxAdv.DataContext == null && comboBoxAdv.SelectedIndex != -1)
+            {
+                comboBoxAdv.SelectedIndex = -1;
+            }
+        }
         private void ComboBoxAdv_GotFocus(object sender, RoutedEventArgs e)
         {
             var comboBoxAdv = sender as Syncfusion.Windows.Tools.Controls.ComboBoxAdv;
@@ -1929,6 +1951,7 @@ namespace WpfCol
         {
             tempSelectedIndex = datagrid.SelectedIndex;
         }
+
 
         private void persianCalendarE_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {

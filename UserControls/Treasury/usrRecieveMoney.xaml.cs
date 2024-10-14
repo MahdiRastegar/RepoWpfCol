@@ -87,9 +87,9 @@ namespace WpfCol
             if (e.Text == "\r")
             {
                 if ((sender as TextBox).Name == "txtDescription")
-                {                    
+                {
                     datagrid.Focus();
-                    Dispatcher.BeginInvoke(new Action(async ()=>
+                    Dispatcher.BeginInvoke(new Action(async () =>
                     {
                         await Task.Delay(10);
                         keybd_event(VK_Down, 0, 0, UIntPtr.Zero); // فشار دادن کلید
@@ -101,7 +101,13 @@ namespace WpfCol
                         await Task.Delay(10);
                         g.Focus();
                         g.IsDropDownOpen = true;
-                    }),DispatcherPriority.Render);
+                    }), DispatcherPriority.Render);
+                }
+                else
+                {
+                    TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+                    request.Wrapped = true;
+                    (sender as TextBox).MoveFocus(request);
                 }
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
@@ -393,8 +399,10 @@ namespace WpfCol
                 datagrid.BorderBrush = Brushes.Red;
                 haserror = true;
             }
-            else if (recieveMoney_Details.Any(t => t.Price == 0 || t.ColeMoein == "" || t.ColeMoein == null || t.PreferentialCode == "" || t.PreferentialCode == null) ||
-                recieveMoney_Details.Any(t => t.MoneyType == 1 && (t.Date == null || t.Bank == null || t.Number == null||t.Number=="")))
+            //else if (recieveMoney_Details.Any(t => t.Price == 0 || t.ColeMoein == "" || t.ColeMoein == null || t.PreferentialCode == "" || t.PreferentialCode == null) ||
+            //    recieveMoney_Details.Any(t => t.MoneyType == 1 && (t.Date == null || t.Bank == null || t.Number == null||t.Number=="")))
+            else if (recieveMoney_Details.Any(t => t.Error != string.Empty))
+            //else if (datagrid.GetChildsByName<Border>("PART_InValidCellBorder").Any(g => g.Visibility == Visibility.Visible))
             {
                 datagrid.BorderBrush = Brushes.Red;
                 haserror = true;
@@ -590,7 +598,7 @@ namespace WpfCol
                 //Updates the PressedRowColumnIndex value in the GridBaseSelectionController.
                 try
                 {
-                    if (currentColumnIndex == 2)
+                    if (currentColumnIndex == 3)
                         (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex + 1));
                     else if (tempSelectedIndex != -1)
                     {
@@ -737,6 +745,7 @@ namespace WpfCol
                 return;
             }
             searchImage.Visibility = Visibility.Visible;
+            searchGrid.Visibility = Visibility.Collapsed;
             searchImage.Source = new BitmapImage(new Uri("pack://application:,,,/Images/Data.png"));
             searchImage.ToolTip = "جستجو";
             GStop1.Color = new Color()
@@ -1159,6 +1168,7 @@ namespace WpfCol
                     };
                     searchImage.Opacity = 1;
                     gridDelete.Visibility = Visibility.Visible;
+                    searchGrid.Visibility = Visibility.Collapsed;
                     recieveMoney_Details.Clear();
                     temp_recieveMoney_Details.Clear();
                     var header = datagridSearch.SelectedItem as RecieveMoneyHeader;
@@ -1246,6 +1256,7 @@ namespace WpfCol
                     var t = dataPager.Source;
                     dataPager.Source = null;
                     borderEdit.Visibility = gridDelete.Visibility = Visibility.Collapsed;
+                    searchGrid.Visibility = Visibility.Visible;
                     datagrid.Visibility = Visibility.Collapsed;
                     datagridSearch.Visibility = Visibility.Visible;
                     dataPager.Visibility = Visibility.Visible;
@@ -1290,10 +1301,10 @@ namespace WpfCol
                 }
             }
         }
-
+        bool LoadedFill = false;
         private void FillHeaders()
         {
-            if (RecieveMoneyHeaders.Count == 0)
+            if (!LoadedFill)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 var db = new ColDbEntities1();
@@ -1305,6 +1316,7 @@ namespace WpfCol
                     }*/
                     RecieveMoneyHeaders.Add(item);
                 }
+                LoadedFill = true;
                 Mouse.OverrideCursor = null;
             }
         }
@@ -1684,6 +1696,7 @@ namespace WpfCol
                             return;
                         var recieveMoney_Detail = (dataColumn.Element as GridCell).DataContext as RecieveMoney_Detail;
                         recieveMoney_Detail.MoneyType = (byte)hg;
+                        recieveMoney_Detail.ClearErrors();
                         var db = new ColDbEntities1();
                         var tMoein = db.Moein.Include("Col");
                         switch (recieveMoney_Detail.MoneyType)
@@ -1714,7 +1727,8 @@ namespace WpfCol
                     var recieveMoney_Detail = (v.Element as GridCell).DataContext as RecieveMoney_Detail;
                     if (recieveMoney_Detail != comboBoxAdv.DataContext||v.ColumnIndex!=0)
                         return;
-                    recieveMoney_Detail.MoneyType = (byte)hg;                    
+                    recieveMoney_Detail.MoneyType = (byte)hg;
+                    recieveMoney_Detail.ClearErrors();
                     var db = new ColDbEntities1();
                     var tMoein = db.Moein.Include("Col");
                     switch (recieveMoney_Detail.MoneyType)
@@ -1852,6 +1866,14 @@ namespace WpfCol
             }
         }
 
+        private void ComboBoxAdv_DropDownOpened(object sender, EventArgs e)
+        {
+            var comboBoxAdv = sender as Syncfusion.Windows.Tools.Controls.ComboBoxAdv;
+            if (comboBoxAdv.DataContext ==null&&comboBoxAdv.SelectedIndex!=-1)
+            {
+                comboBoxAdv.SelectedIndex = -1;
+            }
+        }
         private void ComboBoxAdv_GotFocus(object sender, RoutedEventArgs e)
         {
             var comboBoxAdv = sender as Syncfusion.Windows.Tools.Controls.ComboBoxAdv;
@@ -1929,6 +1951,7 @@ namespace WpfCol
         {
             tempSelectedIndex = datagrid.SelectedIndex;
         }
+
 
         private void persianCalendarE_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {

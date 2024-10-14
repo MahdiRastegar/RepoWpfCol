@@ -13,7 +13,12 @@ using System.Xml.Serialization;
 namespace WpfCol
 {
     public static class ExtensionMethods
-    {    
+    {
+        public static void AddUniqueItem(this List<string> strings,string a)
+        {
+            if(!strings.Contains(a))
+                strings.Add(a);
+        }
         public static object GetValTypeOfCell(XLCellValue? xLCell, Type type,bool isRequied=true)
         {
             if (!xLCell.HasValue)
@@ -264,6 +269,27 @@ namespace WpfCol
             }
 
             return null;
+        }
+        public static List<T> GetChildsByName<T>(this DependencyObject parent, string name) where T : FrameworkElement
+        {
+            List<T> children = new List<T>();
+
+            // تعداد کل فرزندان
+            int childCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                // اگر فرزند از نوع کنترل خواسته شده باشد و نام آن مطابق باشد
+                if (child is T frameworkElement && frameworkElement.Name == name)
+                {
+                    children.Add(frameworkElement);
+                }
+
+                // جستجوی بازگشتی در فرزندان و افزودن نتایج به لیست
+                children.AddRange(GetChildsByName<T>(child, name));
+            }
+            return children;
         }
         public static string ToComma(this decimal? number)
         {

@@ -1160,9 +1160,10 @@ namespace WpfCol
             }
         }
 
+        bool LoadedFill = false;
         private void FillHeaders()
         {
-            if (acDocument_Headers.Count == 0)
+            if (!LoadedFill)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 var db = new ColDbEntities1();
@@ -1174,6 +1175,7 @@ namespace WpfCol
                     }
                     acDocument_Headers.Add(item);
                 }
+                LoadedFill = true;
                 Mouse.OverrideCursor = null;
             }
         }
