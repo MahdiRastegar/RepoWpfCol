@@ -14,6 +14,13 @@ namespace WpfCol
     
     public partial class PaymentMoney_Detail
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public PaymentMoney_Detail()
+        {
+            this.MoneyType = 255;
+            this.CheckPaymentEvents = new HashSet<CheckPaymentEvents>();
+        }
+    
         public System.Guid Id { get; set; }
         public System.Guid fkHeaderId { get; set; }
         public decimal Price { get; set; }
@@ -24,8 +31,12 @@ namespace WpfCol
         public byte MoneyType { get; set; }
         public System.Guid fk_PreferentialId { get; set; }
         public System.Guid fk_MoeinId { get; set; }
+        public string SayadiNumber { get; set; }
+        public Nullable<bool> Registered { get; set; }
     
         public virtual Bank Bank { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CheckPaymentEvents> CheckPaymentEvents { get; set; }
         public virtual Moein Moein { get; set; }
         public virtual PaymentMoneyHeader PaymentMoneyHeader { get; set; }
         public virtual Preferential Preferential { get; set; }

@@ -524,7 +524,7 @@ FontFamily="{StaticResource IranSans}" Width="27"
                     <Image Source="/Images/Delete.png" IsHitTestVisible="False" Width="37.5" Stretch="Fill" Height="39" Margin="0 0 0 2"/>
                 </Grid>
             </DockPanel>
-            <Grid  Grid.Row="1" Grid.RowSpan="5" Grid.Column="2" Margin="0 -10 0 40" Grid.ColumnSpan="2">
+            <Grid  Grid.Row="1" Name="ParentDataGrid" Grid.RowSpan="5" Grid.Column="2" Margin="0 -10 0 40" Grid.ColumnSpan="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition/>
@@ -633,6 +633,8 @@ FontFamily="{StaticResource IranSans}" Width="27"
                         <Syncfusion:GridTextColumn MinimumWidth="90" HeaderText="شماره" MappingName="Number"/>
                         <Syncfusion:GridComboBoxColumn MinimumWidth="170" Width="100" HeaderText="نام بانک" ItemsSource="{Binding Banks}" DisplayMemberPath="Name" MappingName="Bank"/>
                         <Syncfusion:GridTextColumn MinimumWidth="170" HeaderText="نام شعبه" MappingName="BranchName"/>
+                        <Syncfusion:GridTextColumn MinimumWidth="160" HeaderText="شماره صیادی" MappingName="SayadiNumber"/>
+                        <Syncfusion:GridCheckBoxColumn MinimumWidth="105" HeaderText="ثبت در سامانه" MappingName="Registered"/>
                     </Syncfusion:SfDataGrid.Columns>
                 </Syncfusion:SfDataGrid>
                 <Syncfusion:SfDataPager x:Name="dataPager" Visibility="Collapsed" FlowDirection="LeftToRight" VerticalAlignment="Bottom" Margin="0 -30" HorizontalAlignment="Center" UseOnDemandPaging="True"
@@ -698,7 +700,7 @@ Source="{Binding PaymentMoneyHeaders}"/>
                 </Syncfusion:SfDataGrid>
             </Grid>
             <Image Name="searchImage" ToolTip="جستجو" PreviewMouseDown="searchImage_PreviewMouseDown" Visibility="Visible"  Height="55" Cursor="Hand" HorizontalAlignment="Right" Grid.Row="5" Grid.RowSpan="2" VerticalAlignment="Bottom" Margin="0,0,45,6" Grid.Column="3" Source="/Images/Data.png"/>
-            <Popup Name="MyPopupS" Visibility="Collapsed" Placement="Mouse" StaysOpen="False" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2">
+            <Popup Name="MyPopupS" Visibility="Collapsed" Closed="MyPopupS_Closed" Placement="Mouse" StaysOpen="False" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2">
                 <persianDateControls:PersianCalendar2  Name="persianCalendar" PreviewMouseRightButtonDown="persianCalendar_PreviewMouseRightButtonDown" PreviewMouseLeftButtonDown="persianCalendar_PreviewMouseLeftButtonDown" SelectedDateChanged="persianCalendar_SelectedDateChanged"
                                        DisplayDate="{Binding SelectedDate, RelativeSource={RelativeSource Self}}" Background="{x:Static SystemColors.ControlLightLightBrush}" TabIndex="1" VerticalAlignment="Top" HorizontalAlignment="Center"  Width="180" Height="165" FontFamily="B Homa"  FontSize="11.4"  />
             </Popup>

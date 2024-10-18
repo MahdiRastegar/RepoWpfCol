@@ -12,33 +12,24 @@ namespace WpfCol
     using System;
     using System.Collections.Generic;
     
-    public partial class RecieveMoney_Detail
+    public partial class ChEvent
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public RecieveMoney_Detail()
+        public ChEvent()
         {
-            this.MoneyType = 255;
+            this.CheckPaymentEvents = new HashSet<CheckPaymentEvents>();
             this.CheckRecieveEvents = new HashSet<CheckRecieveEvents>();
         }
     
         public System.Guid Id { get; set; }
-        public System.Guid fkHeaderId { get; set; }
-        public decimal Price { get; set; }
-        public string BranchName { get; set; }
-        public string Number { get; set; }
-        public Nullable<System.Guid> fkBank { get; set; }
-        public Nullable<System.DateTime> Date { get; set; }
-        public byte MoneyType { get; set; }
-        public System.Guid fk_PreferentialId { get; set; }
-        public System.Guid fk_MoeinId { get; set; }
-        public string SayadiNumber { get; set; }
-        public Nullable<bool> Registered { get; set; }
+        public byte ChEventCode { get; set; }
+        public string Name { get; set; }
+        public bool ForMoney { get; set; }
+        public bool ForPayment { get; set; }
     
-        public virtual Bank Bank { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CheckPaymentEvents> CheckPaymentEvents { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CheckRecieveEvents> CheckRecieveEvents { get; set; }
-        public virtual Moein Moein { get; set; }
-        public virtual Preferential Preferential { get; set; }
-        public virtual RecieveMoneyHeader RecieveMoneyHeader { get; set; }
     }
 }

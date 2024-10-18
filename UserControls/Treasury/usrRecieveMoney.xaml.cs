@@ -255,6 +255,8 @@ namespace WpfCol
                         Number = item.Number,
                         Price = item.Price,
                         MoneyType = item.MoneyType,
+                        Registered = item.Registered,
+                        SayadiNumber = item.SayadiNumber,
                         Id = Guid.NewGuid()
                     };
                     db.RecieveMoney_Detail.Add(en);
@@ -295,6 +297,8 @@ namespace WpfCol
                         Number = item.Number,
                         Price = item.Price,
                         MoneyType = item.MoneyType,
+                        Registered = item.Registered,
+                        SayadiNumber = item.SayadiNumber,
                         Id = Guid.NewGuid()
                     };
                     db.RecieveMoney_Detail.Add(en);
@@ -510,6 +514,8 @@ namespace WpfCol
                     y = element.DataContext;
                     if (element is TextBlock)
                     {
+                        if (sender == null)
+                            return;
                         if (datagrid.SelectedIndex == -1)
                         {
                             if (y == null)
@@ -530,7 +536,7 @@ namespace WpfCol
                         {
                             Thread.Sleep(10);
                             Dispatcher.Invoke(() =>
-                            datagrid_PreviewKeyDown(sender, e));
+                            datagrid_PreviewKeyDown(null, e));
                         });
                         th.Start();
                         return;
@@ -548,6 +554,8 @@ namespace WpfCol
                     {
                         if (y == null || y.PreferentialCode != null)
                         {
+                            if (sender == null)
+                                return;
                             var cell = datagrid.SelectionController.CurrentCellManager.CurrentCell.Element;
                             keybd_event(VK_F2, 0, 0, UIntPtr.Zero); // فشار دادن کلید
                             Thread.Sleep(50); // تاخیر برای شبیه‌سازی فشار دادن
@@ -556,13 +564,47 @@ namespace WpfCol
                             {
                                 Thread.Sleep(10);
                                 Dispatcher.Invoke(() =>
-                                datagrid_PreviewKeyDown(sender, e));
+                                datagrid_PreviewKeyDown(null, e));
                             });
                             th.Start();
                             return;
                         }
                     }
                     ShowSearchPreferential(y);
+                    datagrid.IsHitTestVisible = false;
+                }
+                else if (datagrid.SelectionController.CurrentCellManager?.CurrentCell?.ColumnIndex == 5)
+                {
+                    dynamic y = null;
+                    var element = (datagrid.SelectionController.CurrentCellManager.CurrentCell.Element as GridCell)
+                            .Content as FrameworkElement;
+                    y = element.DataContext;
+                    if (datagrid.SelectedIndex == -1 || element is TextBlock)
+                    {
+                        if (y == null)
+                        {
+                            if (sender == null)
+                                return;
+                            var cell = datagrid.SelectionController.CurrentCellManager.CurrentCell.Element;
+                            keybd_event(VK_F2, 0, 0, UIntPtr.Zero); // فشار دادن کلید
+                            Thread.Sleep(50); // تاخیر برای شبیه‌سازی فشار دادن
+                            keybd_event(VK_F2, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); // آزاد کردن کلید
+                            var th = new Thread(() =>
+                            {
+                                Thread.Sleep(10);
+                                Dispatcher.Invoke(() =>
+                                datagrid_PreviewKeyDown(null, e));
+                            });
+                            th.Start();
+                            return;
+                        }
+                        else if (y.MoneyType != 1)
+                            return;
+                    }
+                    (MyPopupS.Parent as Grid).Children.Remove(MyPopupS);
+                    ParentDataGrid.Children.Add(MyPopupS);
+                    MyPopupS.Visibility = Visibility.Visible;
+                    MyPopupS.IsOpen = true;
                     datagrid.IsHitTestVisible = false;
                 }
             }           
@@ -655,6 +697,7 @@ namespace WpfCol
                         }
                     }), DispatcherPriority.Render);
                 }
+                dataGrid.Focus();
             }
         }
         private void datagrid_CurrentCellEndEdit(object sender, Syncfusion.UI.Xaml.Grid.CurrentCellEndEditEventArgs e)
@@ -1530,6 +1573,13 @@ namespace WpfCol
         private void persianCalendar_SelectedDateChanged(object sender, RoutedEventArgs e)
         {
             MyPopupS.IsOpen = false;
+            if(datePicker1==null&&datagrid.Visibility== Visibility.Visible)
+            {
+                (datagrid.SelectedItem as RecieveMoney_Detail).Date = persianCalendar.SelectedDate.ToDateTime();
+                datagrid.IsHitTestVisible = true;
+                datagrid.View.Refresh();
+                return;
+            }
             datePicker1.SelectedDate = persianCalendar.SelectedDate.ToDateTime();
             var persian = new System.Globalization.PersianCalendar();
             var h = $"{persian.GetYear(datePicker1.SelectedDate.Value)}/{persian.GetMonth(datePicker1.SelectedDate.Value)}/{persian.GetDayOfMonth(datePicker1.SelectedDate.Value)}";
@@ -1538,7 +1588,12 @@ namespace WpfCol
 
         private void persianCalendarE_SelectedDateChanged(object sender, RoutedEventArgs e)
         {
-            MyPopupE.IsOpen = false;
+            if (MyPopupE.IsOpen)
+                datagrid.Dispatcher.BeginInvoke(new Action(async () =>
+                {
+                    await Task.Delay(80);
+                    MyPopupE.IsOpen = false;
+                }));
             datePicker2.SelectedDate = persianCalendarE.SelectedDate.ToDateTime();
             var persian = new System.Globalization.PersianCalendar();
             var h = $"{persian.GetYear(datePicker2.SelectedDate.Value)}/{persian.GetMonth(datePicker2.SelectedDate.Value)}/{persian.GetDayOfMonth(datePicker2.SelectedDate.Value)}";
@@ -1583,9 +1638,23 @@ namespace WpfCol
         string CurrentCellText;
         private void datagrid_CurrentCellValueChanged(object sender, CurrentCellValueChangedEventArgs e)
         {
-            var textBox = (datagrid.SelectionController.CurrentCellManager?.CurrentCell.Element as GridCell).Content as TextBox;
-            if (textBox.Text != "" && e.Record is RecieveMoney_Detail detail && detail.GetType().GetProperty(e.Column.MappingName).GetValue(detail)?.ToString() != textBox.Text && !Keyboard.IsKeyDown(Key.Enter))
-                CurrentCellText = textBox.Text;
+            var ele = (datagrid.SelectionController.CurrentCellManager?.CurrentCell.Element as GridCell).Content;
+            if (ele is TextBox textBox)
+            {
+                if (textBox.Text != "" && e.Record is RecieveMoney_Detail detail && detail.GetType().GetProperty(e.Column.MappingName).GetValue(detail)?.ToString() != textBox.Text && !Keyboard.IsKeyDown(Key.Enter))
+                    CurrentCellText = textBox.Text;
+            }
+            else if(ele is CheckBox check)
+            {
+                if (e.Record is RecieveMoney_Detail detail && detail.MoneyType != 1 && e.RowColumnIndex.ColumnIndex >= 5)
+                {
+                    check.IsChecked = null;
+                }
+                else
+                {
+                    datagrid.Focus();
+                }
+            }
         }
 
         private void datagrid_RowValidating(object sender, RowValidatingEventArgs e)
@@ -1842,19 +1911,30 @@ namespace WpfCol
         private void datagrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             var currentCell = datagrid.SelectionController.CurrentCellManager?.CurrentCell;
-            if (currentCell != null && (currentCell.Element as GridCell)?.IsMouseOver == true && currentCell.ColumnIndex == 7 && ((currentCell.Element as GridCell).Content as ContentControl)?.Content is TextBlock)
+            if (currentCell != null)
             {
-                var recieveMoney_Detail = (currentCell.Element as GridCell).DataContext as RecieveMoney_Detail;
-                if (recieveMoney_Detail == null)
-                    return;
-                if (!(recieveMoney_Detail.MoneyType == 0 || recieveMoney_Detail.MoneyType == 2))
+                if ((currentCell.Element as GridCell)?.IsMouseOver == true && currentCell.ColumnIndex == 7 && ((currentCell.Element as GridCell).Content as ContentControl)?.Content is TextBlock)
                 {
-                    e.Handled = true;
-                    keybd_event(VK_F2, 0, 0, UIntPtr.Zero); // فشار دادن کلید
-                    Thread.Sleep(50); // تاخیر برای شبیه‌سازی فشار دادن
-                    keybd_event(VK_F2, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); // آزاد کردن کلید
+                    var recieveMoney_Detail = (currentCell.Element as GridCell).DataContext as RecieveMoney_Detail;
+                    if (recieveMoney_Detail == null)
+                        return;
+                    if (!(recieveMoney_Detail.MoneyType == 0 || recieveMoney_Detail.MoneyType == 2))
+                    {
+                        e.Handled = true;
+                        keybd_event(VK_F2, 0, 0, UIntPtr.Zero); // فشار دادن کلید
+                        Thread.Sleep(50); // تاخیر برای شبیه‌سازی فشار دادن
+                        keybd_event(VK_F2, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); // آزاد کردن کلید
+                    }
                 }
-            }
+                if (currentCell.ColumnIndex == 10)
+                {
+                    //Dispatcher.BeginInvoke(new Action(async () =>
+                    //{
+                    //    await Task.Delay(300);
+                    //    datagrid.Focus();
+                    //}), DispatcherPriority.Render);
+                }
+            }           
         }
 
         private void ComboBoxAdv_Loaded(object sender, RoutedEventArgs e)
@@ -1952,6 +2032,13 @@ namespace WpfCol
             tempSelectedIndex = datagrid.SelectedIndex;
         }
 
+        private void MyPopupS_Closed(object sender, EventArgs e)
+        {
+            if (datePicker1 == null && datagrid.Visibility == Visibility.Visible)
+            {
+                datagrid.IsHitTestVisible = true;
+            }
+        }
 
         private void persianCalendarE_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {

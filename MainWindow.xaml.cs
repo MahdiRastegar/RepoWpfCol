@@ -282,5 +282,15 @@ namespace WpfCol
                 tabcontrol.Items.Add(item);
             }
         }
+
+        private void rbnRecieveCheck_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void rbnPaymentCheck_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

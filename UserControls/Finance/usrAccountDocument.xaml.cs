@@ -1402,7 +1402,12 @@ namespace WpfCol
 
         private void persianCalendarE_SelectedDateChanged(object sender, RoutedEventArgs e)
         {
-            MyPopupE.IsOpen = false;
+            if (MyPopupE.IsOpen)
+                datagrid.Dispatcher.BeginInvoke(new Action(async () =>
+                {
+                    await Task.Delay(80);
+                    MyPopupE.IsOpen = false;
+                }));
             datePicker2.SelectedDate = persianCalendarE.SelectedDate.ToDateTime();
             var persian = new System.Globalization.PersianCalendar();
             var h = $"{persian.GetYear(datePicker2.SelectedDate.Value)}/{persian.GetMonth(datePicker2.SelectedDate.Value)}/{persian.GetDayOfMonth(datePicker2.SelectedDate.Value)}";

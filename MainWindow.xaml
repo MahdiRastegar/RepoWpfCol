@@ -44,6 +44,10 @@
                     <Syncfusion:RibbonButton Name="rbnRecieveMoney" Click="rbnRecieveMoney_Click" SizeForm="Large" Label="دریافت وجه"/>
                     <Syncfusion:RibbonButton Name="rbnPaymentMoney" Click="rbnPaymentMoney_Click" SizeForm="Large" Label="پرداخت وجه"/>
                 </Syncfusion:RibbonBar>
+                <Syncfusion:RibbonBar Name="barTreasury1" Width="92" Header="">
+                    <Syncfusion:RibbonButton Name="rbnRecieveCheck" Click="rbnRecieveCheck_Click" SizeForm="Large" Label="چک های دریافتی"/>
+                    <Syncfusion:RibbonButton Name="rbnPaymentCheck" Click="rbnPaymentCheck_Click" SizeForm="Large" Label="چک های پرداختی"/>
+                </Syncfusion:RibbonBar>
             </Syncfusion:RibbonTab>
         </Syncfusion:Ribbon>
         <Syncfusion:TabControlExt Panel.ZIndex="1" FlowDirection="RightToLeft" SelectionChanged="tabcontrol_SelectionChanged" EnableLabelEdit="False" Margin="10 0 10 4" FontSize="16" Name="tabcontrol" Grid.Row="1" CloseButtonType="Extended" TabClosed="tabcontrol_TabClosed" TabClosing="tabcontrol_TabClosing">

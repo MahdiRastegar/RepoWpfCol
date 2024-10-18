@@ -14,10 +14,7 @@ namespace WpfCol
 {
     public partial class RecieveMoney_Detail:IDataErrorInfo
     {
-        public RecieveMoney_Detail()
-        {
-            MoneyType = 255;
-        }
+
         private string _Name;
         public string Name
         {
@@ -76,11 +73,11 @@ namespace WpfCol
             }
             set
             {
-                if (value.Count(h => h == '/') == 2)
+                if (value.Count() == 8)
                 {
                     try
                     {
-                        Date = value.ToDateTimeOfString();
+                        Date = $"{value.Substring(0,4)}/{value.Substring(4, 2)}/{value.Substring(6, 2)}".ToDateTimeOfString();
                     }
                     catch { }
                 }
