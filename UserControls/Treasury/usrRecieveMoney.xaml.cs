@@ -262,7 +262,8 @@ namespace WpfCol
                     db.RecieveMoney_Detail.Add(en);
                 }
                 db.RecieveMoneyHeader.Add(e_addHeader);
-                RecieveMoneyHeaders.Add(e_addHeader);
+                if (LoadedFill)
+                    RecieveMoneyHeaders.Add(e_addHeader);
                 e_addHeader.Moein = db.Moein.Find((txtMoein.Tag as Mu).Id);
                 e_addHeader.Preferential = db.Preferential.Find((txtPreferential.Tag as Mu).Id);
             }

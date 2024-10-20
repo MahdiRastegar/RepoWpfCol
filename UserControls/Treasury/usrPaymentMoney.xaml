@@ -692,6 +692,8 @@ Source="{Binding PaymentMoneyHeaders}"/>
                                         <Syncfusion:GridTextColumn MinimumWidth="90" HeaderText="شماره" MappingName="Number"/>
                                         <Syncfusion:GridTextColumn MinimumWidth="170" Width="100" HeaderText="نام بانک" MappingName="Bank.Name"/>
                                         <Syncfusion:GridTextColumn MinimumWidth="170" HeaderText="نام شعبه" MappingName="BranchName"/>
+                                        <Syncfusion:GridTextColumn MinimumWidth="160" HeaderText="شماره صیادی" MappingName="SayadiNumber"/>
+                                        <Syncfusion:GridCheckBoxColumn MinimumWidth="105" HeaderText="ثبت در سامانه" MappingName="Registered"/>
                                     </Syncfusion:SfDataGrid.Columns>
                                 </Syncfusion:SfDataGrid>
                             </Syncfusion:GridViewDefinition.DataGrid>

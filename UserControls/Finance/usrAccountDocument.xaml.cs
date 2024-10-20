@@ -250,7 +250,8 @@ namespace WpfCol
                     db.AcDocument_Detail.Add(en);
                 }
                 db.AcDocument_Header.Add(e_addHeader);
-                acDocument_Headers.Add(e_addHeader);
+                if (LoadedFill)
+                    acDocument_Headers.Add(e_addHeader);
             }
             else
             {
