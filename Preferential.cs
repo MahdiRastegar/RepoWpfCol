@@ -22,6 +22,8 @@ namespace WpfCol
             this.PaymentMoneyHeader = new HashSet<PaymentMoneyHeader>();
             this.RecieveMoney_Detail = new HashSet<RecieveMoney_Detail>();
             this.RecieveMoneyHeader = new HashSet<RecieveMoneyHeader>();
+            this.CheckPaymentEvent = new HashSet<CheckPaymentEvent>();
+            this.CheckRecieveEvent = new HashSet<CheckRecieveEvent>();
         }
     
         public System.Guid Id { get; set; }
@@ -48,5 +50,9 @@ namespace WpfCol
         public virtual ICollection<RecieveMoney_Detail> RecieveMoney_Detail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RecieveMoneyHeader> RecieveMoneyHeader { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CheckPaymentEvent> CheckPaymentEvent { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CheckRecieveEvent> CheckRecieveEvent { get; set; }
     }
 }

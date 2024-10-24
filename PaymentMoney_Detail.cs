@@ -18,7 +18,7 @@ namespace WpfCol
         public PaymentMoney_Detail()
         {
             this.MoneyType = 255;
-            this.CheckPaymentEvents = new HashSet<CheckPaymentEvents>();
+            this.CheckPaymentEvent = new HashSet<CheckPaymentEvent>();
         }
     
         public System.Guid Id { get; set; }
@@ -35,10 +35,10 @@ namespace WpfCol
         public Nullable<bool> Registered { get; set; }
     
         public virtual Bank Bank { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CheckPaymentEvents> CheckPaymentEvents { get; set; }
         public virtual Moein Moein { get; set; }
         public virtual PaymentMoneyHeader PaymentMoneyHeader { get; set; }
         public virtual Preferential Preferential { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CheckPaymentEvent> CheckPaymentEvent { get; set; }
     }
 }

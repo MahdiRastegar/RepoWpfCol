@@ -14,6 +14,35 @@ namespace WpfCol
 {
     public static class ExtensionMethods
     {
+        public static List<string> CompareObjects<T>(T obj1, T obj2)
+        {
+            List<string> result = new List<string>();
+            if (obj1 == null || obj2 == null)
+            {
+                return null;
+            }
+
+            // گرفتن تمام پروپرتی‌های کلاس
+            PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (PropertyInfo property in properties)
+            {
+                try
+                {
+                    // گرفتن مقادیر پروپرتی برای هر شیء
+                    object value1 = property.GetValue(obj1);
+                    object value2 = property.GetValue(obj2);
+
+                    // مقایسه مقادیر
+                    if (!Equals(value1, value2))
+                    {
+                        result.Add(property.Name);
+                    }
+                }
+                catch { continue; }
+            }
+            return result;
+        }
         public static void AddUniqueItem(this List<string> strings,string a)
         {
             if(!strings.Contains(a))

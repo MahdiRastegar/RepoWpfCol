@@ -9,8 +9,6 @@
         <EntityTypeShape EntityType="ColDbModel.AcDocument_Header" Width="1.5" PointX="5.25" PointY="19.125" />
         <EntityTypeShape EntityType="ColDbModel.AGroup" Width="1.5" PointX="1.5" PointY="0.75" />
         <EntityTypeShape EntityType="ColDbModel.Bank" Width="1.5" PointX="3" PointY="15.875" />
-        <EntityTypeShape EntityType="ColDbModel.CheckPaymentEvents" Width="1.5" PointX="7.5" PointY="5.625" />
-        <EntityTypeShape EntityType="ColDbModel.CheckRecieveEvents" Width="1.5" PointX="12.75" PointY="10.625" />
         <EntityTypeShape EntityType="ColDbModel.ChEvent" Width="1.5" PointX="5.25" PointY="1" />
         <EntityTypeShape EntityType="ColDbModel.Col" Width="1.5" PointX="0.75" PointY="4.25" />
         <EntityTypeShape EntityType="ColDbModel.DocumentType" Width="1.5" PointX="3" PointY="19.625" />
@@ -25,15 +23,9 @@
         <AssociationConnector Association="ColDbModel.FK_AcDocument_Detail_Moein" />
         <AssociationConnector Association="ColDbModel.FK_AcDocument_Detail_Preferential" />
         <AssociationConnector Association="ColDbModel.FK_AcDocument_Header_DocumentType" />
-        <AssociationConnector Association="ColDbModel.FK_CheckPaymentEvents_AcDocument_Header" />
-        <AssociationConnector Association="ColDbModel.FK_CheckRecieveEvents_AcDocument_Header" />
         <AssociationConnector Association="ColDbModel.FK_Col_AGroup" />
         <AssociationConnector Association="ColDbModel.FK_PaymentMoney_Detail_Bank" />
         <AssociationConnector Association="ColDbModel.FK_RecieveMoney_Detail_Bank" />
-        <AssociationConnector Association="ColDbModel.FK_CheckPaymentEvents_ChEvent" />
-        <AssociationConnector Association="ColDbModel.FK_CheckPaymentEvents_PaymentMoney_Detail" />
-        <AssociationConnector Association="ColDbModel.FK_CheckRecieveEvents_ChEvent" />
-        <AssociationConnector Association="ColDbModel.FK_CheckRecieveEvents_RecieveMoney_Detail" />
         <AssociationConnector Association="ColDbModel.FK_Moein_Col" />
         <AssociationConnector Association="ColDbModel.FK_PaymentMoney_Detail_Moein" />
         <AssociationConnector Association="ColDbModel.FK_PaymentMoneyHeader_Moein" />
@@ -46,7 +38,20 @@
         <AssociationConnector Association="ColDbModel.FK_RecieveMoney_Detail_Preferential" />
         <AssociationConnector Association="ColDbModel.FK_RecieveMoneyHeader_Preferential" />
         <AssociationConnector Association="ColDbModel.FK_RecieveMoney_Detail_RecieveMoneyHeader" />
-      </Diagram>
+        <EntityTypeShape EntityType="ColDbModel.CodeSetting" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="ColDbModel.CheckPaymentEvent" Width="1.5" PointX="7.5" PointY="5.75" />
+        <EntityTypeShape EntityType="ColDbModel.CheckRecieveEvent" Width="1.5" PointX="12.75" PointY="9.75" />
+        <AssociationConnector Association="ColDbModel.FK_CheckPaymentEvents_AcDocument_Header" />
+        <AssociationConnector Association="ColDbModel.FK_CheckRecieveEvents_AcDocument_Header" />
+        <AssociationConnector Association="ColDbModel.FK_CheckPaymentEvents_ChEvent" />
+        <AssociationConnector Association="ColDbModel.FK_CheckPaymentEvents_Moein" />
+        <AssociationConnector Association="ColDbModel.FK_CheckPaymentEvents_PaymentMoney_Detail" />
+        <AssociationConnector Association="ColDbModel.FK_CheckPaymentEvents_Preferential" />
+        <AssociationConnector Association="ColDbModel.FK_CheckRecieveEvents_ChEvent" />
+        <AssociationConnector Association="ColDbModel.FK_CheckRecieveEvents_Moein" />
+        <AssociationConnector Association="ColDbModel.FK_CheckRecieveEvents_Preferential" />
+        <AssociationConnector Association="ColDbModel.FK_CheckRecieveEvents_RecieveMoney_Detail" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

@@ -18,8 +18,8 @@ namespace WpfCol
         public AcDocument_Header()
         {
             this.AcDocument_Detail = new HashSet<AcDocument_Detail>();
-            this.CheckPaymentEvents = new HashSet<CheckPaymentEvents>();
-            this.CheckRecieveEvents = new HashSet<CheckRecieveEvents>();
+            this.CheckPaymentEvent = new HashSet<CheckPaymentEvent>();
+            this.CheckRecieveEvent = new HashSet<CheckRecieveEvent>();
         }
     
         public System.Guid Id { get; set; }
@@ -32,8 +32,8 @@ namespace WpfCol
         public virtual ICollection<AcDocument_Detail> AcDocument_Detail { get; set; }
         public virtual DocumentType DocumentType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CheckPaymentEvents> CheckPaymentEvents { get; set; }
+        public virtual ICollection<CheckPaymentEvent> CheckPaymentEvent { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CheckRecieveEvents> CheckRecieveEvents { get; set; }
+        public virtual ICollection<CheckRecieveEvent> CheckRecieveEvent { get; set; }
     }
 }

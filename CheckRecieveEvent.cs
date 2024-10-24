@@ -12,16 +12,22 @@ namespace WpfCol
     using System;
     using System.Collections.Generic;
     
-    public partial class CheckRecieveEvents
+    public partial class CheckRecieveEvent
     {
         public System.Guid Id { get; set; }
         public System.Guid fk_DetaiId { get; set; }
         public Nullable<System.Guid> fk_AcId { get; set; }
         public System.Guid fk_ChEventId { get; set; }
         public System.DateTime EventDate { get; set; }
+        public System.Guid fk_PreferentialId { get; set; }
+        public System.Guid fk_MoeinId { get; set; }
+        public string Description { get; set; }
+        public int Indexer { get; set; }
     
         public virtual AcDocument_Header AcDocument_Header { get; set; }
         public virtual ChEvent ChEvent { get; set; }
+        public virtual Moein Moein { get; set; }
+        public virtual Preferential Preferential { get; set; }
         public virtual RecieveMoney_Detail RecieveMoney_Detail { get; set; }
     }
 }

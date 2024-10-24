@@ -18,7 +18,7 @@ namespace WpfCol
         public RecieveMoney_Detail()
         {
             this.MoneyType = 255;
-            this.CheckRecieveEvents = new HashSet<CheckRecieveEvents>();
+            this.CheckRecieveEvent = new HashSet<CheckRecieveEvent>();
         }
     
         public System.Guid Id { get; set; }
@@ -35,10 +35,10 @@ namespace WpfCol
         public Nullable<bool> Registered { get; set; }
     
         public virtual Bank Bank { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CheckRecieveEvents> CheckRecieveEvents { get; set; }
         public virtual Moein Moein { get; set; }
         public virtual Preferential Preferential { get; set; }
         public virtual RecieveMoneyHeader RecieveMoneyHeader { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CheckRecieveEvent> CheckRecieveEvent { get; set; }
     }
 }

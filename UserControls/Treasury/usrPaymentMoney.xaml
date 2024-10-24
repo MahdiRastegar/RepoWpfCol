@@ -511,17 +511,17 @@ FontFamily="{StaticResource IranSans}" Width="27"
                     </Button>
                     <Image Source="/Images/Cancel.png" IsHitTestVisible="False" Width="36" />
                 </Grid>
-                <Grid Name="gridDelete" Visibility="Hidden">
-                    <Button Style="{StaticResource CustomButtonStyle}" ToolTip="حذف سند" Click="BtnDelete_Click" x:Name="btnDelete" HorizontalAlignment="Center" Margin="0 0 0 0" Width="60" Content="" FontSize="20" Height="45">
+                <Grid x:Name="gridSetting">
+                    <Button Style="{StaticResource CustomButtonStyle}" ToolTip="تنظیمات پیکربندی" Click="btnSetting_Click" x:Name="btnSetting" HorizontalAlignment="Center" Margin="10 0 10 0" Width="60" Content="" FontSize="20" Height="45">
                         <Button.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#FFFFDCCB"/>
-                                <GradientStop Color="#FFFFE7D3" Offset="0.521"/>
-                                <GradientStop Color="#FFBDA178" Offset="1"/>
+                                <GradientStop Color="#FFFAFFCD"/>
+                                <GradientStop Color="#FFFFE0BA" Offset="0.521"/>
+                                <GradientStop Color="#FFA5968A" Offset="1"/>
                             </LinearGradientBrush>
                         </Button.Background>
                     </Button>
-                    <Image Source="/Images/Delete.png" IsHitTestVisible="False" Width="37.5" Stretch="Fill" Height="39" Margin="0 0 0 2"/>
+                    <Image Source="/Images/settings.png" IsHitTestVisible="False" Width="36" />
                 </Grid>
             </DockPanel>
             <Grid  Grid.Row="1" Name="ParentDataGrid" Grid.RowSpan="5" Grid.Column="2" Margin="0 -10 0 40" Grid.ColumnSpan="2">
@@ -637,7 +637,7 @@ FontFamily="{StaticResource IranSans}" Width="27"
                         <Syncfusion:GridCheckBoxColumn MinimumWidth="105" HeaderText="ثبت در سامانه" MappingName="Registered"/>
                     </Syncfusion:SfDataGrid.Columns>
                 </Syncfusion:SfDataGrid>
-                <Syncfusion:SfDataPager x:Name="dataPager" Visibility="Collapsed" FlowDirection="LeftToRight" VerticalAlignment="Bottom" Margin="0 -30" HorizontalAlignment="Center" UseOnDemandPaging="True"
+                <Syncfusion:SfDataPager x:Name="dataPager" Visibility="Collapsed" FlowDirection="LeftToRight" VerticalAlignment="Bottom" Margin="0 -30" HorizontalAlignment="Center" UseOnDemandPaging="True" PageIndexChanged="dataPager_PageIndexChanged"
     Grid.Row="3" NumericButtonCount="3"
 PageSize="12"
 Source="{Binding PaymentMoneyHeaders}"/>
@@ -682,7 +682,7 @@ Source="{Binding PaymentMoneyHeaders}"/>
                                         <Syncfusion:GridTextColumn MinimumWidth="97" Width="80" HeaderText="تفضیلی" MappingName="PreferentialCode"/>
                                         <Syncfusion:GridTextColumn MinimumWidth="185" HeaderText="حساب دریافت کننده" MappingName="Name"/>
                                         <Syncfusion:GridTextColumn MinimumWidth="118" HeaderText="مبلغ" MappingName="Price2" TextAlignment="Left"/>
-                                        <Syncfusion:GridDateTimeColumn MinimumWidth="150" HeaderText="تاریخ سررسید چک" MappingName="Date">
+                                        <Syncfusion:GridDateTimeColumn MinimumWidth="150" HeaderText="تاریخ سررسید چک" FilterPopupStyle="{StaticResource SfDataGridFilterPopupStyle1}" MappingName="Date">
                                             <Syncfusion:GridDateTimeColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Date, Converter={StaticResource PersianDateConverter}}"/>
@@ -701,7 +701,21 @@ Source="{Binding PaymentMoneyHeaders}"/>
                     </Syncfusion:SfDataGrid.DetailsViewDefinition>
                 </Syncfusion:SfDataGrid>
             </Grid>
-            <Image Name="searchImage" ToolTip="جستجو" PreviewMouseDown="searchImage_PreviewMouseDown" Visibility="Visible"  Height="55" Cursor="Hand" HorizontalAlignment="Right" Grid.Row="5" Grid.RowSpan="2" VerticalAlignment="Bottom" Margin="0,0,45,6" Grid.Column="3" Source="/Images/Data.png"/>
+            <DockPanel Grid.Row="5" Grid.RowSpan="2" VerticalAlignment="Bottom" Margin="0,0,45,6" Grid.Column="3" HorizontalAlignment="Right">
+                <Grid Name="gridDelete" Visibility="Collapsed" Margin="20 0">
+                    <Button Style="{StaticResource CustomButtonStyle}" ToolTip="حذف سند" Click="BtnDelete_Click" x:Name="btnDelete" HorizontalAlignment="Center" Margin="0 0 0 0" Width="60" Content="" FontSize="20" Height="45">
+                        <Button.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFFFDCCB"/>
+                                <GradientStop Color="#FFFFE7D3" Offset="0.521"/>
+                                <GradientStop Color="#FFBDA178" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                    <Image Source="/Images/Delete.png" IsHitTestVisible="False" Width="37.5" Stretch="Fill" Height="39" Margin="0 0 0 2"/>
+                </Grid>
+                <Image Name="searchImage" ToolTip="جستجو" PreviewMouseDown="searchImage_PreviewMouseDown" Visibility="Visible"  Height="55" Cursor="Hand" Source="/Images/Data.png"/>
+            </DockPanel>
             <Popup Name="MyPopupS" Visibility="Collapsed" Closed="MyPopupS_Closed" Placement="Mouse" StaysOpen="False" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2">
                 <persianDateControls:PersianCalendar2  Name="persianCalendar" PreviewMouseRightButtonDown="persianCalendar_PreviewMouseRightButtonDown" PreviewMouseLeftButtonDown="persianCalendar_PreviewMouseLeftButtonDown" SelectedDateChanged="persianCalendar_SelectedDateChanged"
                                        DisplayDate="{Binding SelectedDate, RelativeSource={RelativeSource Self}}" Background="{x:Static SystemColors.ControlLightLightBrush}" TabIndex="1" VerticalAlignment="Top" HorizontalAlignment="Center"  Width="180" Height="165" FontFamily="B Homa"  FontSize="11.4"  />

@@ -761,17 +761,20 @@ namespace WpfCol
         }
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
-        {            
+        {
+            if (id == Guid.Empty)
+                return;
             if (Xceed.Wpf.Toolkit.MessageBox.Show("آیا می خواهید این اطلاعات پاک شود؟", "حذف", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             {
                 return;
             }
             var db = new ColDbEntities1();
-            AcDocument_Details.ForEach(o =>
-            db.AcDocument_Detail.Remove(db.AcDocument_Detail.Find(o.Id)));
+            foreach (var item in db.AcDocument_Detail.Where(u => u.fk_AcDoc_HeaderId == id))
+            {
+                db.AcDocument_Detail.Remove(item);
+            }
             db.AcDocument_Header.Remove(db.AcDocument_Header.Find(id));
             db.SaveChanges();
-            AcDocument_Details.Remove((datagrid.SelectedItem as AcDocument_Detail));
             try
             {
                 acDocument_Headers.Remove(acDocument_Headers.First(f => f.Id == id));
@@ -780,11 +783,20 @@ namespace WpfCol
             {
 
             }
-            btnCancel_Click(null, null);
+            //btnCancel_Click(null, null);
         }
         
         private void SearchTermTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (SearchTermTextBox.Text.Trim() == string.Empty)
+            {
+                if (FirstLevelNestedGrid.SearchHelper.SearchText.Trim() != "")
+                {
+
+                }
+                else
+                    return;
+            }
             try
             {
                 if (datagrid.Visibility == Visibility.Visible)
@@ -820,7 +832,7 @@ namespace WpfCol
                     }
                     else
                     {
-                        dataPager.Visibility = Visibility.Collapsed;
+                        //dataPager.Visibility = Visibility.Collapsed;
                         datagridSearch.SearchHelper.Search("");
                         FirstLevelNestedGrid.SearchHelper.Search(SearchTermTextBox.Text);
                         SetHide_EmptyDetails();
@@ -1051,7 +1063,7 @@ namespace WpfCol
                         A = 255
                     };
                     searchImage.Opacity = 1;
-                    gridDelete.Visibility = Visibility.Visible;
+                    gridDelete.Visibility = Visibility.Collapsed;
                     AcDocument_Details.Clear();
                     var header = datagridSearch.SelectedItem as AcDocument_Header;
                     id = header.Id;
@@ -1122,7 +1134,8 @@ namespace WpfCol
                     }
                     dataPager.Source = null;
                     datagridSearch.SelectedIndex = 0;
-                    borderEdit.Visibility = gridDelete.Visibility = Visibility.Collapsed;
+                    borderEdit.Visibility = Visibility.Collapsed;
+                    gridDelete.Visibility= Visibility.Visible;
                     datagrid.Visibility = Visibility.Collapsed;
                     datagridSearch.Visibility = Visibility.Visible;
                     dataPager.Visibility = Visibility.Visible;
@@ -1197,7 +1210,13 @@ namespace WpfCol
         private void datagridSearch_SelectionChanged(object sender, Syncfusion.UI.Xaml.Grid.GridSelectionChangedEventArgs e)
         {
             if (datagridSearch.SelectedItem != null)
+            {
                 searchImage.Opacity = 1;
+                var header = datagridSearch.SelectedItem as AcDocument_Header;
+                id = header.Id;
+            }
+            else if (datagrid.Visibility != Visibility.Visible)
+                id = Guid.Empty;
         }
 
         private void datagrid_RowValidated(object sender, RowValidatedEventArgs e)
@@ -1513,6 +1532,12 @@ namespace WpfCol
             if (!rl2)
                 e.Handled = true;
             rl2 = false;
+        }
+
+        private void dataPager_PageIndexChanged(object sender, Syncfusion.UI.Xaml.Controls.DataPager.PageIndexChangedEventArgs e)
+        {
+            if (SearchTermTextBox.Text.Trim() != string.Empty)
+                datagridSearch.ExpandAllDetailsView();
         }
 
         private void persianCalendar_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)

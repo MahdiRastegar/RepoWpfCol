@@ -4,6 +4,7 @@ using Syncfusion.Data.Extensions;
 using Syncfusion.UI.Xaml.Grid;
 using Syncfusion.UI.Xaml.Grid.Helpers;
 using Syncfusion.UI.Xaml.ScrollAxis;
+using Syncfusion.UI.Xaml.TextInputLayout;
 using Syncfusion.Windows.Controls.Input;
 using Syncfusion.Windows.Shared;
 using Syncfusion.Windows.Tools.Controls;
@@ -362,6 +363,11 @@ namespace WpfCol
                 searchImage.Visibility = Visibility.Visible;
                 this.gifImage.Visibility = Visibility.Collapsed;
                 txtSerial.Text = (long.Parse(txtSerial.Text) + 1).ToString();
+                txtMoein.Text = string.Empty;
+                txtPreferential.Text = string.Empty;
+                txtDescription.Text = string.Empty;
+                txbMoein.Text = string.Empty;
+                txbPreferential.Text = string.Empty;
 
                 txtMoein.Focus();
             }
@@ -822,7 +828,7 @@ namespace WpfCol
             }
             datagrid.Visibility = Visibility.Visible;
             datagridSearch.Visibility = Visibility.Collapsed;
-            gridConfirm.Visibility = Visibility.Visible;
+            gridSetting.Visibility = gridConfirm.Visibility = Visibility.Visible;
             Sf_txtMoein.HasError = Sf_txtPreferential.HasError = false;
             datagrid.BorderBrush = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)ColorConverter.ConvertFromString("#FF808080"));
             txtMoein.Text = string.Empty;
@@ -892,16 +898,19 @@ namespace WpfCol
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
+            if (id == Guid.Empty)
+                return;
             if (Xceed.Wpf.Toolkit.MessageBox.Show("آیا می خواهید این اطلاعات پاک شود؟", "حذف", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             {
                 return;
             }
             var db = new ColDbEntities1();
-            paymentMoney_Details.ForEach(o =>
-            db.PaymentMoney_Detail.Remove(db.PaymentMoney_Detail.Find(o.Id)));
+            foreach (var item in db.PaymentMoney_Detail.Where(u=>u.fkHeaderId==id))
+            {
+                db.PaymentMoney_Detail.Remove(item);
+            }
             db.PaymentMoneyHeader.Remove(db.PaymentMoneyHeader.Find(id));
             db.SaveChanges();
-            paymentMoney_Details.Remove((datagrid.SelectedItem as PaymentMoney_Detail));
             try
             {
                 PaymentMoneyHeaders.Remove(PaymentMoneyHeaders.First(f => f.Id == id));
@@ -910,11 +919,21 @@ namespace WpfCol
             {
 
             }
-            btnCancel_Click(null, null);
+            id = Guid.Empty;
+            //btnCancel_Click(null, null);
         }
 
         private void SearchTermTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (SearchTermTextBox.Text.Trim() == string.Empty)
+            {
+                if (FirstLevelNestedGrid.SearchHelper.SearchText.Trim() != "")
+                {
+
+                }
+                else
+                    return;
+            }
             try
             {
                 if (datagrid.Visibility == Visibility.Visible)
@@ -951,7 +970,7 @@ namespace WpfCol
                     }
                     else
                     {
-                        dataPager.Visibility = Visibility.Collapsed;
+                        //dataPager.Visibility = Visibility.Collapsed;
                         datagridSearch.SearchHelper.Search("");
                         FirstLevelNestedGrid.SearchHelper.Search(SearchTermTextBox.Text);
                         SetHide_EmptyDetails();
@@ -1211,7 +1230,7 @@ namespace WpfCol
                         A = 255
                     };
                     searchImage.Opacity = 1;
-                    gridDelete.Visibility = Visibility.Visible;
+                    gridDelete.Visibility = Visibility.Collapsed;
                     searchGrid.Visibility = Visibility.Collapsed;
                     paymentMoney_Details.Clear();
                     temp_paymentMoney_Details.Clear();
@@ -1248,7 +1267,7 @@ namespace WpfCol
                     SearchTermTextBox.Text = "";
                     SearchTermTextBox.TextChanged += SearchTermTextBox_TextChanged;
                     datagridSearch.Visibility = Visibility.Collapsed;
-                    gridConfirm.Visibility = Visibility.Visible;
+                    gridSetting.Visibility = gridConfirm.Visibility = Visibility.Visible;
                     column1.Width = new GridLength(170);
                     column2.Width = new GridLength(225);
                     borderEdit.Visibility = Visibility.Visible;
@@ -1299,7 +1318,8 @@ namespace WpfCol
                     datagridSearch.SelectedItem = null;
                     var t = dataPager.Source;
                     dataPager.Source = null;
-                    borderEdit.Visibility = gridDelete.Visibility = Visibility.Collapsed;
+                    borderEdit.Visibility = Visibility.Collapsed;
+                    gridDelete.Visibility = Visibility.Visible;
                     searchGrid.Visibility = Visibility.Visible;
                     datagrid.Visibility = Visibility.Collapsed;
                     datagridSearch.Visibility = Visibility.Visible;
@@ -1314,7 +1334,7 @@ namespace WpfCol
                             dataPager.Source = t;
                         }), DispatcherPriority.Render);
                     }), DispatcherPriority.Render);
-                    gridConfirm.Visibility = Visibility.Collapsed;
+                    gridSetting.Visibility = gridConfirm.Visibility = Visibility.Collapsed;
                     if ((t as ObservableCollection<PaymentMoneyHeader>).Count == 0)
                         searchImage.Opacity = .6;
                     searchImage.Source = new BitmapImage(new Uri("pack://application:,,,/Images/dataedit.png"));
@@ -1381,7 +1401,13 @@ namespace WpfCol
         private void datagridSearch_SelectionChanged(object sender, Syncfusion.UI.Xaml.Grid.GridSelectionChangedEventArgs e)
         {
             if (datagridSearch.SelectedItem != null)
+            {
                 searchImage.Opacity = 1;
+                var header = datagridSearch.SelectedItem as PaymentMoneyHeader;
+                id = header.Id;
+            }
+            else if (datagrid.Visibility != Visibility.Visible)
+                id = Guid.Empty;
         }
 
         private void datagrid_RowValidated(object sender, RowValidatedEventArgs e)
@@ -1781,20 +1807,35 @@ namespace WpfCol
                         paymentMoney_Detail.ClearErrors();
                         var db = new ColDbEntities1();
                         var tMoein = db.Moein.Include("Col");
+                        if (db.CodeSetting.Any(t => t.Name == "MoeinCodeCheckPayment"))
+                        {
+                        }
+                        else
+                        {
+                            MessageBox.Show("تنظیمات پیکر بندی را انحام دهید!");
+                            return;
+                        }
                         switch (paymentMoney_Detail.MoneyType)
                         {
                             case 0:
-                                paymentMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == 1 && d.Col.ColCode == 12);
-                                paymentMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == 140001);
+                                var moein = int.Parse(db.CodeSetting.First(j => j.Name == "MoeinCodeMoneyPayment").Value);
+                                var col = int.Parse(db.CodeSetting.First(j => j.Name == "ColCodeMoneyPayment").Value);
+                                var p = int.Parse(db.CodeSetting.First(j => j.Name == "PreferentialCodeMoneyPayment").Value);
+                                paymentMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == moein && d.Col.ColCode == col);
+                                paymentMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == p);
                                 break;
                             case 1:
-                                paymentMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == 1 && d.Col.ColCode == 12);
-                                //paymentMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == 140002);
+                                moein = int.Parse(db.CodeSetting.First(j => j.Name == "MoeinCodeCheckPayment").Value);
+                                col = int.Parse(db.CodeSetting.First(j => j.Name == "ColCodeCheckPayment").Value);
+                                paymentMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == moein && d.Col.ColCode == col);
                                 paymentMoney_Detail.Preferential = null;
                                 break;
                             case 2:
-                                paymentMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == 1 && d.Col.ColCode == 12);
-                                paymentMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == 140003);
+                                moein = int.Parse(db.CodeSetting.First(j => j.Name == "MoeinCodeDiscountPayment").Value);
+                                col = int.Parse(db.CodeSetting.First(j => j.Name == "ColCodeDiscountPayment").Value);
+                                p = int.Parse(db.CodeSetting.First(j => j.Name == "PreferentialCodeDiscountPayment").Value);
+                                paymentMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == moein && d.Col.ColCode == col);
+                                paymentMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == p);
                                 break;
                             case 3:
                                 paymentMoney_Detail.Moein = null;
@@ -1814,20 +1855,35 @@ namespace WpfCol
                     paymentMoney_Detail.ClearErrors();
                     var db = new ColDbEntities1();
                     var tMoein = db.Moein.Include("Col");
+                    if (db.CodeSetting.Any(t => t.Name == "MoeinCodeCheckPayment"))
+                    {
+                    }
+                    else
+                    {
+                        MessageBox.Show("تنظیمات پیکر بندی را انحام دهید!");
+                        return;
+                    }
                     switch (paymentMoney_Detail.MoneyType)
                     {
                         case 0:
-                            paymentMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == 1 && d.Col.ColCode == 12);
-                            paymentMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == 140001);
+                            var moein = int.Parse(db.CodeSetting.First(j => j.Name == "MoeinCodeMoneyPayment").Value);
+                            var col = int.Parse(db.CodeSetting.First(j => j.Name == "ColCodeMoneyPayment").Value);
+                            var p = int.Parse(db.CodeSetting.First(j => j.Name == "PreferentialCodeMoneyPayment").Value);
+                            paymentMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == moein && d.Col.ColCode == col);
+                            paymentMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == p);
                             break;
                         case 1:
-                            paymentMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == 1 && d.Col.ColCode == 12);
-                            //paymentMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == 140002);
+                            moein = int.Parse(db.CodeSetting.First(j => j.Name == "MoeinCodeCheckPayment").Value);
+                            col = int.Parse(db.CodeSetting.First(j => j.Name == "ColCodeCheckPayment").Value);
+                            paymentMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == moein && d.Col.ColCode == col);
                             paymentMoney_Detail.Preferential = null;
                             break;
                         case 2:
-                            paymentMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == 1 && d.Col.ColCode == 12);
-                            paymentMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == 140003);
+                            moein = int.Parse(db.CodeSetting.First(j => j.Name == "MoeinCodeDiscountPayment").Value);
+                            col = int.Parse(db.CodeSetting.First(j => j.Name == "ColCodeDiscountPayment").Value);
+                            p = int.Parse(db.CodeSetting.First(j => j.Name == "PreferentialCodeDiscountPayment").Value);
+                            paymentMoney_Detail.Moein = tMoein.First(d => d.MoeinCode == moein && d.Col.ColCode == col);
+                            paymentMoney_Detail.Preferential = db.Preferential.First(d => d.PreferentialCode == p);
                             break;
                         case 3:
                             paymentMoney_Detail.Moein = null;
@@ -2058,6 +2114,34 @@ namespace WpfCol
             {
                 datagrid.IsHitTestVisible = true;
             }
+        }
+
+        private void dataPager_PageIndexChanged(object sender, Syncfusion.UI.Xaml.Controls.DataPager.PageIndexChangedEventArgs e)
+        {
+            if (SearchTermTextBox.Text.Trim() != string.Empty)
+                datagridSearch.ExpandAllDetailsView();
+        }
+
+        private void btnSetting_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new winSettingCode();
+            var db = new ColDbEntities1();
+            var exist = false;
+            if (db.CodeSetting.Any(t => t.Name == "MoeinCodeCheckPayment"))
+            {
+                exist = true;
+            }
+            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "ColCodeCheckPayment", Hint = "کد کل در چک", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "ColCodeCheckPayment").Value : "" } });
+            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "MoeinCodeCheckPayment", Hint = "کد معین در چک", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeCheckPayment").Value : "" } });
+
+            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "ColCodeMoneyPayment", Hint = "کد کل در نقد", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "ColCodeMoneyPayment").Value : "" } });
+            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "MoeinCodeMoneyPayment", Hint = "کد معین در نقد", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeMoneyPayment").Value : "" } });
+            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "PreferentialCodeMoneyPayment", Hint = "کد تفضیل در نقد", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "PreferentialCodeMoneyPayment").Value : "" } });
+
+            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "ColCodeDiscountPayment", Hint = "کد کل در تخفیف", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "ColCodeDiscountPayment").Value : "" } });
+            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "MoeinCodeDiscountPayment", Hint = "کد معین در تخفیف", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeDiscountPayment").Value : "" } });
+            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "PreferentialCodeDiscountPayment", Hint = "کد تفضیل در تخفیف", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "PreferentialCodeDiscountPayment").Value : "" } });
+            win.ShowDialog();
         }
 
         private void persianCalendarE_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)

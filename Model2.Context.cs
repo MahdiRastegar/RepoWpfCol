@@ -29,8 +29,6 @@ namespace WpfCol
         public virtual DbSet<AcDocument_Header> AcDocument_Header { get; set; }
         public virtual DbSet<AGroup> AGroup { get; set; }
         public virtual DbSet<Bank> Bank { get; set; }
-        public virtual DbSet<CheckPaymentEvents> CheckPaymentEvents { get; set; }
-        public virtual DbSet<CheckRecieveEvents> CheckRecieveEvents { get; set; }
         public virtual DbSet<ChEvent> ChEvent { get; set; }
         public virtual DbSet<Col> Col { get; set; }
         public virtual DbSet<DocumentType> DocumentType { get; set; }
@@ -41,5 +39,8 @@ namespace WpfCol
         public virtual DbSet<RecieveMoney_Detail> RecieveMoney_Detail { get; set; }
         public virtual DbSet<RecieveMoneyHeader> RecieveMoneyHeader { get; set; }
         public virtual DbSet<tGroup> tGroup { get; set; }
+        public virtual DbSet<CodeSetting> CodeSetting { get; set; }
+        public virtual DbSet<CheckPaymentEvent> CheckPaymentEvent { get; set; }
+        public virtual DbSet<CheckRecieveEvent> CheckRecieveEvent { get; set; }
     }
 }

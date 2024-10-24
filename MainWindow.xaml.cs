@@ -285,7 +285,18 @@ namespace WpfCol
 
         private void rbnRecieveCheck_Click(object sender, RoutedEventArgs e)
         {
-
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "چک های دریافتی");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "چک های دریافتی" };
+                item.Content = new usrRecieveCheck();
+                tabcontrol.Items.Add(item);
+            }
         }
 
         private void rbnPaymentCheck_Click(object sender, RoutedEventArgs e)

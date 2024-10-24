@@ -237,13 +237,16 @@
     <Compile Include="Bank.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
-    <Compile Include="CheckPaymentEvents.cs">
+    <Compile Include="CheckPaymentEvent.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
-    <Compile Include="CheckRecieveEvents.cs">
+    <Compile Include="CheckRecieveEvent.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
     <Compile Include="ChEvent.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CodeSetting.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
     <Compile Include="Col.cs">
@@ -256,6 +259,7 @@
     </Compile>
     <Compile Include="Interfaces\ISearch.cs" />
     <Compile Include="Interfaces\ITabEdidGrid.cs" />
+    <Compile Include="ParialClassesOfDataBase\CheckRecieveEvents.cs" />
     <Compile Include="ParialClassesOfDataBase\PaymentMoneyHeader.cs" />
     <Compile Include="ParialClassesOfDataBase\RecieveMoneyHeader.cs" />
     <Compile Include="ParialClassesOfDataBase\PaymentMoney_Detail.cs" />
@@ -275,6 +279,9 @@
     </Compile>
     <Compile Include="UserControls\Treasury\usrBank.xaml.cs">
       <DependentUpon>usrBank.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Treasury\usrRecieveCheck.xaml.cs">
+      <DependentUpon>usrRecieveCheck.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\Treasury\usrRecieveMoney.xaml.cs">
       <DependentUpon>usrRecieveMoney.xaml</DependentUpon>
@@ -347,6 +354,9 @@
     <Compile Include="ViewModels\RecieveMoneyViewModel.cs" />
     <Compile Include="ViewModels\AcDocumentViewModel.cs" />
     <Compile Include="ViewModels\ComboboxViewModel.cs" />
+    <Compile Include="toolsWindow\winSettingCode.xaml.cs">
+      <DependentUpon>winSettingCode.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -364,6 +374,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\Treasury\usrBank.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Treasury\usrRecieveCheck.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -400,6 +414,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\Definitions\winCol.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="toolsWindow\winSettingCode.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -460,6 +478,7 @@
     <Resource Include="Images\DataEdit.jpg" />
     <Resource Include="Images\Data.png" />
     <Resource Include="Images\DataEdit.png" />
+    <Resource Include="Images\settings.png" />
     <Content Include="Model2.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Model2.edmx</DependentUpon>

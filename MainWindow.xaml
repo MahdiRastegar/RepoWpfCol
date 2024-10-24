@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" PreviewKeyDown="Window_PreviewKeyDown"
         xmlns:local="clr-namespace:WpfCol" xmlns:Syncfusion="http://schemas.syncfusion.com/wpf"
         mc:Ignorable="d" Loaded="Window_Loaded" SizeChanged="Window_SizeChanged"
-        Title="صفحه اصلی" Height="450" Width="1150"  MinHeight="765" MinWidth="1130">
+        Title="صفحه اصلی" Height="450" Width="1150"  MinHeight="815" MinWidth="1130">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Name="row" Height="197" MinHeight="77"/>

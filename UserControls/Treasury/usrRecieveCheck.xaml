@@ -1,5 +1,5 @@
 ﻿<UserControl xmlns:Syncfusion="http://schemas.syncfusion.com/wpf"  
-        x:Class="WpfCol.usrAccountDocument"
+        x:Class="WpfCol.usrRecieveCheck" Unloaded="UserControl_Unloaded"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" Loaded="Window_Loaded"
@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:WpfCol"  DataContext="{Binding ElementName=winDC}" xmlns:icc="clr-namespace:Syncfusion.UI.Xaml.Grid;assembly=Syncfusion.SfGrid.WPF"
         xmlns:local2="clr-namespace:BcpBindingExtension"
         xmlns:PersianCalendarWPF="clr-namespace:PersianCalendarWPF;assembly=PersianCalendarWPF" xmlns:global="clr-namespace:System.Globalization;assembly=mscorlib"
-             mc:Ignorable="d" PreviewKeyDown="Window_PreviewKeyDown" MinHeight="500"
+             mc:Ignorable="d" PreviewKeyDown="Window_PreviewKeyDown" MinHeight="650"
         Height="auto" Width="auto">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -92,19 +92,23 @@
                 <Setter Property="Background">
                     <Setter.Value>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FF89B2CC"/>
-                            <GradientStop Color="White" Offset="1"/>
+                            <GradientStop Color="#FFD7EAFF" Offset="0"/>
+                            <GradientStop Color="#FFCEE2DD" Offset="0.567"/>
+                            <GradientStop Color="#FFC0D0D8" Offset="0.573"/>
+                            <GradientStop Color="#FFB0BABD" Offset="0.82"/>
                         </LinearGradientBrush>
                     </Setter.Value>
                 </Setter>
                 <Setter Property="Foreground" Value="#FF26126F"/>
+                <Setter Property="FontFamily" Value="{StaticResource NewFont2}"/>
+                <Setter Property="FontSize" Value="15"/>
                 <Setter Property="FontWeight" Value="Bold"/>
             </Style>
             <Style TargetType="Syncfusion:GridHeaderCellControl" x:Key="headerStyle2">
                 <Setter Property="Foreground" Value="#FFB35151"/>
                 <Setter Property="FontWeight" Value="Bold"/>
             </Style>
-            <local:AcDocumentViewModel x:Key="viewmodel"/>
+            <local:RecieveMoneyViewModel x:Key="viewmodel"/>
             <Style TargetType="{x:Type Syncfusion:DetailsViewDataGrid}" x:Key="detailsViewStyle">
                 <Setter Property="Background" >
                     <Setter.Value>
@@ -368,20 +372,22 @@
         </GroupBox.Background>
         <Grid FlowDirection="RightToLeft">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="225" Name="column1"/>
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="170" Name="column1"/>
+                <ColumnDefinition Width="230" Name="column2"/>
+                <ColumnDefinition Width="500"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="1*" MinHeight="90"/>
-                <RowDefinition Height="1*" MinHeight="90"/>
-                <RowDefinition Height="1*" MinHeight="90"/>
-                <RowDefinition Height="1*" MinHeight="90"/>
+                <RowDefinition Height="5*" MinHeight="110"/>
+                <RowDefinition Height="110"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="3*" MinHeight="90"/>
                 <RowDefinition Height="1*" MinHeight="90"/>
                 <RowDefinition Height="25"/>
             </Grid.RowDefinitions>
-            <Border  Name="borderEdit" Visibility="Hidden" Grid.ColumnSpan="3" CornerRadius="5" Margin="4 -10 0 0" Grid.Row="1" Grid.RowSpan="6" BorderThickness="4">
+            <Border  Name="borderEdit" Visibility="Hidden" Grid.ColumnSpan="4" CornerRadius="5" Margin="4 -10 0 0" Grid.Row="1" Grid.RowSpan="6" BorderThickness="4">
                 <Border.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="White" Offset="0"/>
@@ -426,28 +432,6 @@
                     </EventTrigger>
                 </Border.Triggers>
             </Border>
-            <Syncfusion:SfTextInputLayout  Name="Sf_txtNoDocumen" OutlineCornerRadius="8" Grid.Row="1" Grid.Column="0" Hint="شماره سند" VerticalAlignment="Center" Margin="20 0"  HorizontalAlignment="Stretch">
-                <TextBox Name="txtNoDocumen" Text="" TextChanged="txtNoDocumen_TextChanged" MaxLength="50" VerticalContentAlignment="Center"   PreviewTextInput="Txt_PreviewTextInput" Margin="0" FontSize="18"/>
-            </Syncfusion:SfTextInputLayout>
-            <TextBlock VerticalAlignment="Center" Name="txbCalender" HorizontalAlignment="Left" Margin="116 0 0 9" FontSize="17" Text="" Grid.Row="2"/>
-            <PersianCalendarWPF:PersianDatePicker Grid.Row="2" SelectedDateChanged="pcw1_SelectedDateChanged" BorderThickness="0" HorizontalAlignment="Left" Name="pcw1" FlowDirection="LeftToRight" Margin="85,29,0,35"
-PersianCalendarWPF:FontSize="13.5"
-PersianCalendarWPF:InfoElement.DateInRangeTextColor="Gray"
-PersianCalendarWPF:InfoElement.WeekNameColor="Blue"
-PersianCalendarWPF:InfoElement.DefaultTextColor="Black"
-PersianCalendarWPF:InfoElement.MouseHoverBackgroundColor="#FFCBF8FF"
-PersianCalendarWPF:InfoElement.MouseHoverForegroundColor="#FFD65CBB"
-PersianCalendarWPF:InfoElement.PressedBorderColor="#F4E7F1FF"
-PreviewTextInput="Pcw1_PreviewTextInput"
-FontFamily="{StaticResource IranSans}" Width="27"
- >
-                <PersianCalendarWPF:PersianDatePicker.Background>
-                    <SolidColorBrush Color="Transparent"/>
-                </PersianCalendarWPF:PersianDatePicker.Background>
-            </PersianCalendarWPF:PersianDatePicker>
-            <Syncfusion:SfTextInputLayout IsHitTestVisible="False" x:Name="Sf_txtType" OutlineCornerRadius="8" Hint="تاریخ" Grid.Row="2"  VerticalAlignment="Center" Margin="20 0">
-                <Label Height="25" FontSize="18"/>
-            </Syncfusion:SfTextInputLayout>
             <DockPanel VerticalAlignment="Center" Margin="20 0"  HorizontalAlignment="Stretch"  Grid.Row="3">
                 <Border Width="12.5" Height="54" Tag="id" Visibility="Collapsed" MouseLeave="border_MouseLeave" Name="border" Panel.ZIndex="1" MouseUp="border_MouseUp" MouseEnter="Border_MouseEnter" MouseDown="Border_MouseDown" BorderThickness=".9" CornerRadius="10 1 1 10" BorderBrush="Black" Margin="0 -14.5 -12.5 0">
                     <Border.Background>
@@ -460,15 +444,75 @@ FontFamily="{StaticResource IranSans}" Width="27"
                     </Border.Background>
                 </Border>
             </DockPanel>
-            <Syncfusion:SfTextInputLayout Name="Sf_txtDoumentType" OutlineCornerRadius="8" Hint="نوع سند" Grid.Row="3"  VerticalAlignment="Center" Margin="20 0"  HorizontalAlignment="Stretch">
-                <Syncfusion:ComboBoxAdv PreviewKeyDown="cmbType_PreviewKeyDown" SelectionChanged="cmbType_SelectionChanged" DisplayMemberPath="Name" Name="cmbType" FlowDirection="RightToLeft">
-                </Syncfusion:ComboBoxAdv>
+            <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="165"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock VerticalAlignment="Top" Name="txbCalender" HorizontalAlignment="Left" Margin="127 25 0 0" FontSize="17" Text="" Grid.Row="1" Grid.Column="1"/>
+                <PersianCalendarWPF:PersianDatePicker Grid.Row="1" Grid.Column="1" SelectedDateChanged="pcw1_SelectedDateChanged" VerticalAlignment="Top" BorderThickness="0" HorizontalAlignment="Left" Name="pcw1" FlowDirection="LeftToRight" Margin="102,24,0,0"
+PersianCalendarWPF:FontSize="13.5"
+PersianCalendarWPF:InfoElement.DateInRangeTextColor="Gray"
+PersianCalendarWPF:InfoElement.WeekNameColor="Blue"
+PersianCalendarWPF:InfoElement.DefaultTextColor="Black"
+PersianCalendarWPF:InfoElement.MouseHoverBackgroundColor="#FFCBF8FF"
+PersianCalendarWPF:InfoElement.MouseHoverForegroundColor="#FFD65CBB"
+PersianCalendarWPF:InfoElement.PressedBorderColor="#F4E7F1FF"
+PreviewTextInput="Pcw1_PreviewTextInput"
+FontFamily="{StaticResource IranSans}" Width="27"
+ >
+                    <PersianCalendarWPF:PersianDatePicker.Background>
+                        <SolidColorBrush Color="Transparent"/>
+                    </PersianCalendarWPF:PersianDatePicker.Background>
+                </PersianCalendarWPF:PersianDatePicker>
+                <Syncfusion:SfTextInputLayout IsHitTestVisible="False" x:Name="Sf_txtType" OutlineCornerRadius="8" Hint="تاریخ عملیات" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Margin="20 0 20 0">
+                    <Label Height="25" FontSize="14"/>
+                </Syncfusion:SfTextInputLayout>
+                <Syncfusion:SfTextInputLayout Name="Sf_cmbChangeState" OutlineCornerRadius="8" Hint="تغییر وضعیت" Grid.Row="1"  VerticalAlignment="Top" Margin="20 0 13 0"  HorizontalAlignment="Stretch">
+                    <Syncfusion:ComboBoxAdv PreviewKeyDown="cmbChangeState_PreviewKeyDown" SelectionChanged="cmbChangeState_SelectionChanged" Name="cmbChangeState" FlowDirection="RightToLeft">
+                        <Syncfusion:ComboBoxItemAdv Content="وصول نشده" Name="item1"/>
+                        <Syncfusion:ComboBoxItemAdv Content="واگذاری به بانک" Name="item2"/>
+                        <Syncfusion:ComboBoxItemAdv Content="وصول شده" Name="item3"/>
+                        <Syncfusion:ComboBoxItemAdv Content="خرج شده" Name="item4"/>
+                        <Syncfusion:ComboBoxItemAdv Content="برگشتی" Name="item5"/>
+                        <Syncfusion:ComboBoxItemAdv Content="عودتی" Name="item6"/>
+                    </Syncfusion:ComboBoxAdv>
+                </Syncfusion:SfTextInputLayout>
+                
+                <Syncfusion:SfTextInputLayout Visibility="Visible" Name="Sf_txtCount" OutlineCornerRadius="8" Hint="جمع تعداد" Grid.Row="0"  VerticalAlignment="Top" Margin="20 0 20 0" Grid.Column="0"  HorizontalAlignment="Stretch">
+                    <TextBox Name="txtCount" VerticalContentAlignment="Center"  IsEnabled="True" IsReadOnly="True" Margin="0" FontSize="18"/>
+                </Syncfusion:SfTextInputLayout>
+                <Syncfusion:SfTextInputLayout Visibility="Visible" Name="Sf_txtSumPrice" OutlineCornerRadius="8" Hint="جمع مبلغ" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" Margin="20 0 20 0"  HorizontalAlignment="Stretch">
+                    <TextBox Name="txtSumPrice" VerticalContentAlignment="Center"  IsEnabled="True" IsReadOnly="True" Margin="0" FontSize="18"/>
+                </Syncfusion:SfTextInputLayout>
+            </Grid>
+            
+            <!--<TextBlock Text="حساب پرداخت کننده :" Grid.Row="2" HorizontalAlignment="Center" Margin="0 10">
+                <TextBlock.Foreground>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFD0D5FF"/>
+                        <GradientStop Color="#FF001BFF" Offset="1"/>
+                        <GradientStop Color="#FF4D5FFF" Offset="0.6"/>
+                    </LinearGradientBrush>
+                </TextBlock.Foreground>
+            </TextBlock>-->
+            <Syncfusion:SfTextInputLayout Name="Sf_txtMoein" OutlineCornerRadius="8" Hint="کل معین" Grid.Row="3"  VerticalAlignment="Center" Margin="20 20 20 20"  HorizontalAlignment="Stretch">
+                <TextBox Name="txtMoein" VerticalContentAlignment="Center" PreviewKeyDown="txtMoein_PreviewKeyDown" LostFocus="txtMoein_LostFocus" Tag="true" PreviewTextInput="Txt_PreviewTextInput" TextChanged="txtDescription_TextChanged" IsEnabled="True" Margin="0" FontSize="18"/>
             </Syncfusion:SfTextInputLayout>
-            <Syncfusion:SfTextInputLayout Visibility="Collapsed" Name="Sf_txtSerial" OutlineCornerRadius="8" Hint="سریال" Grid.Row="4"  VerticalAlignment="Center" Margin="20 0" Grid.Column="0"  HorizontalAlignment="Stretch">
-                <TextBox Name="txtSerial" VerticalContentAlignment="Center"  IsEnabled="True" IsReadOnly="True" Margin="0" FontSize="18"/>
+            <Syncfusion:SfTextInputLayout Name="Sf_txtPreferential" OutlineCornerRadius="8" Hint="تفضیلی" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="20 20 20 20"  HorizontalAlignment="Stretch">
+                <TextBox Name="txtPreferential" LostFocus="txtPreferential_LostFocus" VerticalContentAlignment="Center" PreviewKeyDown="txtPreferential_PreviewKeyDown" PreviewTextInput="Txt_PreviewTextInput" Tag="true" IsEnabled="True" Margin="0" FontSize="18"/>
+            </Syncfusion:SfTextInputLayout>
+            <TextBlock Name="txbMoein" Grid.Row="4" Margin="20 0" VerticalAlignment="Center"/>
+            <TextBlock Name="txbPreferential" Grid.Row="4" Grid.Column="1" Margin="20 0" VerticalAlignment="Center"/>
+            <Syncfusion:SfTextInputLayout Name="Sf_Description"  OutlineCornerRadius="8" Hint="توضیحات" Grid.Row="5" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="20 0"  HorizontalAlignment="Stretch">
+                <TextBox Name="txtDescription" TextChanged="txtDescription_TextChanged" VerticalScrollBarVisibility="Auto" MaxHeight="167.5" VerticalContentAlignment="Center" IsEnabled="True" IsReadOnly="False" PreviewTextInput="Txt_PreviewTextInput" Margin="0" FontSize="18"/>
             </Syncfusion:SfTextInputLayout>
             <DockPanel VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="20 0"  HorizontalAlignment="Stretch"/>
-            <DockPanel  Grid.Row="5" Grid.ColumnSpan="2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="15 0 15 -15">
+            <DockPanel  Grid.Row="6" Grid.ColumnSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="15 0 15 -15">
                 <Grid x:Name="gridConfirm">
                     <Button Style="{StaticResource CustomButtonStyle}" ToolTip="ذخیره" x:Name="btnConfirm" Width="60" Content="" Click="btnConfirm_Click" FontSize="20" Height="45">
                         <Button.Background>
@@ -493,8 +537,20 @@ FontFamily="{StaticResource IranSans}" Width="27"
                     </Button>
                     <Image Source="/Images/Cancel.png" IsHitTestVisible="False" Width="36" />
                 </Grid>
+                <Grid  x:Name="gridSetting">
+                    <Button Style="{StaticResource CustomButtonStyle}" ToolTip="تنظیمات پیکربندی" Click="btnSetting_Click" x:Name="btnSetting" HorizontalAlignment="Center" Margin="10 0 10 0" Width="60" Content="" FontSize="20" Height="45">
+                        <Button.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFFAFFCD"/>
+                                <GradientStop Color="#FFFFE0BA" Offset="0.521"/>
+                                <GradientStop Color="#FFA5968A" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                    <Image Source="/Images/settings.png" IsHitTestVisible="False" Width="36" />
+                </Grid>
             </DockPanel>
-            <Grid  Grid.Row="1" Grid.RowSpan="5" Grid.Column="1" Margin="0 -10 0 40" Grid.ColumnSpan="2">
+            <Grid  Grid.Row="1" Grid.RowSpan="6" Grid.Column="2" Margin="0 -10 0 40" Grid.ColumnSpan="2" Name="ParentDataGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition/>
@@ -503,7 +559,7 @@ FontFamily="{StaticResource IranSans}" Width="27"
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="50"/>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="0"/>
+                        <ColumnDefinition Width="70"/>
                     </Grid.ColumnDefinitions>
                     <Image Source="/Images/searchpng copy.png" Panel.ZIndex="1" Stretch="Uniform">
                         <Image.RenderTransform>
@@ -567,163 +623,101 @@ FontFamily="{StaticResource IranSans}" Width="27"
                 </Grid>
 
                 <Image Name="gifImage" Visibility="Collapsed" Width="144" Height="81" HorizontalAlignment="Right" Grid.Row="5" Grid.RowSpan="2" VerticalAlignment="Bottom" Margin="0,0,13,-65" Grid.Column="3"/>
-                <Syncfusion:SfDataGrid CurrentCellBeginEdit="datagrid_CurrentCellBeginEdit" AddNewRowInitiating="datagrid_AddNewRowInitiating" ItemsSource="{Binding acDocument_Details}" DataContext="{Binding  Source={StaticResource viewmodel}}" RowValidated="datagrid_RowValidated" RowValidating="datagrid_RowValidating"
-                                       CurrentCellValueChanged="datagrid_CurrentCellValueChanged" Visibility="Visible" Grid.Row="1" AllowSorting="False" AddNewRowPosition="Bottom" AddNewRowText="حذف ردیف : Delete"                                       
-                                       SelectionChanged="datagrid_SelectionChanged" AllowDeleting="True" CurrentCellEndEdit="datagrid_CurrentCellEndEdit" PreviewKeyDown="datagrid_PreviewKeyDown" FontSize="14" RowHeight="30" ShowRowHeader="False" AllowFiltering="False" AllowEditing="True" AllowResizingColumns="True" HeaderStyle="{StaticResource headerStyle}" Margin="20 5 15 15" Name="datagrid" HeaderRowHeight="40" HorizontalAlignment="Stretch" MinHeight="80" AutoGenerateColumns="False" FlowDirection="RightToLeft">
-                    <Syncfusion:SfDataGrid.CellStyle>
-                        <Style TargetType="Syncfusion:GridCell">
-                            <Setter Property="Background" Value="{Binding UpdateSourceTrigger=PropertyChanged,Converter={StaticResource DeleteRowStyleConverter},ConverterParameter=Background}"/>
-                        </Style>
-                    </Syncfusion:SfDataGrid.CellStyle>
-                    <Syncfusion:SfDataGrid.TableSummaryRows>
-                        <Syncfusion:GridSummaryRow ShowSummaryInRow="False">
-                            <Syncfusion:GridSummaryRow.SummaryColumns>
-                                <Syncfusion:GridSummaryColumn MappingName="ColeMoein">
-                                    <Syncfusion:GridSummaryColumn.Template>
-                                        <DataTemplate>
-                                            <TextBlock FontSize="15" Text="جمع :"></TextBlock>
-                                        </DataTemplate>
-                                    </Syncfusion:GridSummaryColumn.Template>
-                                </Syncfusion:GridSummaryColumn>
-                                <Syncfusion:GridSummaryColumn Name="DebtorAmount"
-                                              Format="'جمع : {Sum:N0}'"
-                                              MappingName="Debtor"
+                <Syncfusion:TabControlExt Name="control" Margin="0 10 0 0" Grid.Row="1" Grid.RowSpan="20" EnableLabelEdit="False" CloseButtonType="Hide" SelectionChanged="TabControlExt_SelectionChanged">
+                    <Syncfusion:TabItemExt Header="همه موارد&#x0a;         F1">
+                        <Syncfusion:SfDataGrid SizeChanged="datagrid_SizeChanged" SelectionMode="Extended" ItemsSource="{Binding ElementName=dataPager,Path=PagedSource}" PreviewMouseDown="datagrid_PreviewMouseDown" DataContext="{Binding  Source={StaticResource viewmodel}}"
+                                       Visibility="Visible" Grid.Row="1" AllowSorting="True" AddNewRowPosition="None"                                    
+                                       SelectionChanged="datagrid_SelectionChanged" SelectionChanging="datagrid_SelectionChanging" AllowDeleting="False" PreviewKeyDown="datagrid_PreviewKeyDown" FontSize="14" RowHeight="30" ShowRowHeader="True" AllowFiltering="False" AllowEditing="False" AllowResizingColumns="True" HeaderStyle="{StaticResource headerStyle}" Margin="20 5 15 50" Name="datagrid" HeaderRowHeight="40" HorizontalAlignment="Stretch" MinHeight="80" AutoGenerateColumns="False" FlowDirection="RightToLeft">
+                            <Syncfusion:SfDataGrid.CellStyle>
+                                <Style TargetType="Syncfusion:GridCell">
+                                    <Setter Property="Background" Value="{Binding UpdateSourceTrigger=PropertyChanged,Converter={StaticResource DeleteRowStyleConverter},ConverterParameter=Background}"/>
+                                </Style>
+                            </Syncfusion:SfDataGrid.CellStyle>
+                            <Syncfusion:SfDataGrid.TableSummaryRows>
+                                <Syncfusion:GridTableSummaryRow Position="Bottom"
+                                       Title="جمع مبلغ : {SumPrice}" ShowSummaryInRow="True" TitleColumnCount="3">
+                                    <Syncfusion:GridSummaryRow.SummaryColumns>
+                                        <Syncfusion:GridSummaryColumn Name="SumPrice"
+                                              Format=" {Sum:N0}"
+                                              MappingName="RecieveMoney_Detail.Price"
                                               SummaryType="DoubleAggregate">
-                                    <Syncfusion:GridSummaryColumn.Template>
-                                        <DataTemplate>
-                                            <TextBlock FontSize="15" Text="{Binding Converter={ StaticResource captionSummaryColumnConverter}, ConverterParameter=Debtor }" Foreground="Blue"></TextBlock>
-                                        </DataTemplate>
-                                    </Syncfusion:GridSummaryColumn.Template>
-                                </Syncfusion:GridSummaryColumn>
-                                <Syncfusion:GridSummaryColumn Name="CreditorAmount"
-                                              Format="'جمع : {Sum:N0}'"
-                                              MappingName="Creditor"
-                                              SummaryType="DoubleAggregate" >
-                                    <Syncfusion:GridSummaryColumn.Template>
-                                        <DataTemplate>
-                                            <TextBlock FontSize="15" Text="{Binding Converter={ StaticResource captionSummaryColumnConverter}, ConverterParameter=Creditor }" Foreground="#FF329C98"></TextBlock>
-                                        </DataTemplate>
-                                    </Syncfusion:GridSummaryColumn.Template>
-                                </Syncfusion:GridSummaryColumn>
-                            </Syncfusion:GridSummaryRow.SummaryColumns>
-                        </Syncfusion:GridSummaryRow>
-                        <Syncfusion:GridSummaryRow ShowSummaryInRow="False">
-                            <Syncfusion:GridSummaryRow.SummaryColumns>
-                                <Syncfusion:GridSummaryColumn MappingName="ColeMoein">
-                                    <Syncfusion:GridSummaryColumn.Template>
-                                        <DataTemplate>
-                                            <TextBlock FontSize="15" Text="اختلاف :"></TextBlock>
-                                        </DataTemplate>
-                                    </Syncfusion:GridSummaryColumn.Template>
-                                </Syncfusion:GridSummaryColumn>
-                                <Syncfusion:GridSummaryColumn Name="DebtorAmount1"
-                      Format="'جمع : {Sum:N0}'"
-                      MappingName="Debtor"
-                      SummaryType="DoubleAggregate">
-                                    <Syncfusion:GridSummaryColumn.Template>
-                                        <DataTemplate>
-                                            <TextBlock FontSize="15" Text="{Binding Converter={ StaticResource captionSummaryColumnConverter}, ConverterParameter=Debtor 1 }"  Visibility="{Binding Converter={ StaticResource visibilitySummaryColumnConverter}, ConverterParameter=Debtor}" Foreground="Red"></TextBlock>
-                                        </DataTemplate>
-                                    </Syncfusion:GridSummaryColumn.Template>
-                                </Syncfusion:GridSummaryColumn>
-                                <Syncfusion:GridSummaryColumn Name="CreditorAmount1"
-                      Format="'جمع : {Sum:N0}'"
-                      MappingName="Creditor"
-                      SummaryType="DoubleAggregate" >
-                                    <Syncfusion:GridSummaryColumn.Template>
-                                        <DataTemplate>
-                                            <TextBlock FontSize="15" Text="{Binding Converter={ StaticResource captionSummaryColumnConverter}, ConverterParameter=Creditor 1 }" Visibility="{Binding Converter={ StaticResource visibilitySummaryColumnConverter}, ConverterParameter=Creditor}" Foreground="Red"></TextBlock>
-                                        </DataTemplate>
-                                    </Syncfusion:GridSummaryColumn.Template>
-                                </Syncfusion:GridSummaryColumn>
-                            </Syncfusion:GridSummaryRow.SummaryColumns>
-                        </Syncfusion:GridSummaryRow>
-                    </Syncfusion:SfDataGrid.TableSummaryRows>
-                    <!--<Syncfusion:SfDataGrid.AlternatingRowStyle>
+                                        </Syncfusion:GridSummaryColumn>
+                                    </Syncfusion:GridSummaryRow.SummaryColumns>
+                                </Syncfusion:GridTableSummaryRow>
+                            </Syncfusion:SfDataGrid.TableSummaryRows>
+
+                            <!--<Syncfusion:SfDataGrid.AlternatingRowStyle>
                             <Style TargetType="Syncfusion:VirtualizingCellsControl">
                                 <Setter Property="Background" Value="#FFE6D9C9"/>
                                 <Setter Property="Foreground" Value="{Binding UpdateSourceTrigger=PropertyChanged,Converter={StaticResource DeleteRowStyleConverter},ConverterParameter=Foreground}" />
                             </Style>
                         </Syncfusion:SfDataGrid.AlternatingRowStyle>-->
-                    <Syncfusion:SfDataGrid.Columns>
-                        <Syncfusion:GridTextColumn MinimumWidth="95" Width="80" HeaderText="کل معین" MappingName="ColeMoein"/>
-                        <Syncfusion:GridTextColumn MinimumWidth="97" Width="80" HeaderText="تفضیلی" MappingName="PreferentialCode"/>
-                        <Syncfusion:GridTextColumn MinimumWidth="170" Width="100" HeaderText="نام" IsReadOnly="True" MappingName="Name"/>
-                        <Syncfusion:GridTextColumn MinimumWidth="165" HeaderText="شرح" ColumnSizer="Star" MappingName="Description"/>
-                        <Syncfusion:GridNumericColumn NumberGroupSeparator="," NumberGroupSizes="3"  NumberDecimalDigits="0" MinimumWidth="118" HeaderText="بدهکار" MappingName="Debtor" TextAlignment="Left"/>
-                        <Syncfusion:GridNumericColumn NumberGroupSeparator="," NumberGroupSizes="3"  NumberDecimalDigits="0" MinimumWidth="118" HeaderText="بستانکار" MappingName="Creditor" TextAlignment="Left"/>
-                    </Syncfusion:SfDataGrid.Columns>
-                </Syncfusion:SfDataGrid>
-                <Syncfusion:SfDataPager x:Name="dataPager" Visibility="Collapsed" FlowDirection="LeftToRight" VerticalAlignment="Bottom" Margin="0 -30" HorizontalAlignment="Center" UseOnDemandPaging="True" PageIndexChanged="dataPager_PageIndexChanged"
+                            <Syncfusion:SfDataGrid.Columns>
+                                <Syncfusion:GridCheckBoxSelectorColumn AllowResizing="False" MappingName="SelectorColumn" 
+                               Width="30">
+                                    <Syncfusion:GridCheckBoxSelectorColumn.CellStyle>
+                                        <Style TargetType="Syncfusion:GridCell">
+                                            <Style.Resources>
+                                                <Style TargetType="CheckBox">
+                                                    <Setter Property="BorderBrush" Value="Black"/>
+                                                    <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                                </Style>
+                                            </Style.Resources>
+                                        </Style>
+                                    </Syncfusion:GridCheckBoxSelectorColumn.CellStyle>
+                                </Syncfusion:GridCheckBoxSelectorColumn>
+                                <Syncfusion:GridTextColumn MinimumWidth="105" Width="80" HeaderText="وضعیت چک" MappingName="ChEvent.Name"/>
+                                <Syncfusion:GridDateTimeColumn MinimumWidth="150" FilterPopupStyle="{StaticResource SfDataGridFilterPopupStyle1}" HeaderText="تاریخ عملیات" MappingName="EventDate">
+                                    <Syncfusion:GridDateTimeColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding EventDate, Converter={StaticResource PersianDateConverter}}"/>
+                                        </DataTemplate>
+                                    </Syncfusion:GridDateTimeColumn.CellTemplate>
+                                </Syncfusion:GridDateTimeColumn>
+                                <Syncfusion:GridDateTimeColumn MinimumWidth="150" FilterPopupStyle="{StaticResource SfDataGridFilterPopupStyle1}" HeaderText="تاریخ دریافت" MappingName="RecieveMoney_Detail.RecieveMoneyHeader.Date">
+                                    <Syncfusion:GridDateTimeColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding RecieveMoney_Detail.RecieveMoneyHeader.Date, Converter={StaticResource PersianDateConverter}}"/>
+                                        </DataTemplate>
+                                    </Syncfusion:GridDateTimeColumn.CellTemplate>
+                                </Syncfusion:GridDateTimeColumn>
+                                <Syncfusion:GridTextColumn MinimumWidth="150" ColumnSizer="Star" HeaderText="صاحب چک" IsReadOnly="True" MappingName="RecieveMoney_Detail.RecieveMoneyHeader.Name"/>
+                                <Syncfusion:GridTextColumn MinimumWidth="150" ColumnSizer="AutoLastColumnFill" HeaderText="حساب دریافت کننده" IsReadOnly="True" MappingName="Name"/>
+                                <Syncfusion:GridDateTimeColumn MinimumWidth="150" FilterPopupStyle="{StaticResource SfDataGridFilterPopupStyle1}" HeaderText="تاریخ سررسید چک" MappingName="RecieveMoney_Detail.Date">
+                                    <Syncfusion:GridDateTimeColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding RecieveMoney_Detail.Date, Converter={StaticResource PersianDateConverter}}"/>
+                                        </DataTemplate>
+                                    </Syncfusion:GridDateTimeColumn.CellTemplate>
+                                </Syncfusion:GridDateTimeColumn>
+                                <Syncfusion:GridTextColumn MinimumWidth="90" HeaderText="شماره چک" MappingName="RecieveMoney_Detail.Number"/>
+                                <Syncfusion:GridTextColumn MinimumWidth="170" Width="100" HeaderText="نام بانک" MappingName="RecieveMoney_Detail.Bank.Name"/>
+                                <Syncfusion:GridNumericColumn NumberGroupSeparator="," NumberGroupSizes="3"  NumberDecimalDigits="0" MinimumWidth="118" HeaderText="مبلغ" MappingName="RecieveMoney_Detail.Price" TextAlignment="Left"/>
+                                <Syncfusion:GridTextColumn MinimumWidth="160" HeaderText="نام شعبه" MappingName="RecieveMoney_Detail.BranchName"/>
+                                <Syncfusion:GridTextColumn MinimumWidth="160" HeaderText="شماره صیادی" MappingName="RecieveMoney_Detail.SayadiNumber"/>
+                                <Syncfusion:GridCheckBoxColumn MinimumWidth="105" HeaderText="ثبت در سامانه" MappingName="RecieveMoney_Detail.Registered"/>
+                            </Syncfusion:SfDataGrid.Columns>
+                        </Syncfusion:SfDataGrid>
+                    </Syncfusion:TabItemExt>
+                    <Syncfusion:TabItemExt Header="وصول نشده&#x0a;           F2">
+                    </Syncfusion:TabItemExt>
+                    <Syncfusion:TabItemExt Header="واگذاری به بانک&#x0a;             F3">
+                    </Syncfusion:TabItemExt>
+                    <Syncfusion:TabItemExt Header="وصول شده&#x0a;         F4">
+                    </Syncfusion:TabItemExt>
+                    <Syncfusion:TabItemExt Header="خرج شده&#x0a;       F5">
+                    </Syncfusion:TabItemExt>
+                    <Syncfusion:TabItemExt Header="برگشتی&#x0a;     F6">
+                    </Syncfusion:TabItemExt>
+                    <Syncfusion:TabItemExt Header="عودتی&#x0a;     F7">
+                    </Syncfusion:TabItemExt>
+                </Syncfusion:TabControlExt>
+                <Syncfusion:SfDataPager x:Name="dataPager" Visibility="Collapsed" FlowDirection="LeftToRight" VerticalAlignment="Bottom" Margin="0 10" HorizontalAlignment="Center" UseOnDemandPaging="True" PageIndexChanged="dataPager_PageIndexChanged"
     Grid.Row="3" NumericButtonCount="3"
-PageSize="12"
-Source="{Binding acDocument_Headers}"/>
-                <Syncfusion:SfDataGrid Visibility="Collapsed" SizeChanged="datagridSearch_SizeChanged" IsVisibleChanged="datagridSearch_IsVisibleChanged" ShowGroupDropArea="True" AllowGrouping="True" AllowDraggingColumns="True" Grid.Row="1" DetailsViewDataGridStyle="{StaticResource detailsViewStyle}"  ItemsSource="{Binding ElementName=dataPager,Path=PagedSource}" RowStyle="{StaticResource rowstyle2}"
-                       SelectionChanged="datagridSearch_SelectionChanged" PreviewKeyDown="datagridSearch_PreviewKeyDown" IsGroupDropAreaExpanded="True" AllowDeleting="False" FontSize="14" RowHeight="30" ShowRowHeader="True" AllowFiltering="True" AllowEditing="False" AllowResizingColumns="True" HeaderStyle="{StaticResource headerStyle}" Margin="17 5 15 15" Name="datagridSearch" HeaderRowHeight="40" HorizontalAlignment="Stretch" MinHeight="80" AutoGenerateColumns="False" FlowDirection="RightToLeft">
-                    <!--<Syncfusion:SfDataGrid.AlternatingRowStyle>
-            <Style TargetType="Syncfusion:VirtualizingCellsControl">
-                <Setter Property="Background" Value="#FFE6D9C9"/>
-                <Setter Property="Foreground" Value="{Binding UpdateSourceTrigger=PropertyChanged,Converter={StaticResource DeleteRowStyleConverter},ConverterParameter=Foreground}" />
-            </Style>
-        </Syncfusion:SfDataGrid.AlternatingRowStyle>-->
-                    <Syncfusion:SfDataGrid.Columns>
-                        <Syncfusion:GridNumericColumn NumberDecimalDigits="0" MinimumWidth="110" Width="80" HeaderText="شماره سند" MappingName="NoDoument" TextAlignment="Left"/>
-                        <Syncfusion:GridDateTimeColumn FilterPopupStyle="{StaticResource SfDataGridFilterPopupStyle1}" MinimumWidth="140" HeaderText="تاریخ" MappingName="Date" >
-                            <Syncfusion:GridDateTimeColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Date, Converter={StaticResource PersianDateConverter}}"/>
-                                </DataTemplate>
-                            </Syncfusion:GridDateTimeColumn.CellTemplate>
-                            <!--<Syncfusion:GridDateTimeColumn.FilterPopupStyle>
-                                <StaticResource ResourceKey="CustomFilterPopupStyle" />
-                            </Syncfusion:GridDateTimeColumn.FilterPopupStyle>-->
-                        </Syncfusion:GridDateTimeColumn>
-                        <!--<Syncfusion:GridDateTimeColumn.CellTemplate>
-                                    <DataTemplate>
-                                    <TextBlock Text="{Binding Date}" FontFamily="B nazanin" Foreground="Green"/>
-                                    </DataTemplate>
-                                </Syncfusion:GridDateTimeColumn.CellTemplate>
-                            </Syncfusion:GridDateTimeColumn>-->
-                        <Syncfusion:GridTextColumn MinimumWidth="120" HeaderText="نوع سند" ColumnSizer="Star" MappingName="DocumentType.Name"/>
-                        <Syncfusion:GridNumericColumn NumberDecimalDigits="0" MinimumWidth="100" HeaderText="سریال" MappingName="Serial" TextAlignment="Left"/>
-                        <Syncfusion:GridNumericColumn NumberGroupSeparator="," NumberGroupSizes="3"  NumberDecimalDigits="0" MinimumWidth="118" HeaderText="ج بدهکار" MappingName="SumDebtor" TextAlignment="Left"/>
-                        <Syncfusion:GridNumericColumn NumberGroupSeparator="," NumberGroupSizes="3"  NumberDecimalDigits="0" MinimumWidth="118" HeaderText="ج بستانکار" MappingName="SumCreditor" TextAlignment="Left"/>
-                        <Syncfusion:GridNumericColumn NumberGroupSeparator="," NumberGroupSizes="3"  NumberDecimalDigits="0" MinimumWidth="118" HeaderText="اختلاف" MappingName="Difference" TextAlignment="Left"/>
-                    </Syncfusion:SfDataGrid.Columns>
-                    <Syncfusion:SfDataGrid.DetailsViewDefinition>
-                        <Syncfusion:GridViewDefinition RelationalColumn="AcDocument_Detail">
-                            <Syncfusion:GridViewDefinition.DataGrid>
-                                <Syncfusion:SfDataGrid x:Name="FirstLevelNestedGrid" AllowFiltering="True" HeaderRowHeight="30" ColumnSizer="Star" AllowResizingColumns="True" AutoGenerateColumns="False" ShowRowHeader="True">
-                                    <Syncfusion:SfDataGrid.Columns>
-                                        <Syncfusion:GridTextColumn MinimumWidth="95" Width="80" HeaderText="کل معین" MappingName="ColeMoein"/>
-                                        <Syncfusion:GridTextColumn MinimumWidth="95" Width="80" HeaderText="تفضیلی" MappingName="PreferentialCode"/>
-                                        <Syncfusion:GridTextColumn MinimumWidth="190" Width="100" HeaderText="نام" IsReadOnly="True" MappingName="Name"/>
-                                        <Syncfusion:GridTextColumn MinimumWidth="350" HeaderText="شرح" ColumnSizer="Star" MappingName="Description" />
-                                        <Syncfusion:GridTextColumn MinimumWidth="122" HeaderText="بدهکار" MappingName="Debtor2" TextAlignment="Left"/>
-                                        <Syncfusion:GridTextColumn MinimumWidth="122" HeaderText="بستانکار" MappingName="Creditor2" TextAlignment="Left"/>
-                                    </Syncfusion:SfDataGrid.Columns>
-                                </Syncfusion:SfDataGrid>
-                            </Syncfusion:GridViewDefinition.DataGrid>
-                        </Syncfusion:GridViewDefinition>
-                    </Syncfusion:SfDataGrid.DetailsViewDefinition>
-                </Syncfusion:SfDataGrid>
+PageSize="12"/>
             </Grid>
-            <DockPanel Grid.Row="5" Grid.RowSpan="2" VerticalAlignment="Bottom" Margin="0,0,45,6" Grid.Column="3" HorizontalAlignment="Right">
-                <Grid Name="gridDelete" Visibility="Collapsed" Margin="20 0">
-                    <Button Style="{StaticResource CustomButtonStyle}" ToolTip="حذف سند" Click="BtnDelete_Click" x:Name="btnDelete" HorizontalAlignment="Center" Margin="0 0 0 0" Width="60" Content="" FontSize="20" Height="45">
-                        <Button.Background>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#FFFFDCCB"/>
-                                <GradientStop Color="#FFFFE7D3" Offset="0.521"/>
-                                <GradientStop Color="#FFBDA178" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Button.Background>
-                    </Button>
-                    <Image Source="/Images/Delete.png" IsHitTestVisible="False" Width="37.5" Stretch="Fill" Height="39" Margin="0 0 0 2"/>
-                </Grid>
-                <Image Name="searchImage" ToolTip="جستجو" PreviewMouseDown="searchImage_PreviewMouseDown" Visibility="Visible"  Height="55" Cursor="Hand" Source="/Images/Data.png"/>
-            </DockPanel>
-            <Popup Name="MyPopupS" Visibility="Collapsed" Placement="Mouse" StaysOpen="False" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2">
+            
+            <Popup Name="MyPopupS" Visibility="Collapsed" Closed="MyPopupS_Closed" Placement="Mouse" StaysOpen="False" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2">
                 <persianDateControls:PersianCalendar2  Name="persianCalendar" PreviewMouseRightButtonDown="persianCalendar_PreviewMouseRightButtonDown" PreviewMouseLeftButtonDown="persianCalendar_PreviewMouseLeftButtonDown" SelectedDateChanged="persianCalendar_SelectedDateChanged"
                                        DisplayDate="{Binding SelectedDate, RelativeSource={RelativeSource Self}}" Background="{x:Static SystemColors.ControlLightLightBrush}" TabIndex="1" VerticalAlignment="Top" HorizontalAlignment="Center"  Width="180" Height="165" FontFamily="B Homa"  FontSize="11.4"  />
             </Popup>
