@@ -113,7 +113,9 @@ namespace WpfCol
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            Dispose();
+            mini_checkRecieveEvents.Clear();
+            checkRecieveEvents.Clear();
+            GC.Collect();
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -154,180 +156,9 @@ namespace WpfCol
             datagrid.Focus();
             datagrid.SearchHelper.AllowFiltering = true;
             isCancel = true;
+            TabControlExt_SelectionChanged(null, null);
         }
 
-        private static void SetAccountName(ColDbEntities1 db, CheckRecieveEvent item2)
-        {/*
-            var strings = item2.AcCode.Split('-');
-            var moein = int.Parse(strings[0]);
-            var tafzil = int.Parse(strings[2]);
-            item2.AccountName = $"{db.Preferential.First(i => i.PreferentialCode == tafzil).PreferentialName}-{db.Moein.First(p => p.MoeinCode == moein).MoeinName}";*/
-        }
-
-        //private void btnConfirm_Click2(object sender, RoutedEventArgs e)
-        //{
-        //    bool haserror = false;
-        //    haserror = GetError();
-
-        //    if (haserror)
-        //        return;
-        //    var db = new ColDbEntities1();
-        //                            //var c = int.Parse(cmbType.Text);
-        //                            //var col = db.tGroup.FirstOrDefault(g => g.GroupCode == c);
-        //                            //if (col == null)
-        //                            //{
-        //                            //    Sf_txtDoumentType.ErrorText = "این کد گروه وجود ندارد";
-        //                            //    Sf_txtDoumentType.HasError = true;
-        //                            //    return;
-        //                            //}
-        //                            //var CheckRecieveEvents = db.CheckRecieveEvents.Find(id);
-            
-        //                            //var nCheckRecieveEvents = db.CheckRecieveEvents.FirstOrDefault(g => g.fk_GroupId == col.Id && g.CheckRecieveEventsName == txtNoDocumen.Text);
-        //                            //if (CheckRecieveEvents?.Id != nCheckRecieveEvents?.Id && nCheckRecieveEvents != null)
-        //                            //{
-        //                            //    Xceed.Wpf.Toolkit.MessageBox.Show("این نام تفضیلی و کد گروه از قبل وجود داشته است!");
-        //                            //    return;
-        //                            //}
-            
-        //    RecieveMoneyHeader e_addHeader = null;
-        //    RecieveMoneyHeader header = null;
-        //    if (id == Guid.Empty)
-        //    {
-        //        e_addHeader = new RecieveMoneyHeader()
-        //        {
-        //            Id = Guid.NewGuid(),
-        //            Date=pcw1.SelectedDate.ToDateTime(),
-        //            Description = txtDescription.Text,
-        //            fk_MoeinId=(txtMoein.Tag as Mu).Id,
-        //            fk_PreferentialId=(txtPreferential.Tag as Mu).Id
-        //        };
-        //        DbSet<CheckRecieveEvents> details = null;
-        //        foreach (var item in checkRecieveEvents)
-        //        {
-        //            var en = new CheckRecieveEvents()
-        //            {
-        //                fk_MoeinId = item.Moein.Id,
-        //                fk_PreferentialId = item.Preferential.Id,
-        //                RecieveMoneyHeader = e_addHeader,
-        //                fkBank = item.Bank?.Id,
-        //                BranchName = item.BranchName,
-        //                Date = item.Date,
-        //                Number = item.Number,
-        //                Price = item.Price,
-        //                MoneyType = item.MoneyType,
-        //                Registered = item.Registered,
-        //                SayadiNumber = item.SayadiNumber,
-        //                Id = Guid.NewGuid()
-        //            };
-        //            db.CheckRecieveEvents.Add(en);
-        //        }
-        //        db.RecieveMoneyHeader.Add(e_addHeader);
-        //        //if (LoadedFill)
-        //        //    RecieveMoneyHeaders.Add(e_addHeader);
-        //        e_addHeader.Moein = db.Moein.Find((txtMoein.Tag as Mu).Id);
-        //        e_addHeader.Preferential = db.Preferential.Find((txtPreferential.Tag as Mu).Id);
-        //    }
-        //    else
-        //    {
-        //        var h = db.CheckRecieveEvents.Where(v => v.fkHeaderId == id);
-        //        foreach (var item in h)
-        //        {
-        //            db.CheckRecieveEvents.Remove(item);
-        //            header.CheckRecieveEvents.Remove(header.CheckRecieveEvents.First(x => x.Id == item.Id));
-        //        }
-        //        var e_Edidet = db.RecieveMoneyHeader.Find(id);
-        //        e_Edidet.Description= header.Description = txtDescription.Text;
-        //        e_Edidet.fk_MoeinId = (txtMoein.Tag as Mu).Id;
-        //        header.Moein = db.Moein.Find((txtMoein.Tag as Mu).Id);
-        //        e_Edidet.fk_PreferentialId = (txtPreferential.Tag as Mu).Id;
-        //        header.Preferential = db.Preferential.Find((txtPreferential.Tag as Mu).Id);
-        //        e_Edidet.Date = header.Date = pcw1.SelectedDate.ToDateTime();
-        //        foreach (var item in checkRecieveEvents)
-        //        {
-        //            var en = new CheckRecieveEvents()
-        //            {
-        //                fkHeaderId = header.Id,
-        //                fk_MoeinId = item.Moein.Id,
-        //                fk_PreferentialId = item.Preferential.Id,
-        //                RecieveMoneyHeader = e_addHeader,
-        //                fkBank = item.Bank?.Id,
-        //                BranchName = item.BranchName,
-        //                Date = item.Date,
-        //                Number = item.Number,
-        //                Price = item.Price,
-        //                MoneyType = item.MoneyType,
-        //                Registered = item.Registered,
-        //                SayadiNumber = item.SayadiNumber,
-        //                Id = Guid.NewGuid()
-        //            };
-        //            db.CheckRecieveEvents.Add(en);
-        //            header.CheckRecieveEvents.Add(en);
-        //        }
-        //    }
-        //    db.SaveChanges();
-        //    if (header != null)
-        //    {
-        //        int i = 0;
-        //        foreach (var item in header.CheckRecieveEvents)
-        //        {
-        //            item.Moein = checkRecieveEvents[i].Moein;
-        //            item.Preferential = checkRecieveEvents[i].Preferential;
-        //            item.Bank = checkRecieveEvents[i].Bank;
-        //            i++;
-        //        }
-        //    }
-        //    if(e_addHeader!=null)
-        //    {
-        //        int i = 0;
-        //        foreach (var item in e_addHeader.CheckRecieveEvents)
-        //        {
-        //            item.Moein = checkRecieveEvents[i].Moein;
-        //            item.Preferential = checkRecieveEvents[i].Preferential;
-        //            item.Bank = checkRecieveEvents[i].Bank;
-        //            i++;
-        //        }
-        //    }
-        //    datagrid.SelectedIndex = -1;
-        //    datagrid.ClearFilters();
-        //    datagrid.SearchHelper.ClearSearch();
-        //    if (checkRecieveEvents.Count > 0)
-        //    {
-        //        datagrid.Dispatcher.BeginInvoke(new Action(() =>
-        //        {
-        //            checkRecieveEvents.Clear();
-        //        }));
-        //        RefreshDataGridForSetPersianNumber();
-        //    }
-        //    //datagrid.TableSummaryRows.Clear();
-        //    SearchTermTextBox.Text = "";
-        //    if (id == Guid.Empty)
-        //    {
-        //        this.gifImage.Visibility = Visibility.Visible;
-        //        var gifImage = new BitmapImage(new Uri("pack://application:,,,/Images/AddDataLarge.gif"));
-        //        XamlAnimatedGif.AnimationBehavior.SetSourceUri(this.gifImage, gifImage.UriSource);
-        //        var th = new Thread(() =>
-        //        {
-        //            Thread.Sleep(2570);
-        //            Dispatcher.Invoke(() =>
-        //            {
-        //                this.gifImage.Visibility = Visibility.Collapsed;
-        //            });
-        //        });
-        //        th.Start();
-        //        Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت");
-        //        this.gifImage.Visibility = Visibility.Collapsed;
-
-        //        txtMoein.Focus();
-        //    }
-        //    else
-        //    {
-        //        Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش");
-        //        btnCancel_Click(null, null);
-        //    }
-                            
-        //    isCancel = true;                        
-        //    id = Guid.Empty;
-        //}
         private void btnConfirm_Click(object sender, RoutedEventArgs e)
         {
             bool haserror = false;
@@ -716,6 +547,10 @@ namespace WpfCol
             var list = MainWindow.Current.GetTabControlItems;
             var item = list.FirstOrDefault(u => u.Header == "چک های دریافتی");
             MainWindow.Current.tabcontrol.Items.Remove(item);
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                Dispose();
+            }));
             return true;
         }
 
@@ -1211,7 +1046,7 @@ namespace WpfCol
 
         private void btnSetting_Click(object sender, RoutedEventArgs e)
         {
-            var win = new winSettingCode();
+            var win = new winSettingCode();            
             var db = new ColDbEntities1();
             var exist = false;
             if (db.CodeSetting.Any(t => t.Name == "MoeinCodeTransferLCheckRecieve"))
@@ -1280,7 +1115,7 @@ namespace WpfCol
 
         private void TabControlExt_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (tempSelectedIndex_TabControl == control.SelectedIndex && sender != null)
+            if (control.SelectedItem == null || (tempSelectedIndex_TabControl == control.SelectedIndex && sender != null))
                 return;
             (datagrid.Parent as TabItemExt).Content = null;
             (control.SelectedItem as TabItemExt).Content = datagrid;

@@ -15,6 +15,7 @@ using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -28,7 +29,8 @@ namespace WpfCol
     {
         public winSettingCode()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            MainWindow.Current.Effect = new BlurEffect() { Radius = 4 };
         }
 
         private void btnConfirm_Click(object sender, RoutedEventArgs e)
@@ -59,6 +61,11 @@ namespace WpfCol
                 await Task.Delay(0);
                 Height=stack.ActualHeight+175;
             }), DispatcherPriority.Render);
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            MainWindow.Current.Effect = null;
         }
     }
 }

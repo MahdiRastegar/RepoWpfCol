@@ -517,7 +517,11 @@ namespace WpfCol
 
                 var y = db.tGroup.FirstOrDefault(gs => gs.GroupCode == g);
                 if (y != null)
-                    txtPreferentialName.Focus();
+                    Dispatcher.BeginInvoke(new Action(async () =>
+                    {
+                        await Task.Delay(50);
+                        txtPreferentialName.Focus();
+                    }));
             }
             catch { }
         }

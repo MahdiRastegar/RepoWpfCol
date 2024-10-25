@@ -345,7 +345,8 @@ namespace WpfCol
                 //win.Left = relativePoint.X - 60;
                 //win.Top = relativePoint.Y + 95;
                 window = win;
-                win.Show();win.Focus();
+                win.Show();
+                win.Focus();
             }
         }
 
@@ -543,7 +544,11 @@ namespace WpfCol
 
                 var y = db.Col.FirstOrDefault(gs => gs.ColCode == g);
                 if (y != null)
-                    txtMoeinName.Focus();
+                    Dispatcher.BeginInvoke(new Action(async () =>
+                    {
+                        await Task.Delay(50);
+                        txtMoeinName.Focus();
+                    }));
             }
             catch { }
         }

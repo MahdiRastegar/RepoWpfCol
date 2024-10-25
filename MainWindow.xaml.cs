@@ -3,6 +3,7 @@ using Syncfusion.Windows.Tools.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -119,7 +121,9 @@ namespace WpfCol
 
         private void tabcontrol_TabClosing(object sender, CancelingRoutedEventArgs e)
         {
+            this.Effect = new BlurEffect() { Radius = 4 };
             e.Cancel = !((e.OriginalSource as TabItemExt).Content as ITabForm).CloseForm();
+            this.Effect = null;
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
@@ -231,6 +235,23 @@ namespace WpfCol
                 {
                     usrAccountDocument.SetEnterToNextCell();
                     e.Handled = true;
+                    return;
+                }
+            }
+            if ((tabcontrol.SelectedItem as TabItemExt)?.Content is UserControl userControl)
+            {
+                if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && Keyboard.IsKeyDown(Key.S))
+                {
+                    Type type = userControl.GetType();
+
+                    MethodInfo method = type.GetMethod("btnConfirm_Click", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                    if (method != null)
+                    {
+                        object[] parameters = new object[] { null, null };
+
+                        method.Invoke(userControl, parameters);
+                    }
                 }
             }
         }

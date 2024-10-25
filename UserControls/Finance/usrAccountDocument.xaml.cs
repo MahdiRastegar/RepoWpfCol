@@ -946,6 +946,10 @@ namespace WpfCol
             var list = MainWindow.Current.GetTabControlItems;
             var item = list.FirstOrDefault(u => u.Header == "سند حسابداری");
             MainWindow.Current.tabcontrol.Items.Remove(item);
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                Dispose();
+            }));
             return true;
         }
 

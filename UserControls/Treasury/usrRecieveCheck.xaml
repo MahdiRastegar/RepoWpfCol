@@ -130,7 +130,7 @@
             <Syncfusion:AdvancedFiltersButtonVisibiltyConverter x:Key="advancedFilterButtonVisibilityConverter"/>
             <Syncfusion:FilteredFromCheckVisibilityConverter x:Key="filteredFromCheckVisibilityConverter"/>
             <Style x:Key="ButtonFocusVisual">
-               
+
             </Style>
             <LinearGradientBrush x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
                 <GradientStop Color="#F3F3F3" Offset="0"/>
@@ -482,7 +482,7 @@ FontFamily="{StaticResource IranSans}" Width="27"
                         <Syncfusion:ComboBoxItemAdv Content="عودتی" Name="item6"/>
                     </Syncfusion:ComboBoxAdv>
                 </Syncfusion:SfTextInputLayout>
-                
+
                 <Syncfusion:SfTextInputLayout Visibility="Visible" Name="Sf_txtCount" OutlineCornerRadius="8" Hint="جمع تعداد" Grid.Row="0"  VerticalAlignment="Top" Margin="20 0 20 0" Grid.Column="0"  HorizontalAlignment="Stretch">
                     <TextBox Name="txtCount" VerticalContentAlignment="Center"  IsEnabled="True" IsReadOnly="True" Margin="0" FontSize="18"/>
                 </Syncfusion:SfTextInputLayout>
@@ -490,7 +490,7 @@ FontFamily="{StaticResource IranSans}" Width="27"
                     <TextBox Name="txtSumPrice" VerticalContentAlignment="Center"  IsEnabled="True" IsReadOnly="True" Margin="0" FontSize="18"/>
                 </Syncfusion:SfTextInputLayout>
             </Grid>
-            
+
             <!--<TextBlock Text="حساب پرداخت کننده :" Grid.Row="2" HorizontalAlignment="Center" Margin="0 10">
                 <TextBlock.Foreground>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -514,7 +514,7 @@ FontFamily="{StaticResource IranSans}" Width="27"
             <DockPanel VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="20 0"  HorizontalAlignment="Stretch"/>
             <DockPanel  Grid.Row="6" Grid.ColumnSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="15 0 15 -15">
                 <Grid x:Name="gridConfirm">
-                    <Button Style="{StaticResource CustomButtonStyle}" ToolTip="ذخیره" x:Name="btnConfirm" Width="60" Content="" Click="btnConfirm_Click" FontSize="20" Height="45">
+                    <Button Style="{StaticResource CustomButtonStyle}" ToolTip="ذخیره (Ctrl+S)" x:Name="btnConfirm" Width="60" Content="" Click="btnConfirm_Click" FontSize="20" Height="45">
                         <Button.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FFBCCAFF"/>
@@ -542,8 +542,8 @@ FontFamily="{StaticResource IranSans}" Width="27"
                         <Button.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FFFAFFCD"/>
-                                <GradientStop Color="#FFFFE0BA" Offset="0.521"/>
-                                <GradientStop Color="#FFA5968A" Offset="1"/>
+                                <GradientStop Color="#FFADD8FF" Offset="0.524"/>
+                                <GradientStop Color="#FFCBFFBC" Offset="1"/>
                             </LinearGradientBrush>
                         </Button.Background>
                     </Button>
@@ -624,7 +624,33 @@ FontFamily="{StaticResource IranSans}" Width="27"
 
                 <Image Name="gifImage" Visibility="Collapsed" Width="144" Height="81" HorizontalAlignment="Right" Grid.Row="5" Grid.RowSpan="2" VerticalAlignment="Bottom" Margin="0,0,13,-65" Grid.Column="3"/>
                 <Syncfusion:TabControlExt Name="control" Margin="0 10 0 0" Grid.Row="1" Grid.RowSpan="20" EnableLabelEdit="False" CloseButtonType="Hide" SelectionChanged="TabControlExt_SelectionChanged">
+                    <Syncfusion:TabControlExt.TabItemHoverBackground>
+                        <LinearGradientBrush EndPoint="0,1">
+                            <GradientStop Color="#FFFCFDFE"/>
+                            <GradientStop Color="White" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Syncfusion:TabControlExt.TabItemHoverBackground>
+                    <Syncfusion:TabControlExt.TabItemSelectedBackground>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF989898" Offset="0.005"/>
+                            <GradientStop Color="White" Offset="1"/>
+                            <GradientStop Color="White" Offset="0.47"/>
+                            <GradientStop Color="#FFCECECE" Offset="0.533"/>
+                        </LinearGradientBrush>
+                    </Syncfusion:TabControlExt.TabItemSelectedBackground>
                     <Syncfusion:TabItemExt Header="همه موارد&#x0a;         F1">
+                        <Syncfusion:TabItemExt.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFCDFF93" Offset="1"/>
+                                <GradientStop Color="#FFB5B5B5" Offset="0.537"/>
+                                <GradientStop Color="#FFFFD2CB" Offset="0.659"/>
+                                <GradientStop Color="White" Offset="0.991"/>
+                                <GradientStop Color="#FFFEA6FF" Offset="0.129"/>
+                                <GradientStop Color="#FFFFC8BF" Offset="0.307"/>
+                                <GradientStop Color="#FFE5DEFF" Offset="0.485"/>
+                                <GradientStop Color="#FFFE0B11" Offset="0"/>
+                            </LinearGradientBrush>
+                        </Syncfusion:TabItemExt.Background>
                         <Syncfusion:SfDataGrid SizeChanged="datagrid_SizeChanged" SelectionMode="Extended" ItemsSource="{Binding ElementName=dataPager,Path=PagedSource}" PreviewMouseDown="datagrid_PreviewMouseDown" DataContext="{Binding  Source={StaticResource viewmodel}}"
                                        Visibility="Visible" Grid.Row="1" AllowSorting="True" AddNewRowPosition="None"                                    
                                        SelectionChanged="datagrid_SelectionChanged" SelectionChanging="datagrid_SelectionChanging" AllowDeleting="False" PreviewKeyDown="datagrid_PreviewKeyDown" FontSize="14" RowHeight="30" ShowRowHeader="True" AllowFiltering="False" AllowEditing="False" AllowResizingColumns="True" HeaderStyle="{StaticResource headerStyle}" Margin="20 5 15 50" Name="datagrid" HeaderRowHeight="40" HorizontalAlignment="Stretch" MinHeight="80" AutoGenerateColumns="False" FlowDirection="RightToLeft">
@@ -700,23 +726,72 @@ FontFamily="{StaticResource IranSans}" Width="27"
                         </Syncfusion:SfDataGrid>
                     </Syncfusion:TabItemExt>
                     <Syncfusion:TabItemExt Header="وصول نشده&#x0a;           F2">
+                        <Syncfusion:TabItemExt.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="White"/>
+                                <GradientStop Color="#FFF6FFFE" Offset="1"/>
+                                <GradientStop Color="#FF8C3F3F" Offset="0.49"/>
+                                <GradientStop Color="#FFB91717" Offset="0.591"/>
+                                <GradientStop Color="White" Offset="0.005"/>
+                            </LinearGradientBrush>
+                        </Syncfusion:TabItemExt.Background>
                     </Syncfusion:TabItemExt>
                     <Syncfusion:TabItemExt Header="واگذاری به بانک&#x0a;             F3">
+                        <Syncfusion:TabItemExt.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFB5FFC7" Offset="0.005"/>
+                                <GradientStop Color="White" Offset="1"/>
+                                <GradientStop Color="#FF91A464" Offset="0.454"/>
+                                <GradientStop Color="#FF5E7133" Offset="0.582"/>
+                            </LinearGradientBrush>
+                        </Syncfusion:TabItemExt.Background>
                     </Syncfusion:TabItemExt>
                     <Syncfusion:TabItemExt Header="وصول شده&#x0a;         F4">
+                        <Syncfusion:TabItemExt.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF91BF9C" Offset="0.005"/>
+                                <GradientStop Color="White" Offset="1"/>
+                                <GradientStop Color="#FFCDFFE0" Offset="0.44"/>
+                                <GradientStop Color="#FF67AD9F" Offset="0.526"/>
+                            </LinearGradientBrush>
+                        </Syncfusion:TabItemExt.Background>
                     </Syncfusion:TabItemExt>
                     <Syncfusion:TabItemExt Header="خرج شده&#x0a;       F5">
+                        <Syncfusion:TabItemExt.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="White" Offset="1"/>
+                                <GradientStop Color="#FF7FB1BB" Offset="0.526"/>
+                                <GradientStop Color="#FFB2D4F3" Offset="0.474"/>
+                                <GradientStop Color="#FFB4C0CA" Offset="0"/>
+                            </LinearGradientBrush>
+                        </Syncfusion:TabItemExt.Background>
                     </Syncfusion:TabItemExt>
                     <Syncfusion:TabItemExt Header="برگشتی&#x0a;     F6">
+                        <Syncfusion:TabItemExt.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="White" Offset="1"/>
+                                <GradientStop Color="#FFBFA99C" Offset="0.526"/>
+                                <GradientStop Color="#FFF3C1B2" Offset="0.474"/>
+                                <GradientStop Color="#FFCA9788" Offset="0"/>
+                            </LinearGradientBrush>
+                        </Syncfusion:TabItemExt.Background>
                     </Syncfusion:TabItemExt>
                     <Syncfusion:TabItemExt Header="عودتی&#x0a;     F7">
+                        <Syncfusion:TabItemExt.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="White" Offset="1"/>
+                                <GradientStop Color="#FFBFB49C" Offset="0.526"/>
+                                <GradientStop Color="#FFF3DFB2" Offset="0.474"/>
+                                <GradientStop Color="#FFCACAB4" Offset="0"/>
+                            </LinearGradientBrush>
+                        </Syncfusion:TabItemExt.Background>
                     </Syncfusion:TabItemExt>
                 </Syncfusion:TabControlExt>
                 <Syncfusion:SfDataPager x:Name="dataPager" Visibility="Collapsed" FlowDirection="LeftToRight" VerticalAlignment="Bottom" Margin="0 10" HorizontalAlignment="Center" UseOnDemandPaging="True" PageIndexChanged="dataPager_PageIndexChanged"
     Grid.Row="3" NumericButtonCount="3"
 PageSize="12"/>
             </Grid>
-            
+
             <Popup Name="MyPopupS" Visibility="Collapsed" Closed="MyPopupS_Closed" Placement="Mouse" StaysOpen="False" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2">
                 <persianDateControls:PersianCalendar2  Name="persianCalendar" PreviewMouseRightButtonDown="persianCalendar_PreviewMouseRightButtonDown" PreviewMouseLeftButtonDown="persianCalendar_PreviewMouseLeftButtonDown" SelectedDateChanged="persianCalendar_SelectedDateChanged"
                                        DisplayDate="{Binding SelectedDate, RelativeSource={RelativeSource Self}}" Background="{x:Static SystemColors.ControlLightLightBrush}" TabIndex="1" VerticalAlignment="Top" HorizontalAlignment="Center"  Width="180" Height="165" FontFamily="B Homa"  FontSize="11.4"  />

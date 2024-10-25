@@ -1087,6 +1087,10 @@ namespace WpfCol
             var list = MainWindow.Current.GetTabControlItems;
             var item = list.FirstOrDefault(u => u.Header == "پرداخت وجه");
             MainWindow.Current.tabcontrol.Items.Remove(item);
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                Dispose();
+            }));
             return true;
         }
 

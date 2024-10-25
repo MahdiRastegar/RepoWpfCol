@@ -142,7 +142,7 @@
             <DockPanel VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="30 0"  HorizontalAlignment="Stretch"/>
             <DockPanel  Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="15 0 15 10">
                 <Grid>
-                    <Button Style="{StaticResource CustomButtonStyle}" ToolTip="ذخیره" x:Name="btnConfirm" Width="60" Content="" Click="btnConfirm_Click" FontSize="20" Height="45">
+                    <Button Style="{StaticResource CustomButtonStyle}" ToolTip="ذخیره (Ctrl+S)" x:Name="btnConfirm" Width="60" Content="" Click="btnConfirm_Click" FontSize="20" Height="45">
                         <Button.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FFBCCAFF"/>
