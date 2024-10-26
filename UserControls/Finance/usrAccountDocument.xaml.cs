@@ -66,6 +66,8 @@ namespace WpfCol
 
         public void Dispose()
         {
+            if (acDocumentViewModel == null)
+                return;
             acDocument_Headers.Clear();
             AcDocument_Details.Clear();
             datagridSearch.Dispose();
