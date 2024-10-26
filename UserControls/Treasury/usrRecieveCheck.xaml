@@ -387,51 +387,6 @@
                 <RowDefinition Height="1*" MinHeight="90"/>
                 <RowDefinition Height="25"/>
             </Grid.RowDefinitions>
-            <Border  Name="borderEdit" Visibility="Hidden" Grid.ColumnSpan="4" CornerRadius="5" Margin="4 -10 0 0" Grid.Row="1" Grid.RowSpan="6" BorderThickness="4">
-                <Border.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="White" Offset="0"/>
-                        <GradientStop Color="#FFFBD0FF" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <Border.BorderBrush>
-                    <LinearGradientBrush>
-                        <GradientStop x:Name="GradientStop1" Color="MediumBlue" Offset="0.0" />
-                        <GradientStop x:Name="GradientStop2" Color="Purple" Offset="0.5" />
-                        <GradientStop x:Name="GradientStop3" Color="Red" Offset="1.0" />
-                    </LinearGradientBrush>
-                </Border.BorderBrush>
-                <Border.Triggers>
-                    <EventTrigger RoutedEvent="Border.Loaded">
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <DoubleAnimation 
-                Storyboard.TargetName="GradientStop1"
-                Storyboard.TargetProperty="Offset" RepeatBehavior="Forever"
-                From="0.0" To="1.0" Duration="0:0:1.5"
-                AutoReverse="True" />
-                                <ColorAnimation 
-                Storyboard.TargetName="GradientStop2"
-                Storyboard.TargetProperty="Color" RepeatBehavior="Forever"
-                From="Purple" To="Yellow" 
-                Duration="0:0:1.5"
-                AutoReverse="True"
-                BeginTime="0:0:3" />
-                                <ColorAnimation 
-                Storyboard.TargetName="GradientStop3"
-                Storyboard.TargetProperty="Color" RepeatBehavior="Forever"
-                Duration="0:0:1.5" 
-                AutoReverse="True"
-                BeginTime="0:0:6">
-                                    <ColorAnimation.By>
-                                        <Color ScA="-1" ScR="0" ScB="0" ScG="0" />
-                                    </ColorAnimation.By>
-                                </ColorAnimation>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                </Border.Triggers>
-            </Border>
             <DockPanel VerticalAlignment="Center" Margin="20 0"  HorizontalAlignment="Stretch"  Grid.Row="3">
                 <Border Width="12.5" Height="54" Tag="id" Visibility="Collapsed" MouseLeave="border_MouseLeave" Name="border" Panel.ZIndex="1" MouseUp="border_MouseUp" MouseEnter="Border_MouseEnter" MouseDown="Border_MouseDown" BorderThickness=".9" CornerRadius="10 1 1 10" BorderBrush="Black" Margin="0 -14.5 -12.5 0">
                     <Border.Background>
@@ -632,12 +587,53 @@ FontFamily="{StaticResource IranSans}" Width="27"
                     </Syncfusion:TabControlExt.TabItemHoverBackground>
                     <Syncfusion:TabControlExt.TabItemSelectedBackground>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FF989898" Offset="0.005"/>
+                            <GradientStop Color="#FFCCA998" x:Name="GradientStop3" Offset="0"/>
                             <GradientStop Color="White" Offset="1"/>
-                            <GradientStop Color="White" Offset="0.47"/>
-                            <GradientStop Color="#FFCECECE" Offset="0.533"/>
+                            <GradientStop Color="White" x:Name="GradientStop1" Offset="0.47"/>
+                            <GradientStop Color="#FFDCD1C3" x:Name="GradientStop2" Offset="0.533"/>
                         </LinearGradientBrush>
                     </Syncfusion:TabControlExt.TabItemSelectedBackground>
+                    <Syncfusion:TabControlExt.Triggers>
+                        <EventTrigger RoutedEvent="Syncfusion:TabControlExt.Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation 
+Storyboard.TargetName="GradientStop1"
+Storyboard.TargetProperty="Offset" RepeatBehavior="Forever"
+From="0.533" To=".43" Duration="0:0:.7"
+AutoReverse="True" />
+                                    <ColorAnimation 
+Storyboard.TargetName="GradientStop3"
+Storyboard.TargetProperty="Color" RepeatBehavior="Forever"
+From="#FFCCA998" To="RosyBrown" 
+Duration="0:0:.7"
+AutoReverse="True"
+BeginTime="0:0:0" />
+                                    <ColorAnimation 
+Storyboard.TargetName="GradientStop2"
+Storyboard.TargetProperty="Color" RepeatBehavior="Forever"
+From="#FFDCD1C3" To="#FFCEB7A9" 
+Duration="0:0:.7"
+AutoReverse="True"
+BeginTime="0:0:0" />
+                                    <!--<ColorAnimation 
+Storyboard.TargetName="GradientStop2"
+Storyboard.TargetProperty="Color" RepeatBehavior="Forever"
+From="#FFCECECE" To="White" 
+Duration="0:0:.8"
+AutoReverse="True"
+BeginTime="0:0:0" />
+                                    <ColorAnimation 
+Storyboard.TargetName="GradientStop3"
+Storyboard.TargetProperty="Color" RepeatBehavior="Forever"
+From="#FF989898" To="#FFC3C3C3" 
+Duration="0:0:.8"
+AutoReverse="True"
+BeginTime="0:0:0" />-->
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Syncfusion:TabControlExt.Triggers>
                     <Syncfusion:TabItemExt Header="همه موارد&#x0a;         F1">
                         <Syncfusion:TabItemExt.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
