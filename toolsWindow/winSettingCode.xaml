@@ -6,8 +6,8 @@
         xmlns:Syncfusion="http://schemas.syncfusion.com/wpf" FontSize="15"
         xmlns:local="clr-namespace:WpfCol" WindowStartupLocation="CenterScreen" FontFamily="{StaticResource NewFont2}"
         mc:Ignorable="d" WindowStyle="ToolWindow" ResizeMode="NoResize" Loaded="Window_Loaded"
-        Title="پیکربندی" Width="310">
-    <Grid FlowDirection="RightToLeft" Name="grid" Width="285">
+        Title="پیکربندی" Width="320">
+    <Grid FlowDirection="RightToLeft" Name="grid" Width="295">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="100"/>

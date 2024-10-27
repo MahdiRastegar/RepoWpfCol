@@ -71,6 +71,8 @@ namespace WpfCol
         {
             if (acDocumentViewModel == null)
                 return;
+            mus1.Clear();
+            mus2.Clear();
             PaymentMoneyHeaders.Clear();
             paymentMoney_Details.Clear();
             datagridSearch.Dispose();
@@ -1937,7 +1939,7 @@ namespace WpfCol
             }
         }
 
-        private void ShowSearchMoein(dynamic y)
+        private winSearch ShowSearchMoein(dynamic y, Window owner = null)
         {
             var win = new winSearch(mus1);
             win.Closed += (yf, rs) =>
@@ -1953,7 +1955,12 @@ namespace WpfCol
             win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "معین", MappingName = "AdditionalEntity.Moein", Width = 100, AllowSorting = true });
             win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "نام", MappingName = "AdditionalEntity.MoeinName", AllowSorting = true });
             win.datagrid.AllowResizingColumns = true;
-            win.Tag = this;
+            if (owner == null)
+                win.Tag = this;
+            else
+                win.Tag = owner;
+            if (owner == null)
+                owner = MainWindow.Current;
             win.ParentTextBox = y;
             win.SearchTermTextBox.Text = "";
             win.SearchTermTextBox.Select(1, 0);
@@ -1961,6 +1968,7 @@ namespace WpfCol
             window = win;
             win.Show();
             win.Focus();
+            return win;
         }
 
         private void txtPreferential_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -1972,7 +1980,7 @@ namespace WpfCol
             }
         }
 
-        private void ShowSearchPreferential(dynamic y)
+        private winSearch ShowSearchPreferential(dynamic y, Window owner = null)
         {
             var win = new winSearch(mus2);
             win.Closed += (yf, rs) =>
@@ -1980,7 +1988,12 @@ namespace WpfCol
                 datagrid.IsHitTestVisible = true;
             };
             win.Width = 640;
-            win.Tag = this;
+            if (owner == null)
+                win.Tag = this;
+            else
+                win.Tag = owner;
+            if (owner == null)
+                owner = MainWindow.Current;
             win.ParentTextBox = y;
             win.SearchTermTextBox.Text = "";
             win.SearchTermTextBox.Select(1, 0);
@@ -1988,6 +2001,7 @@ namespace WpfCol
             window = win;
             win.Show();
             win.Focus();
+            return win;
         }
 
         private void datagrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -2137,19 +2151,95 @@ namespace WpfCol
             {
                 exist = true;
             }
-            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "ColCodeCheckPayment", Hint = "کد کل در چک", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "ColCodeCheckPayment").Value : "" } });
-            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "MoeinCodeCheckPayment", Hint = "کد معین در چک", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeCheckPayment").Value : "" } });
+            GroupBox groupBox = SettingDefinitionGroupBox(win, db, exist, "چک", "ColCodeCheckPayment", "MoeinCodeTransferLCheckPayment", "PreferentialCodeCheckPayment");
+            win.stack.Children.Add(groupBox);
+            groupBox = SettingDefinitionGroupBox(win, db, exist, "نقد", "ColCodeMoneyPayment", "MoeinCodeMoneyPayment", "PreferentialCodeMoneyPayment");
+            win.stack.Children.Add(groupBox);
 
-            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "ColCodeMoneyPayment", Hint = "کد کل در نقد", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "ColCodeMoneyPayment").Value : "" } });
-            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "MoeinCodeMoneyPayment", Hint = "کد معین در نقد", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeMoneyPayment").Value : "" } });
-            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "PreferentialCodeMoneyPayment", Hint = "کد تفضیل در نقد", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "PreferentialCodeMoneyPayment").Value : "" } });
-
-            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "ColCodeDiscountPayment", Hint = "کد کل در تخفیف", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "ColCodeDiscountPayment").Value : "" } });
-            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "MoeinCodeDiscountPayment", Hint = "کد معین در تخفیف", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeDiscountPayment").Value : "" } });
-            win.stack.Children.Add(new SfTextInputLayout() { HelperText = "PreferentialCodeDiscountPayment", Hint = "کد تفضیل در تخفیف", InputView = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == "PreferentialCodeDiscountPayment").Value : "" } });
+            groupBox = SettingDefinitionGroupBox(win, db, exist, "تخفیف", "ColCodeDiscountPayment", "MoeinCodeDiscountPayment", "PreferentialCodeDiscountPayment");
+            win.stack.Children.Add(groupBox);
             win.ShowDialog();
         }
+        private GroupBox SettingDefinitionGroupBox(winSettingCode win, ColDbEntities1 db, bool exist, string name, string str1, string str2, string str3)
+        {
+            var groupBox = new GroupBox() { Header = name };
+            var stackPanel = new StackPanel();
+            groupBox.Content = stackPanel;
 
+            var keyValuePairs = new Dictionary<string, string>();
+            keyValuePairs.Add(str1, exist ? db.CodeSetting.First(i => i.Name == str1).Value : "");
+            keyValuePairs.Add(str2, exist ? db.CodeSetting.First(i => i.Name == str2).Value : "");
+
+            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین " };
+            var textBox = new TextBox() { Text = exist ? keyValuePairs.ElementAt(0).Value + keyValuePairs.ElementAt(1).Value : "", Tag = true };
+            textInputLayout.InputView = textBox;
+            textBox.PreviewKeyDown += (s1, e1) =>
+            {
+                if (e1.Key == Key.F1)
+                {
+                    win.childWindow = ShowSearchMoein(s1, win);
+                }
+            };
+            textBox.LostFocus += (s1, e1) =>
+            {
+                var txt = s1 as TextBox;
+                var sfTextInput = txt.GetParentOfType<SfTextInputLayout>();
+                if (txt.Text == "")
+                {
+                    sfTextInput.HelperText = string.Empty;
+                    return;
+                }
+                var mu = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == txt.Text);
+                if (mu == null)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("چنین کل و معینی وجود ندارد!");
+                    sfTextInput.HelperText = txt.Text = string.Empty;
+                }
+                else
+                {
+                    txt.Tag = mu;
+                    sfTextInput.HelperText = (mu.AdditionalEntity as AccountSearchClass).MoeinName;
+                    keyValuePairs = sfTextInput.Tag as Dictionary<string, string>;
+                    keyValuePairs[keyValuePairs.ElementAt(0).Key] = mu.Value;
+                    keyValuePairs[keyValuePairs.ElementAt(1).Key] = (mu.AdditionalEntity as AccountSearchClass).Moein;
+                }
+            };
+            stackPanel.Children.Add(textInputLayout);
+
+            textInputLayout = new SfTextInputLayout() { Tag = str3, Hint = "کد تفضیل" };
+            textBox = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == str3).Value : "", Tag = true };
+            textInputLayout.InputView = textBox;
+            textBox.PreviewKeyDown += (s1, e1) =>
+            {
+                if (e1.Key == Key.F1)
+                {
+                    win.childWindow = ShowSearchPreferential(s1, win);
+                }
+            };
+            textBox.LostFocus += (s1, e1) =>
+            {
+                var txt = s1 as TextBox;
+                var sfTextInput = txt.GetParentOfType<SfTextInputLayout>();
+                if (txt.Text == "")
+                {
+                    sfTextInput.HelperText = string.Empty;
+                    return;
+                }
+                var mu = mus2.Find(t => t.Value == txt.Text);
+                if (mu == null)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("چنین تفضیلی وجود ندارد!");
+                    sfTextInput.HelperText = txt.Text = string.Empty;
+                }
+                else
+                {
+                    txt.Tag = mu;
+                    sfTextInput.HelperText = mu.Name;
+                }
+            };
+            stackPanel.Children.Add(textInputLayout);
+            return groupBox;
+        }
         private void persianCalendarE_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!rl2)
