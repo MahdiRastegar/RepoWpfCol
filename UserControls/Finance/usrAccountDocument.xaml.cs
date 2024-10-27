@@ -225,6 +225,12 @@ namespace WpfCol
             }
             AcDocument_Header e_addHeader = null;
             AcDocument_Header header = null;
+            var yx = db.AcDocument_Header.OrderByDescending(k => k.Serial).FirstOrDefault();
+            string serial = "1";
+            if (yx != null)
+            {
+                serial = (yx.Serial + 1).ToString();
+            }
             if (id == Guid.Empty)
             {
                 e_addHeader = new AcDocument_Header()
@@ -232,7 +238,7 @@ namespace WpfCol
                     Id = Guid.NewGuid(),
                     Date=pcw1.SelectedDate.ToDateTime(),
                     NoDoument = long.Parse(txtNoDocumen.Text),
-                    Serial = long.Parse(txtSerial.Text),
+                    Serial = long.Parse(serial),
                     DocumentType = hg
                 };
                 DbSet<AcDocument_Detail> details = null;
@@ -341,7 +347,7 @@ namespace WpfCol
                 searchImage.Visibility = Visibility.Visible;
                 this.gifImage.Visibility = Visibility.Collapsed;
                 txtNoDocumen.Text = (long.Parse(txtNoDocumen.Text) + 1).ToString();
-                txtSerial.Text = (long.Parse(txtSerial.Text) + 1).ToString();
+                txtSerial.Text = (long.Parse(serial) + 1).ToString();
 
                 cmbType.SelectedIndex = 0;
                 cmbType.Focus();

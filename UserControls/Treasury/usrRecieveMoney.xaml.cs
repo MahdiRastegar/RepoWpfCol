@@ -235,13 +235,20 @@ namespace WpfCol
             
             RecieveMoneyHeader e_addHeader = null;
             RecieveMoneyHeader header = null;
+            var xy = db.RecieveMoneyHeader.OrderByDescending(k => k.ReceiptNumber).FirstOrDefault();
+            var serial = "1";
+            if (xy != null)
+            {
+                var yb = db.RecieveMoneyHeader.OrderByDescending(k => k.ReceiptNumber).FirstOrDefault();
+                serial = (xy.ReceiptNumber + 1).ToString();
+            }
             if (id == Guid.Empty)
             {
                 e_addHeader = new RecieveMoneyHeader()
                 {
                     Id = Guid.NewGuid(),
                     Date=pcw1.SelectedDate.ToDateTime(),
-                    ReceiptNumber = int.Parse(txtSerial.Text),
+                    ReceiptNumber = int.Parse(serial),
                     Description = txtDescription.Text,
                     fk_MoeinId=(txtMoein.Tag as Mu).Id,
                     fk_PreferentialId=(txtPreferential.Tag as Mu).Id
@@ -400,7 +407,7 @@ namespace WpfCol
                 Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت");
                 searchImage.Visibility = Visibility.Visible;
                 this.gifImage.Visibility = Visibility.Collapsed;
-                txtSerial.Text = (long.Parse(txtSerial.Text) + 1).ToString();
+                txtSerial.Text = (long.Parse(serial) + 1).ToString();
                 txtMoein.Text = string.Empty;
                 txtPreferential.Text = string.Empty;
                 txtDescription.Text = string.Empty;
