@@ -2151,7 +2151,7 @@ namespace WpfCol
             {
                 exist = true;
             }
-            GroupBox groupBox = SettingDefinitionGroupBox(win, db, exist, "چک", "ColCodeCheckPayment", "MoeinCodeTransferLCheckPayment", "PreferentialCodeCheckPayment");
+            GroupBox groupBox = SettingDefinitionGroupBox(win, db, exist, "چک", "ColCodeCheckPayment", "MoeinCodeCheckPayment", "PreferentialCodeCheckPayment");
             win.stack.Children.Add(groupBox);
             groupBox = SettingDefinitionGroupBox(win, db, exist, "نقد", "ColCodeMoneyPayment", "MoeinCodeMoneyPayment", "PreferentialCodeMoneyPayment");
             win.stack.Children.Add(groupBox);
