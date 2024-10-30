@@ -2151,7 +2151,8 @@ namespace WpfCol
 
         private void btnSetting_Click(object sender, RoutedEventArgs e)
         {
-            var win = new winSettingCode();
+            var win = new winSettingCode() { Width = 400 };
+            win.grid.Width = 375;
             var db = new ColDbEntities1();
             var exist = false;
             if (db.CodeSetting.Any(t => t.Name == "MoeinCodeCheckPayment"))
@@ -2159,32 +2160,48 @@ namespace WpfCol
                 exist = true;
             }
             GroupBox groupBox = SettingDefinitionGroupBox(win, db, exist, "چک", "ColCodeCheckPayment", "MoeinCodeCheckPayment", "PreferentialCodeCheckPayment");
+            Dispatcher.BeginInvoke(new Action(async () =>
+            {
+                groupBox.GetChildOfType<TextBox>().Focus();
+            }), DispatcherPriority.Render);
             win.stack.Children.Add(groupBox);
-            groupBox = SettingDefinitionGroupBox(win, db, exist, "نقد", "ColCodeMoneyPayment", "MoeinCodeMoneyPayment", "PreferentialCodeMoneyPayment");
-            win.stack.Children.Add(groupBox);
+            var groupBox2 = SettingDefinitionGroupBox(win, db, exist, "نقد", "ColCodeMoneyPayment", "MoeinCodeMoneyPayment", "PreferentialCodeMoneyPayment");
+            win.stack.Children.Add(groupBox2);
 
-            groupBox = SettingDefinitionGroupBox(win, db, exist, "تخفیف", "ColCodeDiscountPayment", "MoeinCodeDiscountPayment", "PreferentialCodeDiscountPayment");
-            win.stack.Children.Add(groupBox);
+            groupBox2 = SettingDefinitionGroupBox(win, db, exist, "تخفیف", "ColCodeDiscountPayment", "MoeinCodeDiscountPayment", "PreferentialCodeDiscountPayment");
+            win.stack.Children.Add(groupBox2);
             win.ShowDialog();
         }
+
         private GroupBox SettingDefinitionGroupBox(winSettingCode win, ColDbEntities1 db, bool exist, string name, string str1, string str2, string str3)
         {
             var groupBox = new GroupBox() { Header = name };
-            var stackPanel = new StackPanel();
+            var stackPanel = new DockPanel();
             groupBox.Content = stackPanel;
 
             var keyValuePairs = new Dictionary<string, string>();
             keyValuePairs.Add(str1, exist ? db.CodeSetting.First(i => i.Name == str1).Value : "");
             keyValuePairs.Add(str2, exist ? db.CodeSetting.First(i => i.Name == str2).Value : "");
 
-            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین " };
+            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین ", Width = 150 };
             var textBox = new TextBox() { Text = exist ? keyValuePairs.ElementAt(0).Value + keyValuePairs.ElementAt(1).Value : "", Tag = true };
             textInputLayout.InputView = textBox;
+            if (exist)
+            {
+                var mu = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == textBox.Text);
+                textInputLayout.HelperText = (mu.AdditionalEntity as AccountSearchClass).MoeinName;
+            }
             textBox.PreviewKeyDown += (s1, e1) =>
             {
                 if (e1.Key == Key.F1)
                 {
                     win.childWindow = ShowSearchMoein(s1, win);
+                }
+                else if (e1.Key == Key.Enter)
+                {
+                    TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+                    request.Wrapped = true;
+                    (s1 as TextBox).MoveFocus(request);
                 }
             };
             textBox.LostFocus += (s1, e1) =>
@@ -2213,14 +2230,25 @@ namespace WpfCol
             };
             stackPanel.Children.Add(textInputLayout);
 
-            textInputLayout = new SfTextInputLayout() { Tag = str3, Hint = "کد تفضیل" };
+            textInputLayout = new SfTextInputLayout() { Tag = str3, Hint = "کد تفضیل", Margin = new Thickness(10, 0, 10, 0) };
             textBox = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == str3).Value : "", Tag = true };
             textInputLayout.InputView = textBox;
+            if (exist)
+            {
+                var mu = mus2.Find(t => t.Value == textBox.Text);
+                textInputLayout.HelperText = mu.Name;
+            }
             textBox.PreviewKeyDown += (s1, e1) =>
             {
                 if (e1.Key == Key.F1)
                 {
                     win.childWindow = ShowSearchPreferential(s1, win);
+                }
+                else if (e1.Key == Key.Enter)
+                {
+                    TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+                    request.Wrapped = true;
+                    (s1 as TextBox).MoveFocus(request);
                 }
             };
             textBox.LostFocus += (s1, e1) =>

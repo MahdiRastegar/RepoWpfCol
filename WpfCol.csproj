@@ -259,6 +259,7 @@
     </Compile>
     <Compile Include="Interfaces\ISearch.cs" />
     <Compile Include="Interfaces\ITabEdidGrid.cs" />
+    <Compile Include="ParialClassesOfDataBase\CheckRecieveEvents - Copy.cs" />
     <Compile Include="ParialClassesOfDataBase\CheckRecieveEvents.cs" />
     <Compile Include="ParialClassesOfDataBase\PaymentMoneyHeader.cs" />
     <Compile Include="ParialClassesOfDataBase\RecieveMoneyHeader.cs" />
@@ -279,6 +280,9 @@
     </Compile>
     <Compile Include="UserControls\Treasury\usrBank.xaml.cs">
       <DependentUpon>usrBank.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Treasury\usrPaymentCheck.xaml.cs">
+      <DependentUpon>usrPaymentCheck.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\Treasury\usrRecieveCheck.xaml.cs">
       <DependentUpon>usrRecieveCheck.xaml</DependentUpon>
@@ -374,6 +378,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\Treasury\usrBank.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Treasury\usrPaymentCheck.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

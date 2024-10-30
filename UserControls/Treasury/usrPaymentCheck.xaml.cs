@@ -45,7 +45,7 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class usrRecieveCheck : UserControl,ITabForm,IDisposable
+    public partial class usrPaymentCheck : UserControl,ITabForm,IDisposable
     {
         public bool DataGridIsFocused
         {
@@ -56,11 +56,11 @@ namespace WpfCol
         }
         List<Mu> mus1 = new List<Mu>();
         List<Mu> mus2 = new List<Mu>();
-        public usrRecieveCheck()
+        public usrPaymentCheck()
         {
-            temp_checkRecieveEvents = new ObservableCollection<CheckRecieveEvent>();
-            checkRecieveEvents = new ObservableCollection<CheckRecieveEvent>();
-            mini_checkRecieveEvents = new ObservableCollection<CheckRecieveEvent>();
+            temp_checkPaymentEvents = new ObservableCollection<CheckPaymentEvent>();
+            checkPaymentEvents = new ObservableCollection<CheckPaymentEvent>();
+            mini_checkPaymentEvents = new ObservableCollection<CheckPaymentEvent>();
             InitializeComponent();            
             txbCalender.Text = pcw1.SelectedDate.ToString();
         }
@@ -71,8 +71,8 @@ namespace WpfCol
                 return;
             mus1.Clear();
             mus2.Clear();
-            mini_checkRecieveEvents.Clear();
-            checkRecieveEvents.Clear();
+            mini_checkPaymentEvents.Clear();
+            checkPaymentEvents.Clear();
             datagrid.Dispose();
             dataPager.Dispose();
             DataContext = null;
@@ -80,9 +80,9 @@ namespace WpfCol
         }
 
         Brush brush = null;
-        public ObservableCollection<CheckRecieveEvent> temp_checkRecieveEvents { get; set; }
-        public ObservableCollection<CheckRecieveEvent> mini_checkRecieveEvents { get; set; }
-        public ObservableCollection<CheckRecieveEvent> checkRecieveEvents { get; set; }
+        public ObservableCollection<CheckPaymentEvent> temp_checkPaymentEvents { get; set; }
+        public ObservableCollection<CheckPaymentEvent> mini_checkPaymentEvents { get; set; }
+        public ObservableCollection<CheckPaymentEvent> checkPaymentEvents { get; set; }
         private void Txt_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (e.Text == "\r")
@@ -117,8 +117,8 @@ namespace WpfCol
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            mini_checkRecieveEvents.Clear();
-            checkRecieveEvents.Clear();
+            mini_checkPaymentEvents.Clear();
+            checkPaymentEvents.Clear();
             GC.Collect();
         }
 
@@ -156,7 +156,7 @@ namespace WpfCol
             }
             Fill();     
             dataPager.Source = null;
-            dataPager.Source = checkRecieveEvents;
+            dataPager.Source = checkPaymentEvents;
             datagrid.Focus();
             datagrid.SearchHelper.AllowFiltering = true;
             isCancel = true;
@@ -171,10 +171,10 @@ namespace WpfCol
             if (haserror)
                 return;
             var db=new ColDbEntities1();
-            var x = new List<CheckRecieveEvent>();
-            foreach (CheckRecieveEvent item in datagrid.SelectedItems)
+            var x = new List<CheckPaymentEvent>();
+            foreach (CheckPaymentEvent item in datagrid.SelectedItems)
             {
-                var en = new CheckRecieveEvent()
+                var en = new CheckPaymentEvent()
                 {
                     ChEvent = db.ChEvent.First(t => t.ChEventCode == cmbChangeState.SelectedIndex),
                     fk_AcId = item.AcDocument_Header?.Id,
@@ -185,15 +185,15 @@ namespace WpfCol
                     Description = txtDescription.Text,
                     Id = Guid.NewGuid()
                 };
-                db.CheckRecieveEvent.Add(en);
+                db.CheckPaymentEvent.Add(en);
                 x.Add(item);
-                en.RecieveMoney_Detail = db.RecieveMoney_Detail.Find(en.fk_DetaiId);
+                en.PaymentMoney_Detail = db.PaymentMoney_Detail.Find(en.fk_DetaiId);
                 en.Preferential = db.Preferential.Find(en.fk_PreferentialId);
                 en.Moein = db.Moein.Find(en.fk_MoeinId);
-                checkRecieveEvents.Add(en);
+                checkPaymentEvents.Add(en);
             }
-            foreach (CheckRecieveEvent item in x)
-                checkRecieveEvents.Remove(item);
+            foreach (CheckPaymentEvent item in x)
+                checkPaymentEvents.Remove(item);
             db.SaveChanges();
 
             Xceed.Wpf.Toolkit.MessageBox.Show("عملیات با موفقیت انجام شد.", "تغییر وضعیت");
@@ -421,7 +421,7 @@ namespace WpfCol
             if(datagrid.SelectedItems.Count!=0)
             {
                 txtCount.Text = datagrid.SelectedItems.Count.ToString();
-                txtSumPrice.Text = datagrid.SelectedItems.Sum(t => (t as CheckRecieveEvent).RecieveMoney_Detail.Price).ToString();
+                txtSumPrice.Text = datagrid.SelectedItems.Sum(t => (t as CheckPaymentEvent).PaymentMoney_Detail.Price).ToString();
             }
             else
             {
@@ -532,12 +532,12 @@ namespace WpfCol
             
             var db = new ColDbEntities1();
             //db.AcDocument_Detail.Where(ex)
-            var count = db.CheckRecieveEvent.Count();
-            var F = db.CheckRecieveEvent.OrderBy(d=>d.Id).Skip(10 * e.NewPageIndex).Take(10).ToList();
+            var count = db.CheckPaymentEvent.Count();
+            var F = db.CheckPaymentEvent.OrderBy(d=>d.Id).Skip(10 * e.NewPageIndex).Take(10).ToList();
             int j = 0;
             for (int i = 10 * e.NewPageIndex; i < 10 * (e.NewPageIndex + 1)&&i<count; i++)
             {
-                checkRecieveEvents[i] = F[j];
+                checkPaymentEvents[i] = F[j];
                 j++;
             }
         }
@@ -549,7 +549,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "چک های دریافتی");
+            var item = list.FirstOrDefault(u => u.Header == "چک های پرداختی");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -584,9 +584,9 @@ namespace WpfCol
         {
             if(window!=null)
             {
-                if ((window as winSearch).ParentTextBox is CheckRecieveEvent)
+                if ((window as winSearch).ParentTextBox is CheckPaymentEvent)
                 {
-                    var y = (window as winSearch).ParentTextBox as CheckRecieveEvent;
+                    var y = (window as winSearch).ParentTextBox as CheckPaymentEvent;
                     //((datagrid.SelectionController.CurrentCellManager.CurrentCell.Element as GridCell).Content as FrameworkElement).DataContext = null;
                     //((datagrid.SelectionController.CurrentCellManager.CurrentCell.Element as GridCell).Content as FrameworkElement).DataContext = y;
                     var detail = y;
@@ -662,14 +662,14 @@ namespace WpfCol
         {
             Mouse.OverrideCursor = Cursors.Wait;
             var db = new ColDbEntities1();
-            checkRecieveEvents.Clear();
-            foreach (var item in db.CheckRecieveEvent.Include(y => y.RecieveMoney_Detail).Include(u => u.RecieveMoney_Detail.RecieveMoneyHeader).AsNoTracking().ToList().GroupBy(u=>u.fk_DetaiId).Select(g => g.OrderByDescending(u => u.Indexer).First()))
+            checkPaymentEvents.Clear();
+            foreach (var item in db.CheckPaymentEvent.Include(y => y.PaymentMoney_Detail).Include(u => u.PaymentMoney_Detail.PaymentMoneyHeader).AsNoTracking().ToList().GroupBy(u=>u.fk_DetaiId).Select(g => g.OrderByDescending(u => u.Indexer).First()))
             {
-                /*foreach (var item2 in item.CheckRecieveEvents)
+                /*foreach (var item2 in item.CheckPaymentEvents)
                 {
                     SetAccountName(db, item2);
                 }*/
-                checkRecieveEvents.Add(item);
+                checkPaymentEvents.Add(item);
             }
             Mouse.OverrideCursor = null;
         }
@@ -688,14 +688,14 @@ namespace WpfCol
 
         private void AcDocument_Details_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            //var detail = checkRecieveEvents.LastOrDefault();
+            //var detail = checkPaymentEvents.LastOrDefault();
             //if (detail == null)
             //    return;
             //if ((Keyboard.IsKeyDown(Key.Enter) || datagrid.SelectedIndex != -1 || CurrentRowColumnIndex.ColumnIndex != 0) && detail.MoneyType != 3 && detail.ColeMoein == null && detail.PreferentialCode == null)
             //{
             //    datagrid.Dispatcher.BeginInvoke(new Action(() =>
             //    {
-            //        checkRecieveEvents.Remove(detail);
+            //        checkPaymentEvents.Remove(detail);
             //    }));
             //}
             //datagrid.Dispatcher.BeginInvoke(new Action(() =>
@@ -854,7 +854,7 @@ namespace WpfCol
             MyPopupS.IsOpen = false;
             if (datePicker1 == null && datagrid.Visibility == Visibility.Visible)
             {
-                (datagrid.SelectedItem as RecieveMoney_Detail).Date = persianCalendar.SelectedDate.ToDateTime();
+                (datagrid.SelectedItem as PaymentMoney_Detail).Date = persianCalendar.SelectedDate.ToDateTime();
                 datagrid.IsHitTestVisible = true;
                 datagrid.View.Refresh();
                 return;
@@ -1059,13 +1059,13 @@ namespace WpfCol
             var win = new winSettingCode();            
             var db = new ColDbEntities1();
             var exist = false;
-            if (db.CodeSetting.Any(t => t.Name == "MoeinCodeTransferLCheckRecieve"))
+            if (db.CodeSetting.Any(t => t.Name == "MoeinCodeTransferLCheckPayment"))
             {
                 exist = true;
             }
             var keyValuePairs = new Dictionary<string, string>();
-            keyValuePairs.Add("ColCodeTransferLCheckRecieve", exist ? db.CodeSetting.First(i => i.Name == "ColCodeTransferLCheckRecieve").Value : "");
-            keyValuePairs.Add("MoeinCodeTransferLCheckRecieve", exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeTransferLCheckRecieve").Value : "");
+            keyValuePairs.Add("ColCodeTransferLCheckPayment", exist ? db.CodeSetting.First(i => i.Name == "ColCodeTransferLCheckPayment").Value : "");
+            keyValuePairs.Add("MoeinCodeTransferLCheckPayment", exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeTransferLCheckPayment").Value : "");
 
             var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین چکهای واگذار شده به بانک " };
             var textBox = new TextBox() { Text = exist ? keyValuePairs.ElementAt(0).Value + keyValuePairs.ElementAt(1).Value : "", Tag = true };
@@ -1119,8 +1119,8 @@ namespace WpfCol
             win.stack.Children.Add(textInputLayout);
 
             keyValuePairs = new Dictionary<string, string>();
-            keyValuePairs.Add("ColCodeDoneLCheckRecieve", exist ? db.CodeSetting.First(i => i.Name == "ColCodeDoneLCheckRecieve").Value : "");
-            keyValuePairs.Add("MoeinCodeDoneLCheckRecieve", exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeDoneLCheckRecieve").Value : "");
+            keyValuePairs.Add("ColCodeDoneLCheckPayment", exist ? db.CodeSetting.First(i => i.Name == "ColCodeDoneLCheckPayment").Value : "");
+            keyValuePairs.Add("MoeinCodeDoneLCheckPayment", exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeDoneLCheckPayment").Value : "");
             textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین چکهای وصول شده " };
             textBox = new TextBox() { Text = exist ? keyValuePairs.ElementAt(0).Value + keyValuePairs.ElementAt(1).Value : "", Tag = true };
             textInputLayout.InputView = textBox;
@@ -1180,8 +1180,8 @@ namespace WpfCol
                 {
                     case 1:
                         var db = new ColDbEntities1();
-                        var moein = db.CodeSetting.First(j => j.Name == "MoeinCodeTransferLCheckRecieve").Value;
-                        var col = db.CodeSetting.First(j => j.Name == "ColCodeTransferLCheckRecieve").Value;
+                        var moein = db.CodeSetting.First(j => j.Name == "MoeinCodeTransferLCheckPayment").Value;
+                        var col = db.CodeSetting.First(j => j.Name == "ColCodeTransferLCheckPayment").Value;
                         txtMoein.Text = col + moein;
                         Dispatcher.BeginInvoke(new Action(async () =>
                         {
@@ -1192,8 +1192,8 @@ namespace WpfCol
                         break;
                     case 2:
                         db = new ColDbEntities1();
-                        moein = db.CodeSetting.First(j => j.Name == "MoeinCodeDoneLCheckRecieve").Value;
-                        col = db.CodeSetting.First(j => j.Name == "ColCodeDoneLCheckRecieve").Value;
+                        moein = db.CodeSetting.First(j => j.Name == "MoeinCodeDoneLCheckPayment").Value;
+                        col = db.CodeSetting.First(j => j.Name == "ColCodeDoneLCheckPayment").Value;
                         txtMoein.Text = col + moein;
                         Dispatcher.BeginInvoke(new Action(async () =>
                         {
@@ -1237,66 +1237,39 @@ namespace WpfCol
             {
                 datagrid.Columns[0].IsHidden = false;
                 datagrid.Columns[1].IsHidden = true;
-                item1.Visibility= item2.Visibility = item3.Visibility = item4.Visibility = item5.Visibility = item6.Visibility =  Visibility.Visible;
+                item1.Visibility= item2.Visibility = item3.Visibility =  Visibility.Visible;
             }
             switch (control.SelectedIndex)
             {
                 case 0:
                     dataPager.Source = null;
-                    dataPager.Source = checkRecieveEvents;
+                    dataPager.Source = checkPaymentEvents;
                     datagrid.SelectedIndex = -1;
                     cmbChangeState.SelectedIndex = -1;
                     break;
                 case 1:
                     dataPager.Source = null;
-                    mini_checkRecieveEvents.Clear();
-                    checkRecieveEvents.Where(u => u.ChEvent.ChEventCode == 0).ForEach(t => mini_checkRecieveEvents.Add(t));
-                    dataPager.Source = mini_checkRecieveEvents;
+                    mini_checkPaymentEvents.Clear();
+                    checkPaymentEvents.Where(u => u.ChEvent.ChEventCode == 6).ForEach(t => mini_checkPaymentEvents.Add(t));
+                    dataPager.Source = mini_checkPaymentEvents;
                     datagrid.SelectedIndex = -1;
                     item1.Visibility = Visibility.Collapsed;
                     cmbChangeState.SelectedIndex = -1;
-                    break;
+                    break;               
                 case 2:
                     dataPager.Source = null;
-                    mini_checkRecieveEvents.Clear();
-                    checkRecieveEvents.Where(u => u.ChEvent.ChEventCode == 1).ForEach(t => mini_checkRecieveEvents.Add(t));
-                    dataPager.Source = mini_checkRecieveEvents;
+                    mini_checkPaymentEvents.Clear();
+                    checkPaymentEvents.Where(u => u.ChEvent.ChEventCode == 7).ForEach(t => mini_checkPaymentEvents.Add(t));
+                    dataPager.Source = mini_checkPaymentEvents;
                     datagrid.SelectedIndex = -1;
-                    item2.Visibility = item4.Visibility = item6.Visibility = Visibility.Collapsed;
+                    //item3.Visibility = item4.Visibility = item5.Visibility = item6.Visibility = Visibility.Collapsed;
                     cmbChangeState.SelectedIndex = -1;
-                    break;
+                    break;               
                 case 3:
                     dataPager.Source = null;
-                    mini_checkRecieveEvents.Clear();
-                    checkRecieveEvents.Where(u => u.ChEvent.ChEventCode == 2).ForEach(t => mini_checkRecieveEvents.Add(t));
-                    dataPager.Source = mini_checkRecieveEvents;
-                    datagrid.SelectedIndex = -1;
-                    item3.Visibility = item4.Visibility = item5.Visibility = item6.Visibility = Visibility.Collapsed;
-                    cmbChangeState.SelectedIndex = -1;
-                    break;
-                case 4:
-                    dataPager.Source = null;
-                    mini_checkRecieveEvents.Clear();
-                    checkRecieveEvents.Where(u => u.ChEvent.ChEventCode == 3).ForEach(t => mini_checkRecieveEvents.Add(t));
-                    dataPager.Source = mini_checkRecieveEvents;
-                    datagrid.SelectedIndex = -1;
-                    item1.Visibility = item2.Visibility = item3.Visibility = item4.Visibility = Visibility.Collapsed;
-                    cmbChangeState.SelectedIndex = -1;
-                    break;
-                case 5:
-                    dataPager.Source = null;
-                    mini_checkRecieveEvents.Clear();
-                    checkRecieveEvents.Where(u => u.ChEvent.ChEventCode == 4).ForEach(t => mini_checkRecieveEvents.Add(t));
-                    dataPager.Source = mini_checkRecieveEvents;
-                    datagrid.SelectedIndex = -1;
-                    item2.Visibility = item3.Visibility = item4.Visibility = item5.Visibility = Visibility.Collapsed;
-                    cmbChangeState.SelectedIndex = -1;
-                    break;
-                case 6:
-                    dataPager.Source = null;
-                    mini_checkRecieveEvents.Clear();
-                    checkRecieveEvents.Where(u => u.ChEvent.ChEventCode == 5).ForEach(t=> mini_checkRecieveEvents.Add(t));
-                    dataPager.Source = mini_checkRecieveEvents;
+                    mini_checkPaymentEvents.Clear();
+                    checkPaymentEvents.Where(u => u.ChEvent.ChEventCode == 5).ForEach(t=> mini_checkPaymentEvents.Add(t));
+                    dataPager.Source = mini_checkPaymentEvents;
                     datagrid.SelectedIndex = -1;
                     datagrid.Columns[0].IsHidden = true;
                     cmbChangeState.SelectedIndex = -1;

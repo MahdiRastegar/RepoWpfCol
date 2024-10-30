@@ -322,7 +322,19 @@ namespace WpfCol
 
         private void rbnPaymentCheck_Click(object sender, RoutedEventArgs e)
         {
-
+            return;
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "چک های پرداختی");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "چک های پرداختی" };
+                item.Content = new usrPaymentCheck();
+                tabcontrol.Items.Add(item);
+            }
         }
     }
 }

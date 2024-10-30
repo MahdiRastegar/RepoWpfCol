@@ -41,7 +41,7 @@ namespace WpfCol
             {
                 if (item is GroupBox groupBox)
                 {
-                    foreach (var im in (groupBox.Content as StackPanel).Children)
+                    foreach (var im in (groupBox.Content as DockPanel).Children)
                     {
                         (im as SfTextInputLayout).HasError = false;
                     }
@@ -55,7 +55,7 @@ namespace WpfCol
             {
                 if (item is GroupBox groupBox)
                 {
-                    foreach (var im in (groupBox.Content as StackPanel).Children)
+                    foreach (var im in (groupBox.Content as DockPanel).Children)
                     {
                         sfTextInputs.Add(im as SfTextInputLayout);
                         var textBox = (im as SfTextInputLayout).InputView as System.Windows.Controls.TextBox;
@@ -144,6 +144,15 @@ namespace WpfCol
             {
                 var sfTextInput = (childWindow.ParentTextBox as System.Windows.Controls.TextBox).GetParentOfType<SfTextInputLayout>();
                 var mu = (childWindow.ParentTextBox.Tag as Mu);
+                if (mu == null)
+                {
+                    Dispatcher.BeginInvoke(new Action(async () =>
+                    {
+                        await Task.Delay(0);
+                        Focus();
+                    }), DispatcherPriority.Render);
+                    return;
+                }
                 if (mu.AdditionalEntity != null)
                 {
                     sfTextInput.HelperText = (mu.AdditionalEntity as AccountSearchClass).MoeinName;
