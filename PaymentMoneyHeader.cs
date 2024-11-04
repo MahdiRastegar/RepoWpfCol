@@ -28,8 +28,8 @@ namespace WpfCol
         public string Description { get; set; }
     
         public virtual Moein Moein { get; set; }
+        public virtual Preferential Preferential { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PaymentMoney_Detail> PaymentMoney_Detail { get; set; }
-        public virtual Preferential Preferential { get; set; }
     }
 }

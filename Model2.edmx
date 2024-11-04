@@ -9,6 +9,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
+          <Property Name="Indexer" Type="int" Nullable="false" />
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="Debtor" Type="decimal" Precision="18" Scale="0" />
@@ -122,6 +123,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
+          <Property Name="Indexer" Type="int" Nullable="false" />
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="fkHeaderId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
@@ -167,6 +169,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
+          <Property Name="Indexer" Type="int" Nullable="false" />
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="fkHeaderId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
@@ -687,7 +690,6 @@
     <edmx:ConceptualModels>
       <Schema Namespace="ColDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="ColDbEntities1" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="AcDocument_Detail" EntityType="ColDbModel.AcDocument_Detail" />
           <EntitySet Name="AcDocument_Header" EntityType="ColDbModel.AcDocument_Header" />
           <EntitySet Name="AGroup" EntityType="ColDbModel.AGroup" />
           <EntitySet Name="Bank" EntityType="ColDbModel.Bank" />
@@ -695,12 +697,44 @@
           <EntitySet Name="Col" EntityType="ColDbModel.Col" />
           <EntitySet Name="DocumentType" EntityType="ColDbModel.DocumentType" />
           <EntitySet Name="Moein" EntityType="ColDbModel.Moein" />
-          <EntitySet Name="PaymentMoney_Detail" EntityType="ColDbModel.PaymentMoney_Detail" />
           <EntitySet Name="PaymentMoneyHeader" EntityType="ColDbModel.PaymentMoneyHeader" />
           <EntitySet Name="Preferential" EntityType="ColDbModel.Preferential" />
-          <EntitySet Name="RecieveMoney_Detail" EntityType="ColDbModel.RecieveMoney_Detail" />
           <EntitySet Name="RecieveMoneyHeader" EntityType="ColDbModel.RecieveMoneyHeader" />
           <EntitySet Name="tGroup" EntityType="ColDbModel.tGroup" />
+          <AssociationSet Name="FK_AcDocument_Header_DocumentType" Association="ColDbModel.FK_AcDocument_Header_DocumentType">
+            <End Role="DocumentType" EntitySet="DocumentType" />
+            <End Role="AcDocument_Header" EntitySet="AcDocument_Header" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Col_AGroup" Association="ColDbModel.FK_Col_AGroup">
+            <End Role="AGroup" EntitySet="AGroup" />
+            <End Role="Col" EntitySet="Col" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Moein_Col" Association="ColDbModel.FK_Moein_Col">
+            <End Role="Col" EntitySet="Col" />
+            <End Role="Moein" EntitySet="Moein" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoneyHeader_Moein" Association="ColDbModel.FK_PaymentMoneyHeader_Moein">
+            <End Role="Moein" EntitySet="Moein" />
+            <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RecieveMoneyHeader_Moein" Association="ColDbModel.FK_RecieveMoneyHeader_Moein">
+            <End Role="Moein" EntitySet="Moein" />
+            <End Role="RecieveMoneyHeader" EntitySet="RecieveMoneyHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoneyHeader_Preferential" Association="ColDbModel.FK_PaymentMoneyHeader_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Preferential_tGroup" Association="ColDbModel.FK_Preferential_tGroup">
+            <End Role="tGroup" EntitySet="tGroup" />
+            <End Role="Preferential" EntitySet="Preferential" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RecieveMoneyHeader_Preferential" Association="ColDbModel.FK_RecieveMoneyHeader_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="RecieveMoneyHeader" EntitySet="RecieveMoneyHeader" />
+          </AssociationSet>
+          <EntitySet Name="CodeSetting" EntityType="ColDbModel.CodeSetting" />
+          <EntitySet Name="AcDocument_Detail" EntityType="ColDbModel.AcDocument_Detail" />
           <AssociationSet Name="FK_AcDocument_Detail_AcDocument_Header" Association="ColDbModel.FK_AcDocument_Detail_AcDocument_Header">
             <End Role="AcDocument_Header" EntitySet="AcDocument_Header" />
             <End Role="AcDocument_Detail" EntitySet="AcDocument_Detail" />
@@ -713,13 +747,17 @@
             <End Role="Preferential" EntitySet="Preferential" />
             <End Role="AcDocument_Detail" EntitySet="AcDocument_Detail" />
           </AssociationSet>
-          <AssociationSet Name="FK_AcDocument_Header_DocumentType" Association="ColDbModel.FK_AcDocument_Header_DocumentType">
-            <End Role="DocumentType" EntitySet="DocumentType" />
+          <EntitySet Name="CheckPaymentEvent" EntityType="ColDbModel.CheckPaymentEvent" />
+          <EntitySet Name="CheckRecieveEvent" EntityType="ColDbModel.CheckRecieveEvent" />
+          <EntitySet Name="PaymentMoney_Detail" EntityType="ColDbModel.PaymentMoney_Detail" />
+          <EntitySet Name="RecieveMoney_Detail" EntityType="ColDbModel.RecieveMoney_Detail" />
+          <AssociationSet Name="FK_CheckPaymentEvents_AcDocument_Header" Association="ColDbModel.FK_CheckPaymentEvents_AcDocument_Header">
             <End Role="AcDocument_Header" EntitySet="AcDocument_Header" />
+            <End Role="CheckPaymentEvent" EntitySet="CheckPaymentEvent" />
           </AssociationSet>
-          <AssociationSet Name="FK_Col_AGroup" Association="ColDbModel.FK_Col_AGroup">
-            <End Role="AGroup" EntitySet="AGroup" />
-            <End Role="Col" EntitySet="Col" />
+          <AssociationSet Name="FK_CheckRecieveEvents_AcDocument_Header" Association="ColDbModel.FK_CheckRecieveEvents_AcDocument_Header">
+            <End Role="AcDocument_Header" EntitySet="AcDocument_Header" />
+            <End Role="CheckRecieveEvent" EntitySet="CheckRecieveEvent" />
           </AssociationSet>
           <AssociationSet Name="FK_PaymentMoney_Detail_Bank" Association="ColDbModel.FK_PaymentMoney_Detail_Bank">
             <End Role="Bank" EntitySet="Bank" />
@@ -728,65 +766,6 @@
           <AssociationSet Name="FK_RecieveMoney_Detail_Bank" Association="ColDbModel.FK_RecieveMoney_Detail_Bank">
             <End Role="Bank" EntitySet="Bank" />
             <End Role="RecieveMoney_Detail" EntitySet="RecieveMoney_Detail" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Moein_Col" Association="ColDbModel.FK_Moein_Col">
-            <End Role="Col" EntitySet="Col" />
-            <End Role="Moein" EntitySet="Moein" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PaymentMoney_Detail_Moein" Association="ColDbModel.FK_PaymentMoney_Detail_Moein">
-            <End Role="Moein" EntitySet="Moein" />
-            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PaymentMoneyHeader_Moein" Association="ColDbModel.FK_PaymentMoneyHeader_Moein">
-            <End Role="Moein" EntitySet="Moein" />
-            <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
-          </AssociationSet>
-          <AssociationSet Name="FK_RecieveMoney_Detail_Moein" Association="ColDbModel.FK_RecieveMoney_Detail_Moein">
-            <End Role="Moein" EntitySet="Moein" />
-            <End Role="RecieveMoney_Detail" EntitySet="RecieveMoney_Detail" />
-          </AssociationSet>
-          <AssociationSet Name="FK_RecieveMoneyHeader_Moein" Association="ColDbModel.FK_RecieveMoneyHeader_Moein">
-            <End Role="Moein" EntitySet="Moein" />
-            <End Role="RecieveMoneyHeader" EntitySet="RecieveMoneyHeader" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PaymentMoney_Detail_PaymentMoneyHeader" Association="ColDbModel.FK_PaymentMoney_Detail_PaymentMoneyHeader">
-            <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
-            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PaymentMoney_Detail_Preferential" Association="ColDbModel.FK_PaymentMoney_Detail_Preferential">
-            <End Role="Preferential" EntitySet="Preferential" />
-            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PaymentMoneyHeader_Preferential" Association="ColDbModel.FK_PaymentMoneyHeader_Preferential">
-            <End Role="Preferential" EntitySet="Preferential" />
-            <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Preferential_tGroup" Association="ColDbModel.FK_Preferential_tGroup">
-            <End Role="tGroup" EntitySet="tGroup" />
-            <End Role="Preferential" EntitySet="Preferential" />
-          </AssociationSet>
-          <AssociationSet Name="FK_RecieveMoney_Detail_Preferential" Association="ColDbModel.FK_RecieveMoney_Detail_Preferential">
-            <End Role="Preferential" EntitySet="Preferential" />
-            <End Role="RecieveMoney_Detail" EntitySet="RecieveMoney_Detail" />
-          </AssociationSet>
-          <AssociationSet Name="FK_RecieveMoneyHeader_Preferential" Association="ColDbModel.FK_RecieveMoneyHeader_Preferential">
-            <End Role="Preferential" EntitySet="Preferential" />
-            <End Role="RecieveMoneyHeader" EntitySet="RecieveMoneyHeader" />
-          </AssociationSet>
-          <AssociationSet Name="FK_RecieveMoney_Detail_RecieveMoneyHeader" Association="ColDbModel.FK_RecieveMoney_Detail_RecieveMoneyHeader">
-            <End Role="RecieveMoneyHeader" EntitySet="RecieveMoneyHeader" />
-            <End Role="RecieveMoney_Detail" EntitySet="RecieveMoney_Detail" />
-          </AssociationSet>
-          <EntitySet Name="CodeSetting" EntityType="ColDbModel.CodeSetting" />
-          <EntitySet Name="CheckPaymentEvent" EntityType="ColDbModel.CheckPaymentEvent" />
-          <EntitySet Name="CheckRecieveEvent" EntityType="ColDbModel.CheckRecieveEvent" />
-          <AssociationSet Name="FK_CheckPaymentEvents_AcDocument_Header" Association="ColDbModel.FK_CheckPaymentEvents_AcDocument_Header">
-            <End Role="AcDocument_Header" EntitySet="AcDocument_Header" />
-            <End Role="CheckPaymentEvent" EntitySet="CheckPaymentEvent" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CheckRecieveEvents_AcDocument_Header" Association="ColDbModel.FK_CheckRecieveEvents_AcDocument_Header">
-            <End Role="AcDocument_Header" EntitySet="AcDocument_Header" />
-            <End Role="CheckRecieveEvent" EntitySet="CheckRecieveEvent" />
           </AssociationSet>
           <AssociationSet Name="FK_CheckPaymentEvents_ChEvent" Association="ColDbModel.FK_CheckPaymentEvents_ChEvent">
             <End Role="ChEvent" EntitySet="ChEvent" />
@@ -820,22 +799,31 @@
             <End Role="RecieveMoney_Detail" EntitySet="RecieveMoney_Detail" />
             <End Role="CheckRecieveEvent" EntitySet="CheckRecieveEvent" />
           </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoney_Detail_Moein" Association="ColDbModel.FK_PaymentMoney_Detail_Moein">
+            <End Role="Moein" EntitySet="Moein" />
+            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RecieveMoney_Detail_Moein" Association="ColDbModel.FK_RecieveMoney_Detail_Moein">
+            <End Role="Moein" EntitySet="Moein" />
+            <End Role="RecieveMoney_Detail" EntitySet="RecieveMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoney_Detail_PaymentMoneyHeader" Association="ColDbModel.FK_PaymentMoney_Detail_PaymentMoneyHeader">
+            <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
+            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentMoney_Detail_Preferential" Association="ColDbModel.FK_PaymentMoney_Detail_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RecieveMoney_Detail_Preferential" Association="ColDbModel.FK_RecieveMoney_Detail_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="RecieveMoney_Detail" EntitySet="RecieveMoney_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RecieveMoney_Detail_RecieveMoneyHeader" Association="ColDbModel.FK_RecieveMoney_Detail_RecieveMoneyHeader">
+            <End Role="RecieveMoneyHeader" EntitySet="RecieveMoneyHeader" />
+            <End Role="RecieveMoney_Detail" EntitySet="RecieveMoney_Detail" />
+          </AssociationSet>
           </EntityContainer>
-        <EntityType Name="AcDocument_Detail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Debtor" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="Creditor" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="fk_AcDoc_HeaderId" Type="Guid" Nullable="false" />
-          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
-          <Property Name="fk_MoeinId" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="AcDocument_Header" Relationship="ColDbModel.FK_AcDocument_Detail_AcDocument_Header" FromRole="AcDocument_Detail" ToRole="AcDocument_Header" />
-          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_AcDocument_Detail_Moein" FromRole="AcDocument_Detail" ToRole="Moein" />
-          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_AcDocument_Detail_Preferential" FromRole="AcDocument_Detail" ToRole="Preferential" />
-        </EntityType>
         <EntityType Name="AcDocument_Header">
           <Key>
             <PropertyRef Name="Id" />
@@ -845,8 +833,8 @@
           <Property Name="Serial" Type="Int64" Nullable="false" />
           <Property Name="NoDoument" Type="Int64" Nullable="false" />
           <Property Name="fk_DocumentTypeId" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="AcDocument_Detail" Relationship="ColDbModel.FK_AcDocument_Detail_AcDocument_Header" FromRole="AcDocument_Header" ToRole="AcDocument_Detail" />
           <NavigationProperty Name="DocumentType" Relationship="ColDbModel.FK_AcDocument_Header_DocumentType" FromRole="AcDocument_Header" ToRole="DocumentType" />
+          <NavigationProperty Name="AcDocument_Detail" Relationship="ColDbModel.FK_AcDocument_Detail_AcDocument_Header" FromRole="AcDocument_Header" ToRole="AcDocument_Detail" />
           <NavigationProperty Name="CheckPaymentEvent" Relationship="ColDbModel.FK_CheckPaymentEvents_AcDocument_Header" FromRole="AcDocument_Header" ToRole="CheckPaymentEvent" />
           <NavigationProperty Name="CheckRecieveEvent" Relationship="ColDbModel.FK_CheckRecieveEvents_AcDocument_Header" FromRole="AcDocument_Header" ToRole="CheckRecieveEvent" />
         </EntityType>
@@ -911,37 +899,15 @@
           <Property Name="MoeinCode" Type="Int32" Nullable="false" />
           <Property Name="fk_ColId" Type="Guid" Nullable="false" />
           <Property Name="MoeinName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AcDocument_Detail" Relationship="ColDbModel.FK_AcDocument_Detail_Moein" FromRole="Moein" ToRole="AcDocument_Detail" />
           <NavigationProperty Name="Col" Relationship="ColDbModel.FK_Moein_Col" FromRole="Moein" ToRole="Col" />
-          <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_PaymentMoney_Detail_Moein" FromRole="Moein" ToRole="PaymentMoney_Detail" />
           <NavigationProperty Name="PaymentMoneyHeader" Relationship="ColDbModel.FK_PaymentMoneyHeader_Moein" FromRole="Moein" ToRole="PaymentMoneyHeader" />
-          <NavigationProperty Name="RecieveMoney_Detail" Relationship="ColDbModel.FK_RecieveMoney_Detail_Moein" FromRole="Moein" ToRole="RecieveMoney_Detail" />
           <NavigationProperty Name="RecieveMoneyHeader" Relationship="ColDbModel.FK_RecieveMoneyHeader_Moein" FromRole="Moein" ToRole="RecieveMoneyHeader" />
+          <NavigationProperty Name="AcDocument_Detail" Relationship="ColDbModel.FK_AcDocument_Detail_Moein" FromRole="Moein" ToRole="AcDocument_Detail" />
           <NavigationProperty Name="CheckPaymentEvent" Relationship="ColDbModel.FK_CheckPaymentEvents_Moein" FromRole="Moein" ToRole="CheckPaymentEvent" />
           <NavigationProperty Name="CheckRecieveEvent" Relationship="ColDbModel.FK_CheckRecieveEvents_Moein" FromRole="Moein" ToRole="CheckRecieveEvent" />
+          <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_PaymentMoney_Detail_Moein" FromRole="Moein" ToRole="PaymentMoney_Detail" />
+          <NavigationProperty Name="RecieveMoney_Detail" Relationship="ColDbModel.FK_RecieveMoney_Detail_Moein" FromRole="Moein" ToRole="RecieveMoney_Detail" />
           </EntityType>
-        <EntityType Name="PaymentMoney_Detail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="fkHeaderId" Type="Guid" Nullable="false" />
-          <Property Name="Price" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
-          <Property Name="BranchName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="fkBank" Type="Guid" />
-          <Property Name="Date" Type="DateTime" Precision="0" />
-          <Property Name="MoneyType" Type="Byte" Nullable="false" DefaultValue="255" />
-          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
-          <Property Name="fk_MoeinId" Type="Guid" Nullable="false" />
-          <Property Name="SayadiNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Registered" Type="Boolean" />
-          <NavigationProperty Name="Bank" Relationship="ColDbModel.FK_PaymentMoney_Detail_Bank" FromRole="PaymentMoney_Detail" ToRole="Bank" />
-          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_PaymentMoney_Detail_Moein" FromRole="PaymentMoney_Detail" ToRole="Moein" />
-          <NavigationProperty Name="PaymentMoneyHeader" Relationship="ColDbModel.FK_PaymentMoney_Detail_PaymentMoneyHeader" FromRole="PaymentMoney_Detail" ToRole="PaymentMoneyHeader" />
-          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_PaymentMoney_Detail_Preferential" FromRole="PaymentMoney_Detail" ToRole="Preferential" />
-          <NavigationProperty Name="CheckPaymentEvent" Relationship="ColDbModel.FK_CheckPaymentEvents_PaymentMoney_Detail" FromRole="PaymentMoney_Detail" ToRole="CheckPaymentEvent" />
-        </EntityType>
         <EntityType Name="PaymentMoneyHeader">
           <Key>
             <PropertyRef Name="Id" />
@@ -953,8 +919,8 @@
           <Property Name="fk_MoeinId" Type="Guid" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_PaymentMoneyHeader_Moein" FromRole="PaymentMoneyHeader" ToRole="Moein" />
-          <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_PaymentMoney_Detail_PaymentMoneyHeader" FromRole="PaymentMoneyHeader" ToRole="PaymentMoney_Detail" />
           <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_PaymentMoneyHeader_Preferential" FromRole="PaymentMoneyHeader" ToRole="Preferential" />
+          <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_PaymentMoney_Detail_PaymentMoneyHeader" FromRole="PaymentMoneyHeader" ToRole="PaymentMoney_Detail" />
         </EntityType>
         <EntityType Name="Preferential">
           <Key>
@@ -972,36 +938,14 @@
           <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AcDocument_Detail" Relationship="ColDbModel.FK_AcDocument_Detail_Preferential" FromRole="Preferential" ToRole="AcDocument_Detail" />
-          <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_PaymentMoney_Detail_Preferential" FromRole="Preferential" ToRole="PaymentMoney_Detail" />
           <NavigationProperty Name="PaymentMoneyHeader" Relationship="ColDbModel.FK_PaymentMoneyHeader_Preferential" FromRole="Preferential" ToRole="PaymentMoneyHeader" />
           <NavigationProperty Name="tGroup" Relationship="ColDbModel.FK_Preferential_tGroup" FromRole="Preferential" ToRole="tGroup" />
-          <NavigationProperty Name="RecieveMoney_Detail" Relationship="ColDbModel.FK_RecieveMoney_Detail_Preferential" FromRole="Preferential" ToRole="RecieveMoney_Detail" />
           <NavigationProperty Name="RecieveMoneyHeader" Relationship="ColDbModel.FK_RecieveMoneyHeader_Preferential" FromRole="Preferential" ToRole="RecieveMoneyHeader" />
+          <NavigationProperty Name="AcDocument_Detail" Relationship="ColDbModel.FK_AcDocument_Detail_Preferential" FromRole="Preferential" ToRole="AcDocument_Detail" />
           <NavigationProperty Name="CheckPaymentEvent" Relationship="ColDbModel.FK_CheckPaymentEvents_Preferential" FromRole="Preferential" ToRole="CheckPaymentEvent" />
           <NavigationProperty Name="CheckRecieveEvent" Relationship="ColDbModel.FK_CheckRecieveEvents_Preferential" FromRole="Preferential" ToRole="CheckRecieveEvent" />
-        </EntityType>
-        <EntityType Name="RecieveMoney_Detail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="fkHeaderId" Type="Guid" Nullable="false" />
-          <Property Name="Price" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
-          <Property Name="BranchName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="fkBank" Type="Guid" />
-          <Property Name="Date" Type="DateTime" Precision="0" />
-          <Property Name="MoneyType" Type="Byte" Nullable="false" DefaultValue="255" />
-          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
-          <Property Name="fk_MoeinId" Type="Guid" Nullable="false" />
-          <Property Name="SayadiNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Registered" Type="Boolean" />
-          <NavigationProperty Name="Bank" Relationship="ColDbModel.FK_RecieveMoney_Detail_Bank" FromRole="RecieveMoney_Detail" ToRole="Bank" />
-          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_RecieveMoney_Detail_Moein" FromRole="RecieveMoney_Detail" ToRole="Moein" />
-          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_RecieveMoney_Detail_Preferential" FromRole="RecieveMoney_Detail" ToRole="Preferential" />
-          <NavigationProperty Name="RecieveMoneyHeader" Relationship="ColDbModel.FK_RecieveMoney_Detail_RecieveMoneyHeader" FromRole="RecieveMoney_Detail" ToRole="RecieveMoneyHeader" />
-          <NavigationProperty Name="CheckRecieveEvent" Relationship="ColDbModel.FK_CheckRecieveEvents_RecieveMoney_Detail" FromRole="RecieveMoney_Detail" ToRole="CheckRecieveEvent" />
+          <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_PaymentMoney_Detail_Preferential" FromRole="Preferential" ToRole="PaymentMoney_Detail" />
+          <NavigationProperty Name="RecieveMoney_Detail" Relationship="ColDbModel.FK_RecieveMoney_Detail_Preferential" FromRole="Preferential" ToRole="RecieveMoney_Detail" />
         </EntityType>
         <EntityType Name="RecieveMoneyHeader">
           <Key>
@@ -1025,6 +969,127 @@
           <Property Name="GroupCode" Type="Int32" Nullable="false" />
           <Property Name="GroupName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_Preferential_tGroup" FromRole="tGroup" ToRole="Preferential" />
+        </EntityType>
+        <Association Name="FK_AcDocument_Header_DocumentType">
+          <End Type="ColDbModel.DocumentType" Role="DocumentType" Multiplicity="1" />
+          <End Type="ColDbModel.AcDocument_Header" Role="AcDocument_Header" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AcDocument_Header">
+              <PropertyRef Name="fk_DocumentTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Col_AGroup">
+          <End Type="ColDbModel.AGroup" Role="AGroup" Multiplicity="1" />
+          <End Type="ColDbModel.Col" Role="Col" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AGroup">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Col">
+              <PropertyRef Name="fk_GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Moein_Col">
+          <End Type="ColDbModel.Col" Role="Col" Multiplicity="1" />
+          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Col">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Moein">
+              <PropertyRef Name="fk_ColId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoneyHeader_Moein">
+          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="0..1" />
+          <End Type="ColDbModel.PaymentMoneyHeader" Role="PaymentMoneyHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moein">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoneyHeader">
+              <PropertyRef Name="fk_MoeinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RecieveMoneyHeader_Moein">
+          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="0..1" />
+          <End Type="ColDbModel.RecieveMoneyHeader" Role="RecieveMoneyHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moein">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RecieveMoneyHeader">
+              <PropertyRef Name="fk_MoeinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoneyHeader_Preferential">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="0..1" />
+          <End Type="ColDbModel.PaymentMoneyHeader" Role="PaymentMoneyHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoneyHeader">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Preferential_tGroup">
+          <End Type="ColDbModel.tGroup" Role="tGroup" Multiplicity="1" />
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tGroup">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Preferential">
+              <PropertyRef Name="fk_GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RecieveMoneyHeader_Preferential">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="0..1" />
+          <End Type="ColDbModel.RecieveMoneyHeader" Role="RecieveMoneyHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RecieveMoneyHeader">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CodeSetting">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AcDocument_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Indexer" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Debtor" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Creditor" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="fk_AcDoc_HeaderId" Type="Guid" Nullable="false" />
+          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
+          <Property Name="fk_MoeinId" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="AcDocument_Header" Relationship="ColDbModel.FK_AcDocument_Detail_AcDocument_Header" FromRole="AcDocument_Detail" ToRole="AcDocument_Header" />
+          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_AcDocument_Detail_Moein" FromRole="AcDocument_Detail" ToRole="Moein" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_AcDocument_Detail_Preferential" FromRole="AcDocument_Detail" ToRole="Preferential" />
         </EntityType>
         <Association Name="FK_AcDocument_Detail_AcDocument_Header">
           <End Type="ColDbModel.AcDocument_Header" Role="AcDocument_Header" Multiplicity="1" />
@@ -1062,27 +1127,111 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_AcDocument_Header_DocumentType">
-          <End Type="ColDbModel.DocumentType" Role="DocumentType" Multiplicity="1" />
-          <End Type="ColDbModel.AcDocument_Header" Role="AcDocument_Header" Multiplicity="*" />
+        <EntityType Name="CheckPaymentEvent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Indexer" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="fk_DetaiId" Type="Guid" Nullable="false" />
+          <Property Name="fk_AcId" Type="Guid" />
+          <Property Name="fk_ChEventId" Type="Guid" Nullable="false" />
+          <Property Name="EventDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
+          <Property Name="fk_MoeinId" Type="Guid" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AcDocument_Header" Relationship="ColDbModel.FK_CheckPaymentEvents_AcDocument_Header" FromRole="CheckPaymentEvent" ToRole="AcDocument_Header" />
+          <NavigationProperty Name="ChEvent" Relationship="ColDbModel.FK_CheckPaymentEvents_ChEvent" FromRole="CheckPaymentEvent" ToRole="ChEvent" />
+          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_CheckPaymentEvents_Moein" FromRole="CheckPaymentEvent" ToRole="Moein" />
+          <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_CheckPaymentEvents_PaymentMoney_Detail" FromRole="CheckPaymentEvent" ToRole="PaymentMoney_Detail" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_CheckPaymentEvents_Preferential" FromRole="CheckPaymentEvent" ToRole="Preferential" />
+        </EntityType>
+        <EntityType Name="CheckRecieveEvent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Indexer" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="fk_DetaiId" Type="Guid" Nullable="false" />
+          <Property Name="fk_AcId" Type="Guid" />
+          <Property Name="fk_ChEventId" Type="Guid" Nullable="false" />
+          <Property Name="EventDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
+          <Property Name="fk_MoeinId" Type="Guid" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AcDocument_Header" Relationship="ColDbModel.FK_CheckRecieveEvents_AcDocument_Header" FromRole="CheckRecieveEvent" ToRole="AcDocument_Header" />
+          <NavigationProperty Name="ChEvent" Relationship="ColDbModel.FK_CheckRecieveEvents_ChEvent" FromRole="CheckRecieveEvent" ToRole="ChEvent" />
+          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_CheckRecieveEvents_Moein" FromRole="CheckRecieveEvent" ToRole="Moein" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_CheckRecieveEvents_Preferential" FromRole="CheckRecieveEvent" ToRole="Preferential" />
+          <NavigationProperty Name="RecieveMoney_Detail" Relationship="ColDbModel.FK_CheckRecieveEvents_RecieveMoney_Detail" FromRole="CheckRecieveEvent" ToRole="RecieveMoney_Detail" />
+        </EntityType>
+        <EntityType Name="PaymentMoney_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Indexer" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="fkHeaderId" Type="Guid" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="BranchName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="fkBank" Type="Guid" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="MoneyType" Type="Byte" Nullable="false" />
+          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
+          <Property Name="fk_MoeinId" Type="Guid" Nullable="false" />
+          <Property Name="SayadiNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Registered" Type="Boolean" />
+          <NavigationProperty Name="Bank" Relationship="ColDbModel.FK_PaymentMoney_Detail_Bank" FromRole="PaymentMoney_Detail" ToRole="Bank" />
+          <NavigationProperty Name="CheckPaymentEvent" Relationship="ColDbModel.FK_CheckPaymentEvents_PaymentMoney_Detail" FromRole="PaymentMoney_Detail" ToRole="CheckPaymentEvent" />
+          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_PaymentMoney_Detail_Moein" FromRole="PaymentMoney_Detail" ToRole="Moein" />
+          <NavigationProperty Name="PaymentMoneyHeader" Relationship="ColDbModel.FK_PaymentMoney_Detail_PaymentMoneyHeader" FromRole="PaymentMoney_Detail" ToRole="PaymentMoneyHeader" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_PaymentMoney_Detail_Preferential" FromRole="PaymentMoney_Detail" ToRole="Preferential" />
+        </EntityType>
+        <EntityType Name="RecieveMoney_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Indexer" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="fkHeaderId" Type="Guid" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="BranchName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="fkBank" Type="Guid" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="MoneyType" Type="Byte" Nullable="false" />
+          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
+          <Property Name="fk_MoeinId" Type="Guid" Nullable="false" />
+          <Property Name="SayadiNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Registered" Type="Boolean" />
+          <NavigationProperty Name="Bank" Relationship="ColDbModel.FK_RecieveMoney_Detail_Bank" FromRole="RecieveMoney_Detail" ToRole="Bank" />
+          <NavigationProperty Name="CheckRecieveEvent" Relationship="ColDbModel.FK_CheckRecieveEvents_RecieveMoney_Detail" FromRole="RecieveMoney_Detail" ToRole="CheckRecieveEvent" />
+          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_RecieveMoney_Detail_Moein" FromRole="RecieveMoney_Detail" ToRole="Moein" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_RecieveMoney_Detail_Preferential" FromRole="RecieveMoney_Detail" ToRole="Preferential" />
+          <NavigationProperty Name="RecieveMoneyHeader" Relationship="ColDbModel.FK_RecieveMoney_Detail_RecieveMoneyHeader" FromRole="RecieveMoney_Detail" ToRole="RecieveMoneyHeader" />
+        </EntityType>
+        <Association Name="FK_CheckPaymentEvents_AcDocument_Header">
+          <End Type="ColDbModel.AcDocument_Header" Role="AcDocument_Header" Multiplicity="0..1" />
+          <End Type="ColDbModel.CheckPaymentEvent" Role="CheckPaymentEvent" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="DocumentType">
+            <Principal Role="AcDocument_Header">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="AcDocument_Header">
-              <PropertyRef Name="fk_DocumentTypeId" />
+            <Dependent Role="CheckPaymentEvent">
+              <PropertyRef Name="fk_AcId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Col_AGroup">
-          <End Type="ColDbModel.AGroup" Role="AGroup" Multiplicity="1" />
-          <End Type="ColDbModel.Col" Role="Col" Multiplicity="*" />
+        <Association Name="FK_CheckRecieveEvents_AcDocument_Header">
+          <End Type="ColDbModel.AcDocument_Header" Role="AcDocument_Header" Multiplicity="0..1" />
+          <End Type="ColDbModel.CheckRecieveEvent" Role="CheckRecieveEvent" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="AGroup">
+            <Principal Role="AcDocument_Header">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Col">
-              <PropertyRef Name="fk_GroupId" />
+            <Dependent Role="CheckRecieveEvent">
+              <PropertyRef Name="fk_AcId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1107,221 +1256,6 @@
             </Principal>
             <Dependent Role="RecieveMoney_Detail">
               <PropertyRef Name="fkBank" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Moein_Col">
-          <End Type="ColDbModel.Col" Role="Col" Multiplicity="1" />
-          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Col">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Moein">
-              <PropertyRef Name="fk_ColId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PaymentMoney_Detail_Moein">
-          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="1" />
-          <End Type="ColDbModel.PaymentMoney_Detail" Role="PaymentMoney_Detail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Moein">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PaymentMoney_Detail">
-              <PropertyRef Name="fk_MoeinId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PaymentMoneyHeader_Moein">
-          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="0..1" />
-          <End Type="ColDbModel.PaymentMoneyHeader" Role="PaymentMoneyHeader" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Moein">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PaymentMoneyHeader">
-              <PropertyRef Name="fk_MoeinId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_RecieveMoney_Detail_Moein">
-          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="1" />
-          <End Type="ColDbModel.RecieveMoney_Detail" Role="RecieveMoney_Detail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Moein">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="RecieveMoney_Detail">
-              <PropertyRef Name="fk_MoeinId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_RecieveMoneyHeader_Moein">
-          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="0..1" />
-          <End Type="ColDbModel.RecieveMoneyHeader" Role="RecieveMoneyHeader" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Moein">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="RecieveMoneyHeader">
-              <PropertyRef Name="fk_MoeinId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PaymentMoney_Detail_PaymentMoneyHeader">
-          <End Type="ColDbModel.PaymentMoneyHeader" Role="PaymentMoneyHeader" Multiplicity="1" />
-          <End Type="ColDbModel.PaymentMoney_Detail" Role="PaymentMoney_Detail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PaymentMoneyHeader">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PaymentMoney_Detail">
-              <PropertyRef Name="fkHeaderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PaymentMoney_Detail_Preferential">
-          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="1" />
-          <End Type="ColDbModel.PaymentMoney_Detail" Role="PaymentMoney_Detail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Preferential">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PaymentMoney_Detail">
-              <PropertyRef Name="fk_PreferentialId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PaymentMoneyHeader_Preferential">
-          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="0..1" />
-          <End Type="ColDbModel.PaymentMoneyHeader" Role="PaymentMoneyHeader" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Preferential">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="PaymentMoneyHeader">
-              <PropertyRef Name="fk_PreferentialId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Preferential_tGroup">
-          <End Type="ColDbModel.tGroup" Role="tGroup" Multiplicity="1" />
-          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tGroup">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Preferential">
-              <PropertyRef Name="fk_GroupId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_RecieveMoney_Detail_Preferential">
-          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="1" />
-          <End Type="ColDbModel.RecieveMoney_Detail" Role="RecieveMoney_Detail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Preferential">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="RecieveMoney_Detail">
-              <PropertyRef Name="fk_PreferentialId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_RecieveMoneyHeader_Preferential">
-          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="0..1" />
-          <End Type="ColDbModel.RecieveMoneyHeader" Role="RecieveMoneyHeader" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Preferential">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="RecieveMoneyHeader">
-              <PropertyRef Name="fk_PreferentialId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_RecieveMoney_Detail_RecieveMoneyHeader">
-          <End Type="ColDbModel.RecieveMoneyHeader" Role="RecieveMoneyHeader" Multiplicity="1" />
-          <End Type="ColDbModel.RecieveMoney_Detail" Role="RecieveMoney_Detail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="RecieveMoneyHeader">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="RecieveMoney_Detail">
-              <PropertyRef Name="fkHeaderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="CodeSetting">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CheckPaymentEvent">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="fk_DetaiId" Type="Guid" Nullable="false" />
-          <Property Name="fk_AcId" Type="Guid" />
-          <Property Name="fk_ChEventId" Type="Guid" Nullable="false" />
-          <Property Name="EventDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
-          <Property Name="fk_MoeinId" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="AcDocument_Header" Relationship="ColDbModel.FK_CheckPaymentEvents_AcDocument_Header" FromRole="CheckPaymentEvent" ToRole="AcDocument_Header" />
-          <NavigationProperty Name="ChEvent" Relationship="ColDbModel.FK_CheckPaymentEvents_ChEvent" FromRole="CheckPaymentEvent" ToRole="ChEvent" />
-          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_CheckPaymentEvents_Moein" FromRole="CheckPaymentEvent" ToRole="Moein" />
-          <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_CheckPaymentEvents_PaymentMoney_Detail" FromRole="CheckPaymentEvent" ToRole="PaymentMoney_Detail" />
-          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_CheckPaymentEvents_Preferential" FromRole="CheckPaymentEvent" ToRole="Preferential" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Indexer" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-        </EntityType>
-        <EntityType Name="CheckRecieveEvent">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="fk_DetaiId" Type="Guid" Nullable="false" />
-          <Property Name="fk_AcId" Type="Guid" />
-          <Property Name="fk_ChEventId" Type="Guid" Nullable="false" />
-          <Property Name="EventDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
-          <Property Name="fk_MoeinId" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="AcDocument_Header" Relationship="ColDbModel.FK_CheckRecieveEvents_AcDocument_Header" FromRole="CheckRecieveEvent" ToRole="AcDocument_Header" />
-          <NavigationProperty Name="ChEvent" Relationship="ColDbModel.FK_CheckRecieveEvents_ChEvent" FromRole="CheckRecieveEvent" ToRole="ChEvent" />
-          <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_CheckRecieveEvents_Moein" FromRole="CheckRecieveEvent" ToRole="Moein" />
-          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_CheckRecieveEvents_Preferential" FromRole="CheckRecieveEvent" ToRole="Preferential" />
-          <NavigationProperty Name="RecieveMoney_Detail" Relationship="ColDbModel.FK_CheckRecieveEvents_RecieveMoney_Detail" FromRole="CheckRecieveEvent" ToRole="RecieveMoney_Detail" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Indexer" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-        </EntityType>
-        <Association Name="FK_CheckPaymentEvents_AcDocument_Header">
-          <End Type="ColDbModel.AcDocument_Header" Role="AcDocument_Header" Multiplicity="0..1" />
-          <End Type="ColDbModel.CheckPaymentEvent" Role="CheckPaymentEvent" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AcDocument_Header">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="CheckPaymentEvent">
-              <PropertyRef Name="fk_AcId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CheckRecieveEvents_AcDocument_Header">
-          <End Type="ColDbModel.AcDocument_Header" Role="AcDocument_Header" Multiplicity="0..1" />
-          <End Type="ColDbModel.CheckRecieveEvent" Role="CheckRecieveEvent" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AcDocument_Header">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="CheckRecieveEvent">
-              <PropertyRef Name="fk_AcId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1421,25 +1355,84 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PaymentMoney_Detail_Moein">
+          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="1" />
+          <End Type="ColDbModel.PaymentMoney_Detail" Role="PaymentMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moein">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoney_Detail">
+              <PropertyRef Name="fk_MoeinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RecieveMoney_Detail_Moein">
+          <End Type="ColDbModel.Moein" Role="Moein" Multiplicity="1" />
+          <End Type="ColDbModel.RecieveMoney_Detail" Role="RecieveMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Moein">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RecieveMoney_Detail">
+              <PropertyRef Name="fk_MoeinId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoney_Detail_PaymentMoneyHeader">
+          <End Type="ColDbModel.PaymentMoneyHeader" Role="PaymentMoneyHeader" Multiplicity="1" />
+          <End Type="ColDbModel.PaymentMoney_Detail" Role="PaymentMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PaymentMoneyHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoney_Detail">
+              <PropertyRef Name="fkHeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentMoney_Detail_Preferential">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="1" />
+          <End Type="ColDbModel.PaymentMoney_Detail" Role="PaymentMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PaymentMoney_Detail">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RecieveMoney_Detail_Preferential">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="1" />
+          <End Type="ColDbModel.RecieveMoney_Detail" Role="RecieveMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RecieveMoney_Detail">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RecieveMoney_Detail_RecieveMoneyHeader">
+          <End Type="ColDbModel.RecieveMoneyHeader" Role="RecieveMoneyHeader" Multiplicity="1" />
+          <End Type="ColDbModel.RecieveMoney_Detail" Role="RecieveMoney_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RecieveMoneyHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RecieveMoney_Detail">
+              <PropertyRef Name="fkHeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ColDbModelStoreContainer" CdmEntityContainer="ColDbEntities1">
-          <EntitySetMapping Name="AcDocument_Detail">
-            <EntityTypeMapping TypeName="ColDbModel.AcDocument_Detail">
-              <MappingFragment StoreEntitySet="AcDocument_Detail">
-                <ScalarProperty Name="fk_MoeinId" ColumnName="fk_MoeinId" />
-                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
-                <ScalarProperty Name="fk_AcDoc_HeaderId" ColumnName="fk_AcDoc_HeaderId" />
-                <ScalarProperty Name="Creditor" ColumnName="Creditor" />
-                <ScalarProperty Name="Debtor" ColumnName="Debtor" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="AcDocument_Header">
             <EntityTypeMapping TypeName="ColDbModel.AcDocument_Header">
               <MappingFragment StoreEntitySet="AcDocument_Header">
@@ -1511,24 +1504,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PaymentMoney_Detail">
-            <EntityTypeMapping TypeName="ColDbModel.PaymentMoney_Detail">
-              <MappingFragment StoreEntitySet="PaymentMoney_Detail">
-                <ScalarProperty Name="Registered" ColumnName="Registered" />
-                <ScalarProperty Name="SayadiNumber" ColumnName="SayadiNumber" />
-                <ScalarProperty Name="fk_MoeinId" ColumnName="fk_MoeinId" />
-                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
-                <ScalarProperty Name="MoneyType" ColumnName="MoneyType" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="fkBank" ColumnName="fkBank" />
-                <ScalarProperty Name="Number" ColumnName="Number" />
-                <ScalarProperty Name="BranchName" ColumnName="BranchName" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="fkHeaderId" ColumnName="fkHeaderId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PaymentMoneyHeader">
             <EntityTypeMapping TypeName="ColDbModel.PaymentMoneyHeader">
               <MappingFragment StoreEntitySet="PaymentMoneyHeader">
@@ -1555,24 +1530,6 @@
                 <ScalarProperty Name="PreferentialName" ColumnName="PreferentialName" />
                 <ScalarProperty Name="fk_GroupId" ColumnName="fk_GroupId" />
                 <ScalarProperty Name="PreferentialCode" ColumnName="PreferentialCode" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="RecieveMoney_Detail">
-            <EntityTypeMapping TypeName="ColDbModel.RecieveMoney_Detail">
-              <MappingFragment StoreEntitySet="RecieveMoney_Detail">
-                <ScalarProperty Name="Registered" ColumnName="Registered" />
-                <ScalarProperty Name="SayadiNumber" ColumnName="SayadiNumber" />
-                <ScalarProperty Name="fk_MoeinId" ColumnName="fk_MoeinId" />
-                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
-                <ScalarProperty Name="MoneyType" ColumnName="MoneyType" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="fkBank" ColumnName="fkBank" />
-                <ScalarProperty Name="Number" ColumnName="Number" />
-                <ScalarProperty Name="BranchName" ColumnName="BranchName" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="fkHeaderId" ColumnName="fkHeaderId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1608,10 +1565,23 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="AcDocument_Detail">
+            <EntityTypeMapping TypeName="ColDbModel.AcDocument_Detail">
+              <MappingFragment StoreEntitySet="AcDocument_Detail">
+                <ScalarProperty Name="fk_MoeinId" ColumnName="fk_MoeinId" />
+                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
+                <ScalarProperty Name="fk_AcDoc_HeaderId" ColumnName="fk_AcDoc_HeaderId" />
+                <ScalarProperty Name="Creditor" ColumnName="Creditor" />
+                <ScalarProperty Name="Debtor" ColumnName="Debtor" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CheckPaymentEvent">
             <EntityTypeMapping TypeName="ColDbModel.CheckPaymentEvent">
               <MappingFragment StoreEntitySet="CheckPaymentEvent">
-                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="fk_MoeinId" ColumnName="fk_MoeinId" />
                 <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
@@ -1620,13 +1590,13 @@
                 <ScalarProperty Name="fk_AcId" ColumnName="fk_AcId" />
                 <ScalarProperty Name="fk_DetaiId" ColumnName="fk_DetaiId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CheckRecieveEvent">
             <EntityTypeMapping TypeName="ColDbModel.CheckRecieveEvent">
               <MappingFragment StoreEntitySet="CheckRecieveEvent">
-                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="fk_MoeinId" ColumnName="fk_MoeinId" />
                 <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
@@ -1635,6 +1605,45 @@
                 <ScalarProperty Name="fk_AcId" ColumnName="fk_AcId" />
                 <ScalarProperty Name="fk_DetaiId" ColumnName="fk_DetaiId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PaymentMoney_Detail">
+            <EntityTypeMapping TypeName="ColDbModel.PaymentMoney_Detail">
+              <MappingFragment StoreEntitySet="PaymentMoney_Detail">
+                <ScalarProperty Name="Registered" ColumnName="Registered" />
+                <ScalarProperty Name="SayadiNumber" ColumnName="SayadiNumber" />
+                <ScalarProperty Name="fk_MoeinId" ColumnName="fk_MoeinId" />
+                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
+                <ScalarProperty Name="MoneyType" ColumnName="MoneyType" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="fkBank" ColumnName="fkBank" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="BranchName" ColumnName="BranchName" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="fkHeaderId" ColumnName="fkHeaderId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RecieveMoney_Detail">
+            <EntityTypeMapping TypeName="ColDbModel.RecieveMoney_Detail">
+              <MappingFragment StoreEntitySet="RecieveMoney_Detail">
+                <ScalarProperty Name="Registered" ColumnName="Registered" />
+                <ScalarProperty Name="SayadiNumber" ColumnName="SayadiNumber" />
+                <ScalarProperty Name="fk_MoeinId" ColumnName="fk_MoeinId" />
+                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
+                <ScalarProperty Name="MoneyType" ColumnName="MoneyType" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="fkBank" ColumnName="fkBank" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="BranchName" ColumnName="BranchName" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="fkHeaderId" ColumnName="fkHeaderId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -693,7 +693,7 @@ Source="{Binding acDocument_Headers}"/>
                     <Syncfusion:SfDataGrid.DetailsViewDefinition>
                         <Syncfusion:GridViewDefinition RelationalColumn="AcDocument_Detail">
                             <Syncfusion:GridViewDefinition.DataGrid>
-                                <Syncfusion:SfDataGrid x:Name="FirstLevelNestedGrid" AllowFiltering="True" HeaderRowHeight="30" ColumnSizer="Star" AllowResizingColumns="True" AutoGenerateColumns="False" ShowRowHeader="True">
+                                <Syncfusion:SfDataGrid x:Name="FirstLevelNestedGrid" AllowFiltering="True" AllowSorting="False" HeaderRowHeight="30" ColumnSizer="Star" AllowResizingColumns="True" AutoGenerateColumns="False" ShowRowHeader="True">
                                     <Syncfusion:SfDataGrid.Columns>
                                         <Syncfusion:GridTextColumn MinimumWidth="95" Width="80" HeaderText="کل معین" MappingName="ColeMoein"/>
                                         <Syncfusion:GridTextColumn MinimumWidth="95" Width="80" HeaderText="تفضیلی" MappingName="PreferentialCode"/>

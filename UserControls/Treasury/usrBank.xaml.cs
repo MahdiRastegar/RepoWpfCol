@@ -82,7 +82,7 @@ namespace WpfCol
             {
                 group.Name = txtGroupName.Text;
             }
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             var M = db.Bank.ToList();
             datagrid.ItemsSource = M;
             if (group == null)
@@ -275,7 +275,7 @@ namespace WpfCol
             }
             var db = new ColDbEntities1();
             db.Bank.Remove(db.Bank.Find((datagrid.SelectedItem as Bank).Id));
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             (datagrid.ItemsSource as List<Bank>).Remove((datagrid.SelectedItem as Bank));
             var u = datagrid.ItemsSource;
             datagrid.ItemsSource = null;
@@ -299,7 +299,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "گروه حساب");
+            var item = list.FirstOrDefault(u => u.Header == "بانک");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             return true;
         }

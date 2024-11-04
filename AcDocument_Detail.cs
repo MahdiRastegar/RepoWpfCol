@@ -14,6 +14,7 @@ namespace WpfCol
     
     public partial class AcDocument_Detail
     {
+        public int Indexer { get; set; }
         public System.Guid Id { get; set; }
         public string Description { get; set; }
         public Nullable<decimal> Debtor { get; set; }

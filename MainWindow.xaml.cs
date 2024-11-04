@@ -248,6 +248,7 @@ namespace WpfCol
 
                     if (method != null)
                     {
+                        e.Handled = true;
                         object[] parameters = new object[] { null, null };
 
                         method.Invoke(userControl, parameters);

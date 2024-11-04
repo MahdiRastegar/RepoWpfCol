@@ -142,7 +142,8 @@ namespace WpfCol
                 {
                     Id= item.Id,
                     Name = $"{item.PreferentialName}",
-                    Value = $"{item.PreferentialCode}"
+                    Value = $"{item.PreferentialCode}",
+                    Name2 = item.tGroup.GroupName
                 });
             }
             cmbType.SelectedIndex = 0;
@@ -242,8 +243,10 @@ namespace WpfCol
                     DocumentType = hg
                 };
                 DbSet<AcDocument_Detail> details = null;
+                int index = 0;
                 foreach (var item in AcDocument_Details)
                 {
+                    index++;
                     var en = new AcDocument_Detail()
                     {
                         fk_MoeinId = item.Moein.Id,
@@ -252,6 +255,7 @@ namespace WpfCol
                         Creditor = item.Creditor,
                         Debtor = item.Debtor,
                         Description = item.Description,
+                        Indexer = index,
                         //AccountName = item.AccountName,
                         Id = Guid.NewGuid()
                     };
@@ -274,8 +278,10 @@ namespace WpfCol
                 e_Edidet.NoDoument = header.NoDoument = long.Parse(txtNoDocumen.Text);
                 e_Edidet.Date = header.Date = pcw1.SelectedDate.ToDateTime();
                 e_Edidet.DocumentType = header.DocumentType = hg;
+                int index = 0;
                 foreach (var item in AcDocument_Details)
                 {
+                    index++;
                     var en = new AcDocument_Detail()
                     {
                         fk_MoeinId = item.Moein.Id,
@@ -284,6 +290,7 @@ namespace WpfCol
                         Creditor = item.Creditor,
                         Debtor = item.Debtor,
                         Description = item.Description,
+                        Indexer = index,
                         //AccountName = item.AccountName,
                         Id = Guid.NewGuid()
                     };
@@ -293,7 +300,7 @@ namespace WpfCol
                 //e_Edidet.fk_GroupId = acDocument_Detail.fk_GroupId = col.Id;
                 //e_Edidet.AcDocument_DetailName = acDocument_Detail.AcDocument_DetailName = txtNoDocumen.Text;
             }
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             if (header != null)
             {
                 int i = 0;
@@ -574,6 +581,7 @@ namespace WpfCol
                     {
                         datagrid.IsHitTestVisible = true;
                     };
+                    win.datagrid.Columns.Add(new GridTextColumn() {TextAlignment= TextAlignment.Center, HeaderText = "گروه", MappingName = "Name2", Width = 150, AllowSorting = true });
                     win.Width = 640;                    
                     win.Tag = this;
                     win.ParentTextBox = y;
@@ -782,7 +790,7 @@ namespace WpfCol
                 db.AcDocument_Detail.Remove(item);
             }
             db.AcDocument_Header.Remove(db.AcDocument_Header.Find(id));
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             try
             {
                 acDocument_Headers.Remove(acDocument_Headers.First(f => f.Id == id));
@@ -1122,6 +1130,9 @@ namespace WpfCol
                         var e_Edidet = db.AcDocument_Header.Find(id);
                         var header = acDocument_Headers.FirstOrDefault(o => o.Id == id);
                         header.AcDocument_Detail.Clear();
+                        e_Edidet.AcDocument_Detail = e_Edidet.AcDocument_Detail
+                       .OrderBy(d => d.Indexer)
+                       .ToList();
                         foreach (var item in e_Edidet.AcDocument_Detail)
                         {
                             header.AcDocument_Detail.Add(item);
@@ -1193,15 +1204,31 @@ namespace WpfCol
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 var db = new ColDbEntities1();
-                foreach (var item in db.AcDocument_Header.Include(h => h.AcDocument_Detail).AsNoTracking().ToList())
+                var documents = db.AcDocument_Header
+                    .Include(h => h.AcDocument_Detail)
+                    .AsNoTracking()
+                    .ToList();
+                foreach (var doc in documents)
                 {
-                    foreach (var item2 in item.AcDocument_Detail)
+                    doc.AcDocument_Detail = doc.AcDocument_Detail
+                        .OrderBy(d => d.Indexer)
+                        .ToList();
+
+                    foreach (var item2 in doc.AcDocument_Detail)
                     {
                         SetAccountName(db, item2);
                     }
-                    acDocument_Headers.Add(item);
+                    acDocument_Headers.Add(doc);
                 }
                 LoadedFill = true;
+                Mouse.OverrideCursor = null;
+            }
+            else
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                acDocument_Headers.ForEach(y => y.AcDocument_Detail = y.AcDocument_Detail
+                   .OrderBy(d => d.Indexer)
+                   .ToList());
                 Mouse.OverrideCursor = null;
             }
         }

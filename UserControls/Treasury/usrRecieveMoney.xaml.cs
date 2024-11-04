@@ -1,4 +1,5 @@
-﻿using Mahdi.PersianDateControls;
+﻿using DocumentFormat.OpenXml.Vml.Office;
+using Mahdi.PersianDateControls;
 using PersianCalendarWPF;
 using Syncfusion.Data.Extensions;
 using Syncfusion.UI.Xaml.Grid;
@@ -159,12 +160,13 @@ namespace WpfCol
                 });
             }
             foreach (var item in preferentials)
-            {                
+            {
                 mus2.Add(new Mu()
                 {
-                    Id= item.Id,
+                    Id = item.Id,
                     Name = $"{item.PreferentialName}",
-                    Value = $"{item.PreferentialCode}"
+                    Value = $"{item.PreferentialCode}",
+                    Name2 = item.tGroup.GroupName
                 });
             }
             
@@ -254,8 +256,10 @@ namespace WpfCol
                     fk_PreferentialId=(txtPreferential.Tag as Mu).Id
                 };
                 DbSet<RecieveMoney_Detail> details = null;
+                int index = 0;
                 foreach (var item in recieveMoney_Details)
                 {
+                    index++;
                     var en = new RecieveMoney_Detail()
                     {
                         fk_MoeinId = item.Moein.Id,
@@ -269,6 +273,7 @@ namespace WpfCol
                         MoneyType = item.MoneyType,
                         Registered = item.Registered,
                         SayadiNumber = item.SayadiNumber,
+                        Indexer = index,
                         Id = Guid.NewGuid()
                     };
                     db.RecieveMoney_Detail.Add(en);
@@ -296,7 +301,24 @@ namespace WpfCol
                 var h = db.RecieveMoney_Detail.Where(v => v.fkHeaderId == id);
                 header = RecieveMoneyHeaders.First(u => u.Id == id);
                 foreach (var item in h)
-                {                    
+                {
+                    if (item.MoneyType == 1 && (!(recieveMoney_Details.FirstOrDefault(s => s.Id == item.Id) is RecieveMoney_Detail recieveMoney) || recieveMoney.MoneyType != 1))
+                    {
+                        var checkRecieveEvents = db.CheckRecieveEvent.Where(d => d.fk_DetaiId == item.Id);
+                        var checkRecieve = checkRecieveEvents.OrderByDescending(k => k.Indexer).FirstOrDefault();
+                        if (checkRecieve != null)
+                        {
+                            //var entry = db.Entry(checkRecieve);
+                            //entry.Reference(a => a.ChEvent).Load();
+                            if (checkRecieve.ChEvent.ChEventCode == 0)
+                            {
+                                foreach (var check in checkRecieveEvents)
+                                {
+                                    db.CheckRecieveEvent.Remove(check);
+                                }
+                            }
+                        }
+                    }
                     db.RecieveMoney_Detail.Remove(item);
                     header.RecieveMoney_Detail.Remove(header.RecieveMoney_Detail.First(x => x.Id == item.Id));
                 }
@@ -308,8 +330,10 @@ namespace WpfCol
                 e_Edidet.fk_PreferentialId = (txtPreferential.Tag as Mu).Id;
                 header.Preferential = db.Preferential.Find((txtPreferential.Tag as Mu).Id);
                 e_Edidet.Date = header.Date = pcw1.SelectedDate.ToDateTime();
+                int index = 0;
                 foreach (var item in recieveMoney_Details)
                 {
+                    index++;
                     var en = new RecieveMoney_Detail()
                     {
                         fkHeaderId = header.Id,
@@ -324,6 +348,7 @@ namespace WpfCol
                         MoneyType = item.MoneyType,
                         Registered = item.Registered,
                         SayadiNumber = item.SayadiNumber,
+                        Indexer = index,
                         Id = Guid.NewGuid()
                     };
                     bool Enter = false;
@@ -336,7 +361,6 @@ namespace WpfCol
                         });
                         Enter = true;
                     }
-                    db.RecieveMoney_Detail.Add(en);
                     if (!Enter && item.MoneyType == 1)
                     {
                         db.CheckRecieveEvent.Add(new CheckRecieveEvent()
@@ -349,10 +373,25 @@ namespace WpfCol
                             EventDate = pcw1.SelectedDate.ToDateTime(),
                         });
                     }
+                    db.RecieveMoney_Detail.Add(en);
                     header.RecieveMoney_Detail.Add(en);
                 }
             }
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())
+            {                        
+                RefreshHeader();
+                recieveMoney_Details.Clear();
+                header.RecieveMoney_Detail.ToList().ForEach(t => recieveMoney_Details.Add(t));
+
+                StateLoadView = true;
+                datagrid.View.Refresh();
+                datagrid.Dispatcher.BeginInvoke(new Action(async () =>
+                {
+                    await Task.Delay(50);
+                    StateLoadView = false;
+                }), DispatcherPriority.Render);
+                return;
+            }
             if (header != null)
             {
                 int i = 0;
@@ -952,10 +991,27 @@ namespace WpfCol
             var db = new ColDbEntities1();
             foreach (var item in db.RecieveMoney_Detail.Where(u => u.fkHeaderId == id))
             {
+                if (item.MoneyType == 1 && (!(recieveMoney_Details.FirstOrDefault(s => s.Id == item.Id) is RecieveMoney_Detail recieveMoney) || recieveMoney.MoneyType != 1))
+                {
+                    var checkRecieveEvents = db.CheckRecieveEvent.Where(d => d.fk_DetaiId == item.Id);
+                    var checkRecieve = checkRecieveEvents.OrderByDescending(k => k.Indexer).FirstOrDefault();
+                    if (checkRecieve != null)
+                    {
+                        //var entry = db.Entry(checkRecieve);
+                        //entry.Reference(a => a.ChEvent).Load();
+                        if (checkRecieve.ChEvent.ChEventCode == 0)
+                        {
+                            foreach (var check in checkRecieveEvents)
+                            {
+                                db.CheckRecieveEvent.Remove(check);
+                            }
+                        }
+                    }
+                }
                 db.RecieveMoney_Detail.Remove(item);
             }
             db.RecieveMoneyHeader.Remove(db.RecieveMoneyHeader.Find(id));
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             try
             {
                 RecieveMoneyHeaders.Remove(RecieveMoneyHeaders.First(f => f.Id == id));
@@ -1344,15 +1400,7 @@ namespace WpfCol
                     FillHeaders();
                     if (!AddedMode)
                     {
-                        var db = new ColDbEntities1();
-                        var e_Edidet = db.RecieveMoneyHeader.Find(id);
-                        var header = RecieveMoneyHeaders.FirstOrDefault(o => o.Id == id);
-                        header.RecieveMoney_Detail.Clear();
-                        foreach (var item in e_Edidet.RecieveMoney_Detail)
-                        {
-                            header.RecieveMoney_Detail.Add(item);
-                            SetAccountName(db, item);
-                        }
+                        RefreshHeader();
                     }
                     datagridSearch.ClearFilters();
                     datagridSearch.SortColumnDescriptions.Clear();
@@ -1414,6 +1462,23 @@ namespace WpfCol
                 }
             }
         }
+
+        private void RefreshHeader()
+        {
+            var db = new ColDbEntities1();
+            var e_Edidet = db.RecieveMoneyHeader.Find(id);
+            var header = RecieveMoneyHeaders.FirstOrDefault(o => o.Id == id);
+            header.RecieveMoney_Detail.Clear();
+            e_Edidet.RecieveMoney_Detail = e_Edidet.RecieveMoney_Detail
+              .OrderBy(d => d.Indexer)
+              .ToList();
+            foreach (var item in e_Edidet.RecieveMoney_Detail)
+            {
+                header.RecieveMoney_Detail.Add(item);
+                SetAccountName(db, item);
+            }
+        }
+
         bool LoadedFill = false;
         private void FillHeaders()
         {
@@ -1421,8 +1486,15 @@ namespace WpfCol
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 var db = new ColDbEntities1();
-                foreach (var item in db.RecieveMoneyHeader.Include(y=>y.RecieveMoney_Detail).AsNoTracking().ToList())
+                var documents = db.RecieveMoneyHeader
+                    .Include(h => h.RecieveMoney_Detail)
+                    .AsNoTracking()
+                    .ToList();
+                foreach (var item in documents)
                 {
+                    item.RecieveMoney_Detail = item.RecieveMoney_Detail
+                        .OrderBy(d => d.Indexer)
+                        .ToList();
                     /*foreach (var item2 in item.RecieveMoney_Detail)
                     {
                         SetAccountName(db, item2);
@@ -1430,6 +1502,14 @@ namespace WpfCol
                     RecieveMoneyHeaders.Add(item);
                 }
                 LoadedFill = true;
+                Mouse.OverrideCursor = null;
+            }
+            else
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                RecieveMoneyHeaders.ForEach(y => y.RecieveMoney_Detail = y.RecieveMoney_Detail
+                   .OrderBy(d => d.Indexer)
+                   .ToList());
                 Mouse.OverrideCursor = null;
             }
         }
@@ -2013,6 +2093,7 @@ namespace WpfCol
             {
                 datagrid.IsHitTestVisible = true;
             };
+            win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "گروه", MappingName = "Name2", Width = 150, AllowSorting = true });
             win.Width = 640;
             if(owner == null)
                 win.Tag = this;
@@ -2170,8 +2251,8 @@ namespace WpfCol
 
         private void btnSetting_Click(object sender, RoutedEventArgs e)
         {
-            var win = new winSettingCode() { Width = 400 };
-            win.grid.Width = 375;
+            var win = new winSettingCode() { Width = 460 };
+            win.grid.Width = 435;
             var db = new ColDbEntities1();
             var exist = false;
             if (db.CodeSetting.Any(t => t.Name == "MoeinCodeCheckRecieve"))
@@ -2202,7 +2283,7 @@ namespace WpfCol
             keyValuePairs.Add(str1, exist ? db.CodeSetting.First(i => i.Name == str1).Value : "");
             keyValuePairs.Add(str2, exist ? db.CodeSetting.First(i => i.Name == str2).Value : "");
 
-            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین ", Width = 150 };
+            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین ", Width = 175 };
             var textBox = new TextBox() { Text = exist ? keyValuePairs.ElementAt(0).Value + keyValuePairs.ElementAt(1).Value : "", Tag = true };
             textInputLayout.InputView = textBox;
             if(exist)

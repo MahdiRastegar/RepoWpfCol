@@ -191,7 +191,7 @@
                     <Image Source="/Images/Delete.png" IsHitTestVisible="False" Width="37.5" Stretch="Fill" Height="39" Margin="0 0 0 2"/>
                 </Grid>
             </DockPanel>
-            <Grid  Grid.Row="1" Grid.RowSpan="5" Grid.Column="2">
+            <Grid  Grid.Row="1" Grid.RowSpan="5" Grid.Column="2" Name="gridContainer">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="80"/>
                     <RowDefinition/>
@@ -281,7 +281,7 @@
                 </Syncfusion:SfDataGrid>
             </Grid>
             <Syncfusion:SfTextInputLayout x:Name="Sf_txtGreoup"  OutlineCornerRadius="8" Hint="کد گروه حساب" Grid.Row="1"  VerticalAlignment="Center" Margin="30,0,30,0">
-                <TextBox x:Name="txtGroup" LostFocus="txtGroup_LostFocus" TextChanged="txtColName_TextChanged" VerticalContentAlignment="Center" IsEnabled="True" IsReadOnly="False" PreviewTextInput="Txt_PreviewTextInput" Margin="0" FontSize="18"/>
+                <TextBox x:Name="txtGroup" LostFocus="txtGroup_LostFocus" TextChanged="txtColName_TextChanged" VerticalContentAlignment="Center" IsEnabled="True" IsReadOnly="False" PreviewTextInput="txtGroup_PreviewTextInput" Margin="0" FontSize="18"/>
             </Syncfusion:SfTextInputLayout>
             <Syncfusion:SfTextInputLayout  x:Name="Sf_txtVra_Copy" OutlineCornerRadius="8" Grid.Row="1" Grid.Column="1" Hint="نام گروه" VerticalAlignment="Center" Margin="30,0,30,0">
                 <TextBox x:Name="txtGroupName" Text="" IsReadOnly="True" MaxLength="50" VerticalContentAlignment="Center"   PreviewTextInput="Txt_PreviewTextInput" Margin="0" FontSize="16"/>

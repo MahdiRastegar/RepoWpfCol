@@ -164,7 +164,8 @@ namespace WpfCol
                 {
                     Id = item.Id,
                     Name = $"{item.PreferentialName}",
-                    Value = $"{item.PreferentialCode}"
+                    Value = $"{item.PreferentialCode}",
+                    Name2 = item.tGroup.GroupName
                 });
             }
 
@@ -254,8 +255,10 @@ namespace WpfCol
                     fk_PreferentialId = (txtPreferential.Tag as Mu).Id
                 };
                 DbSet<PaymentMoney_Detail> details = null;
+                int index = 0;
                 foreach (var item in paymentMoney_Details)
                 {
+                    index++;
                     var en = new PaymentMoney_Detail()
                     {
                         fk_MoeinId = item.Moein.Id,
@@ -269,9 +272,22 @@ namespace WpfCol
                         MoneyType = item.MoneyType,
                         Registered = item.Registered,
                         SayadiNumber = item.SayadiNumber,
+                        Indexer = index,
                         Id = Guid.NewGuid()
                     };
                     db.PaymentMoney_Detail.Add(en);
+                    if (item.MoneyType == 1)
+                    {
+                        db.CheckPaymentEvent.Add(new CheckPaymentEvent()
+                        {
+                            Id = Guid.NewGuid(),
+                            PaymentMoney_Detail = en,
+                            ChEvent = db.ChEvent.First(u => u.ChEventCode == 6),
+                            fk_MoeinId = item.Moein.Id,
+                            fk_PreferentialId = item.Preferential.Id,
+                            EventDate = pcw1.SelectedDate.ToDateTime(),
+                        });
+                    }
                 }
                 db.PaymentMoneyHeader.Add(e_addHeader);
                 if (LoadedFill)
@@ -285,6 +301,23 @@ namespace WpfCol
                 header = PaymentMoneyHeaders.First(u => u.Id == id);
                 foreach (var item in h)
                 {
+                    if (item.MoneyType == 1 && (!(paymentMoney_Details.FirstOrDefault(s => s.Id == item.Id) is PaymentMoney_Detail paymentMoney) || paymentMoney.MoneyType != 1))
+                    {
+                        var checkPaymentEvents = db.CheckPaymentEvent.Where(d => d.fk_DetaiId == item.Id);
+                        var checkPayment = checkPaymentEvents.OrderByDescending(k => k.Indexer).FirstOrDefault();
+                        if (checkPayment != null)
+                        {
+                            //var entry = db.Entry(checkPayment);
+                            //entry.Reference(a => a.ChEvent).Load();
+                            if (checkPayment.ChEvent.ChEventCode == 6)
+                            {
+                                foreach (var check in checkPaymentEvents)
+                                {
+                                    db.CheckPaymentEvent.Remove(check);
+                                }
+                            }
+                        }
+                    }
                     db.PaymentMoney_Detail.Remove(item);
                     header.PaymentMoney_Detail.Remove(header.PaymentMoney_Detail.First(x => x.Id == item.Id));
                 }
@@ -296,8 +329,10 @@ namespace WpfCol
                 e_Edidet.fk_PreferentialId = (txtPreferential.Tag as Mu).Id;
                 header.Preferential = db.Preferential.Find((txtPreferential.Tag as Mu).Id);
                 e_Edidet.Date = header.Date = pcw1.SelectedDate.ToDateTime();
+                int index = 0;
                 foreach (var item in paymentMoney_Details)
                 {
+                    index++;
                     var en = new PaymentMoney_Detail()
                     {
                         fkHeaderId = header.Id,
@@ -312,13 +347,50 @@ namespace WpfCol
                         MoneyType = item.MoneyType,
                         Registered = item.Registered,
                         SayadiNumber = item.SayadiNumber,
+                        Indexer = index,
                         Id = Guid.NewGuid()
                     };
+                    bool Enter = false;
+                    if (item.Id != Guid.Empty && item.MoneyType == 1 && db.PaymentMoney_Detail.Find(item.Id) is PaymentMoney_Detail detail && detail.MoneyType == 1 &&
+                    ExtensionMethods.CompareObjects(item, detail) is List<string> fff && !fff.Contains("fk_MoeinId") && !fff.Contains("fk_PreferentialId"))
+                    {
+                        db.CheckPaymentEvent.Where(y => y.fk_DetaiId == item.Id).ForEach(u =>
+                        {
+                            u.fk_DetaiId = en.Id;
+                        });
+                        Enter = true;
+                    }
+                    if (!Enter && item.MoneyType == 1)
+                    {
+                        db.CheckPaymentEvent.Add(new CheckPaymentEvent()
+                        {
+                            Id = Guid.NewGuid(),
+                            PaymentMoney_Detail = en,
+                            ChEvent = db.ChEvent.First(u => u.ChEventCode == 6),
+                            fk_MoeinId = item.Moein.Id,
+                            fk_PreferentialId = item.Preferential.Id,
+                            EventDate = pcw1.SelectedDate.ToDateTime(),
+                        });
+                    }
                     db.PaymentMoney_Detail.Add(en);
                     header.PaymentMoney_Detail.Add(en);
                 }
             }
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())
+            {
+                RefreshHeader();
+                paymentMoney_Details.Clear();
+                header.PaymentMoney_Detail.ToList().ForEach(t => paymentMoney_Details.Add(t));
+
+                StateLoadView = true;
+                datagrid.View.Refresh();
+                datagrid.Dispatcher.BeginInvoke(new Action(async () =>
+                {
+                    await Task.Delay(50);
+                    StateLoadView = false;
+                }), DispatcherPriority.Render);
+                return;
+            }
             if (header != null)
             {
                 int i = 0;
@@ -918,10 +990,27 @@ namespace WpfCol
             var db = new ColDbEntities1();
             foreach (var item in db.PaymentMoney_Detail.Where(u=>u.fkHeaderId==id))
             {
+                if (item.MoneyType == 1 && (!(paymentMoney_Details.FirstOrDefault(s => s.Id == item.Id) is PaymentMoney_Detail paymentMoney) || paymentMoney.MoneyType != 1))
+                {
+                    var checkPaymentEvents = db.CheckPaymentEvent.Where(d => d.fk_DetaiId == item.Id);
+                    var checkPayment = checkPaymentEvents.OrderByDescending(k => k.Indexer).FirstOrDefault();
+                    if (checkPayment != null)
+                    {
+                        //var entry = db.Entry(checkPayment);
+                        //entry.Reference(a => a.ChEvent).Load();
+                        if (checkPayment.ChEvent.ChEventCode == 6)
+                        {
+                            foreach (var check in checkPaymentEvents)
+                            {
+                                db.CheckPaymentEvent.Remove(check);
+                            }
+                        }
+                    }
+                }
                 db.PaymentMoney_Detail.Remove(item);
             }
             db.PaymentMoneyHeader.Remove(db.PaymentMoneyHeader.Find(id));
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             try
             {
                 PaymentMoneyHeaders.Remove(PaymentMoneyHeaders.First(f => f.Id == id));
@@ -1310,15 +1399,7 @@ namespace WpfCol
                     FillHeaders();
                     if (!AddedMode)
                     {
-                        var db = new ColDbEntities1();
-                        var e_Edidet = db.PaymentMoneyHeader.Find(id);
-                        var header = PaymentMoneyHeaders.FirstOrDefault(o => o.Id == id);
-                        header.PaymentMoney_Detail.Clear();
-                        foreach (var item in e_Edidet.PaymentMoney_Detail)
-                        {
-                            header.PaymentMoney_Detail.Add(item);
-                            SetAccountName(db, item);
-                        }
+                        RefreshHeader();
                     }
                     datagridSearch.ClearFilters();
                     datagridSearch.SortColumnDescriptions.Clear();
@@ -1380,6 +1461,21 @@ namespace WpfCol
                 }
             }
         }
+        private void RefreshHeader()
+        {
+            var db = new ColDbEntities1();
+            var e_Edidet = db.PaymentMoneyHeader.Find(id);
+            var header = PaymentMoneyHeaders.FirstOrDefault(o => o.Id == id);
+            header.PaymentMoney_Detail.Clear();
+            e_Edidet.PaymentMoney_Detail = e_Edidet.PaymentMoney_Detail
+              .OrderBy(d => d.Indexer)
+              .ToList();
+            foreach (var item in e_Edidet.PaymentMoney_Detail)
+            {
+                header.PaymentMoney_Detail.Add(item);
+                SetAccountName(db, item);
+            }
+        }
         bool LoadedFill = false;
         private void FillHeaders()
         {
@@ -1387,8 +1483,15 @@ namespace WpfCol
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 var db = new ColDbEntities1();
-                foreach (var item in db.PaymentMoneyHeader.Include(y => y.PaymentMoney_Detail).AsNoTracking().ToList())
+                var documents = db.PaymentMoneyHeader
+                    .Include(h => h.PaymentMoney_Detail)
+                    .AsNoTracking()
+                    .ToList();
+                foreach (var item in documents)
                 {
+                    item.PaymentMoney_Detail = item.PaymentMoney_Detail
+                        .OrderBy(d => d.Indexer)
+                        .ToList();
                     /*foreach (var item2 in item.PaymentMoney_Detail)
                     {
                         SetAccountName(db, item2);
@@ -1396,6 +1499,14 @@ namespace WpfCol
                     PaymentMoneyHeaders.Add(item);
                 }
                 LoadedFill = true;
+                Mouse.OverrideCursor = null;
+            }
+            else
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                PaymentMoneyHeaders.ForEach(y => y.PaymentMoney_Detail = y.PaymentMoney_Detail
+                   .OrderBy(d => d.Indexer)
+                   .ToList());
                 Mouse.OverrideCursor = null;
             }
         }
@@ -1994,6 +2105,7 @@ namespace WpfCol
             {
                 datagrid.IsHitTestVisible = true;
             };
+            win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "گروه", MappingName = "Name2", Width = 150, AllowSorting = true });
             win.Width = 640;
             if (owner == null)
                 win.Tag = this;
@@ -2151,8 +2263,8 @@ namespace WpfCol
 
         private void btnSetting_Click(object sender, RoutedEventArgs e)
         {
-            var win = new winSettingCode() { Width = 400 };
-            win.grid.Width = 375;
+            var win = new winSettingCode() { Width = 460 };
+            win.grid.Width = 435;
             var db = new ColDbEntities1();
             var exist = false;
             if (db.CodeSetting.Any(t => t.Name == "MoeinCodeCheckPayment"))
@@ -2183,7 +2295,7 @@ namespace WpfCol
             keyValuePairs.Add(str1, exist ? db.CodeSetting.First(i => i.Name == str1).Value : "");
             keyValuePairs.Add(str2, exist ? db.CodeSetting.First(i => i.Name == str2).Value : "");
 
-            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین ", Width = 150 };
+            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین ", Width = 175 };
             var textBox = new TextBox() { Text = exist ? keyValuePairs.ElementAt(0).Value + keyValuePairs.ElementAt(1).Value : "", Tag = true };
             textInputLayout.InputView = textBox;
             if (exist)

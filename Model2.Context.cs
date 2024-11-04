@@ -25,7 +25,6 @@ namespace WpfCol
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<AcDocument_Detail> AcDocument_Detail { get; set; }
         public virtual DbSet<AcDocument_Header> AcDocument_Header { get; set; }
         public virtual DbSet<AGroup> AGroup { get; set; }
         public virtual DbSet<Bank> Bank { get; set; }
@@ -33,14 +32,15 @@ namespace WpfCol
         public virtual DbSet<Col> Col { get; set; }
         public virtual DbSet<DocumentType> DocumentType { get; set; }
         public virtual DbSet<Moein> Moein { get; set; }
-        public virtual DbSet<PaymentMoney_Detail> PaymentMoney_Detail { get; set; }
         public virtual DbSet<PaymentMoneyHeader> PaymentMoneyHeader { get; set; }
         public virtual DbSet<Preferential> Preferential { get; set; }
-        public virtual DbSet<RecieveMoney_Detail> RecieveMoney_Detail { get; set; }
         public virtual DbSet<RecieveMoneyHeader> RecieveMoneyHeader { get; set; }
         public virtual DbSet<tGroup> tGroup { get; set; }
         public virtual DbSet<CodeSetting> CodeSetting { get; set; }
+        public virtual DbSet<AcDocument_Detail> AcDocument_Detail { get; set; }
         public virtual DbSet<CheckPaymentEvent> CheckPaymentEvent { get; set; }
         public virtual DbSet<CheckRecieveEvent> CheckRecieveEvent { get; set; }
+        public virtual DbSet<PaymentMoney_Detail> PaymentMoney_Detail { get; set; }
+        public virtual DbSet<RecieveMoney_Detail> RecieveMoney_Detail { get; set; }
     }
 }

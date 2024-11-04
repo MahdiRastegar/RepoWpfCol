@@ -17,13 +17,13 @@ namespace WpfCol
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Moein()
         {
-            this.AcDocument_Detail = new HashSet<AcDocument_Detail>();
-            this.PaymentMoney_Detail = new HashSet<PaymentMoney_Detail>();
             this.PaymentMoneyHeader = new HashSet<PaymentMoneyHeader>();
-            this.RecieveMoney_Detail = new HashSet<RecieveMoney_Detail>();
             this.RecieveMoneyHeader = new HashSet<RecieveMoneyHeader>();
+            this.AcDocument_Detail = new HashSet<AcDocument_Detail>();
             this.CheckPaymentEvent = new HashSet<CheckPaymentEvent>();
             this.CheckRecieveEvent = new HashSet<CheckRecieveEvent>();
+            this.PaymentMoney_Detail = new HashSet<PaymentMoney_Detail>();
+            this.RecieveMoney_Detail = new HashSet<RecieveMoney_Detail>();
         }
     
         public System.Guid Id { get; set; }
@@ -31,20 +31,20 @@ namespace WpfCol
         public System.Guid fk_ColId { get; set; }
         public string MoeinName { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AcDocument_Detail> AcDocument_Detail { get; set; }
         public virtual Col Col { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PaymentMoney_Detail> PaymentMoney_Detail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PaymentMoneyHeader> PaymentMoneyHeader { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RecieveMoney_Detail> RecieveMoney_Detail { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RecieveMoneyHeader> RecieveMoneyHeader { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AcDocument_Detail> AcDocument_Detail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CheckPaymentEvent> CheckPaymentEvent { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CheckRecieveEvent> CheckRecieveEvent { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PaymentMoney_Detail> PaymentMoney_Detail { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<RecieveMoney_Detail> RecieveMoney_Detail { get; set; }
     }
 }

@@ -28,9 +28,9 @@ namespace WpfCol
         public long NoDoument { get; set; }
         public System.Guid fk_DocumentTypeId { get; set; }
     
+        public virtual DocumentType DocumentType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AcDocument_Detail> AcDocument_Detail { get; set; }
-        public virtual DocumentType DocumentType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CheckPaymentEvent> CheckPaymentEvent { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

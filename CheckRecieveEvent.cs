@@ -14,6 +14,7 @@ namespace WpfCol
     
     public partial class CheckRecieveEvent
     {
+        public int Indexer { get; set; }
         public System.Guid Id { get; set; }
         public System.Guid fk_DetaiId { get; set; }
         public Nullable<System.Guid> fk_AcId { get; set; }
@@ -22,7 +23,6 @@ namespace WpfCol
         public System.Guid fk_PreferentialId { get; set; }
         public System.Guid fk_MoeinId { get; set; }
         public string Description { get; set; }
-        public int Indexer { get; set; }
     
         public virtual AcDocument_Header AcDocument_Header { get; set; }
         public virtual ChEvent ChEvent { get; set; }

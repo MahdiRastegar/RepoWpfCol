@@ -29,6 +29,7 @@ namespace WpfCol
         public winCol()
         {
             InitializeComponent();            
+            isCancel = true;
         }
         Brush brush = null;
 
@@ -105,13 +106,14 @@ namespace WpfCol
                 col.Action = (byte)cmbAction.SelectedIndex;
                 col.PermissionView = checkbox.IsChecked;
             }
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             var M = db.Col.ToList();
             datagrid.ItemsSource = M;
             if (col == null)
             {
                 Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت کل");
-                cmbAction.SelectedIndex = cmbType.SelectedIndex = -1;
+                cmbAction.SelectedIndex = -1;
+                cmbType.SelectedIndex = -1;
                 checkbox.IsChecked = false;
             }
             else
@@ -128,7 +130,7 @@ namespace WpfCol
             gridDelete.Visibility = Visibility.Hidden;
             borderEdit.Visibility = Visibility.Hidden;
             if (col != null)
-                txtCol.Focus();
+                txtGroup.Focus();
             else
             {
                 txtCol.Text = (i + 1).ToString();
@@ -274,7 +276,7 @@ namespace WpfCol
             {
                 CloseForm();
             }
-            else if (e.Key == Key.F1 && txtGroup.IsFocused)
+            else if (e.Key == Key.F1 && txtGroup.IsFocused && !txtGroup.IsReadOnly)
             {
                 if (window != null)
                     return;
@@ -309,24 +311,54 @@ namespace WpfCol
                 return;
             }
         }
-        bool isCancel = true;
+        private bool _iscancel = false;
+
+        public bool isCancel
+        {
+            get
+            {
+                return _iscancel;
+            }
+            set
+            {
+                _iscancel = value;
+
+                gridContainer.Opacity = .6;
+                gridContainer.IsEnabled = false;
+            }
+        }
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            if (txtColName.Text.Trim() == "" && cmbType.SelectedIndex == -1 && cmbAction.SelectedIndex == -1 && txtGroup.Text.Trim() == "")
+            if (isCancel && sender != null && datagrid.SelectedIndex==-1)
             {
+                gridContainer.Opacity = 1;
+                gridContainer.IsEnabled = true;
+                txtGroup.Focus();
                 return;
             }
-            if (sender != null && Xceed.Wpf.Toolkit.MessageBox.Show("آیا می خواهید از این عملیات انصراف دهید؟", "انصراف", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+            if (!isCancel && sender != null && Xceed.Wpf.Toolkit.MessageBox.Show("آیا می خواهید از این عملیات انصراف دهید؟", "انصراف", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             {
                 return;
             }
             txtCol.Text = txtGroupName.Text = txtGroup.Text = txtColName.Text = txtColName.Text = "";
             cmbAction.SelectedIndex= cmbType.SelectedIndex = -1;
+            Sf_Actin.HasError = false;
             Sf_txtVra.HasError = false;
             Sf_txtName.HasError = false;
             txtGroup.IsReadOnly = false;
             checkbox.IsChecked = false;
-            isCancel = true;           
+            isCancel = true;
+
+            if (sender != null)
+            {
+                if (datagrid.SelectedIndex == -1)
+                {
+                    gridContainer.Opacity = 1;
+                    gridContainer.IsEnabled = true;
+                }
+                txtGroup.Focus();
+            }
+
             datagrid.SelectedIndex = -1;
             datagrid.ClearFilters();
             gridDelete.Visibility = Visibility.Hidden;
@@ -360,6 +392,8 @@ namespace WpfCol
                 isCancel = true;
                 borderEdit.Visibility = Visibility.Visible;
                 GetError();
+                gridContainer.Opacity = 1;
+                gridContainer.IsEnabled = true;
             }
         }
 
@@ -373,7 +407,7 @@ namespace WpfCol
             }
             var db = new ColDbEntities1();
             db.Col.Remove(db.Col.Find((datagrid.SelectedItem as Col).Id));
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             (datagrid.ItemsSource as List<Col>).Remove((datagrid.SelectedItem as Col));
             var u = datagrid.ItemsSource;
             datagrid.ItemsSource = null;
@@ -440,7 +474,11 @@ namespace WpfCol
 
                 var y = db.AGroup.FirstOrDefault(gs => gs.GroupCode == g);
                 if (y != null)
-                    txtColName.Focus();
+                    Dispatcher.BeginInvoke(new Action(async () =>
+                    {
+                        await Task.Delay(50);
+                        txtColName.Focus();
+                    }));
             }
             catch { }
         }
@@ -474,8 +512,22 @@ namespace WpfCol
                 }
                 catch
                 {
+                    txtGroupName.Text = "";
                     //txtCodePreferential.Text = "1";
                 }
+        }
+
+        private void txtGroup_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Text == "\r")
+            {
+                /*
+                TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+                request.Wrapped = true;
+                (sender as TextBox).MoveFocus(request);*/
+                txtColName.Focus();
+                return;
+            }
         }
     }
 }

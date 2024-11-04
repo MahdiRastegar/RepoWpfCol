@@ -26,6 +26,7 @@ namespace WpfCol.Windows.toolWindows
         public string Name { get; set; }
         public string Value { get; set; }
         public object AdditionalEntity { get; set; }
+        public string Name2 { get; set; }
     }
     /// <summary>
     /// Interaction logic for winSearch.xaml

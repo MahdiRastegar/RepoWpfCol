@@ -151,7 +151,8 @@ namespace WpfCol
                 {
                     Id= item.Id,
                     Name = $"{item.PreferentialName}",
-                    Value = $"{item.PreferentialCode}"
+                    Value = $"{item.PreferentialCode}",
+                    Name2 = item.tGroup.GroupName
                 });
             }
             Fill();     
@@ -194,7 +195,7 @@ namespace WpfCol
             }
             foreach (CheckRecieveEvent item in x)
                 checkRecieveEvents.Remove(item);
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
 
             Xceed.Wpf.Toolkit.MessageBox.Show("عملیات با موفقیت انجام شد.", "تغییر وضعیت");
             TabControlExt_SelectionChanged(null, null);
@@ -950,6 +951,7 @@ namespace WpfCol
             {
                 datagrid.IsHitTestVisible = true;
             };
+            win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "گروه", MappingName = "Name2", Width = 150, AllowSorting = true });
             win.Width = 640;
             win.Tag = this;
             win.ParentTextBox = y;

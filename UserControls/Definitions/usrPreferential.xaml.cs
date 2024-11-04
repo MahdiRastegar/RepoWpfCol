@@ -30,6 +30,7 @@ namespace WpfCol
         {
             Preferentials = new ObservableCollection<Preferential>();
             InitializeComponent();
+            isCancel = true;
         }
         Brush brush = null;
         public ObservableCollection<Preferential> Preferentials { get; set; }
@@ -84,7 +85,6 @@ namespace WpfCol
             txtGroup.Focus();
             dataPager.Source = null;
             dataPager.Source = Preferentials;
-            isCancel = true;
         }
 
         private void btnConfirm_Click(object sender, RoutedEventArgs e)
@@ -157,7 +157,7 @@ namespace WpfCol
                 e_Edidet.Address = txtAddress.Text;
                 e_Edidet.Description = txtDescription.Text;
             }
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             if (id == Guid.Empty)
             {
                 Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت تفضیلی");
@@ -267,11 +267,11 @@ namespace WpfCol
         bool forceClose = false;
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Escape)
+            if (e.Key == Key.Escape)
             {
                 CloseForm();
             }
-            else if(e.Key == Key.F1&&txtGroup.IsFocused)
+            else if (e.Key == Key.F1 && txtGroup.IsFocused && !txtGroup.IsReadOnly)
             {
                 if (window != null)
                     return;
@@ -293,7 +293,7 @@ namespace WpfCol
                 //win.Left = relativePoint.X - 60;
                 //win.Top = relativePoint.Y + 95;
                 window = win;
-                win.Show();win.Focus();
+                win.Show(); win.Focus();
             }
         }
 
@@ -305,14 +305,32 @@ namespace WpfCol
                 return;
             }
         }
-        bool isCancel = false;
+        private bool _iscancel=false;
+
+        public bool isCancel
+        {
+            get 
+            {
+                return _iscancel; 
+            }
+            set
+            {
+                _iscancel = value;
+
+                gridContainer.Opacity = .6;
+                gridContainer.IsEnabled = false;
+            }
+        }
+
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            if (txtPreferentialName.Text.Trim() == "" && txtGroup.Text.Trim() == "")
+            if (isCancel&& sender != null&&id== Guid.Empty)
             {
+                gridContainer.Opacity = 1;
+                gridContainer.IsEnabled = true;
                 return;
             }
-            if (sender != null && Xceed.Wpf.Toolkit.MessageBox.Show("آیا می خواهید از این عملیات انصراف دهید؟", "انصراف", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+            if (!isCancel && sender != null && Xceed.Wpf.Toolkit.MessageBox.Show("آیا می خواهید از این عملیات انصراف دهید؟", "انصراف", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             {
                 return;
             }
@@ -337,7 +355,15 @@ namespace WpfCol
             txtGroupName.Text = txtGroup.Text = txtCodePreferential.Text = "";
             txtGroup.TextChanged += TxtGroup_TextChanged;
             isCancel = true;
-            id = Guid.Empty;
+            if (sender != null)
+            {
+                if (id == Guid.Empty)
+                {
+                    gridContainer.Opacity = 1;
+                    gridContainer.IsEnabled = true;
+                }
+                id = Guid.Empty;
+            }
         }
 
         private void ClearMore()
@@ -379,6 +405,8 @@ namespace WpfCol
                 txtGroup.IsReadOnly = true;
                 isCancel = true;
                 GetError();
+                gridContainer.Opacity = 1;
+                gridContainer.IsEnabled = true;
             }
         }
 
@@ -396,9 +424,23 @@ namespace WpfCol
             {
                 Xceed.Wpf.Toolkit.MessageBox.Show("قبلا با این تفضیلی سند حسابداری زده شده است و قابل حذف نیست!");
                 return;
-            }            
+            }
+            var listPreferentials = new List<string>();
+            foreach (var item in db.CodeSetting.Where(s => s.Name.Contains("PreferentialCode")))
+            {
+                var code = db.CodeSetting.FirstOrDefault(j => j.Name == item.Name);
+                if (code != null)
+                {
+                    listPreferentials.Add(item.Value);
+                }
+            }
+            if (listPreferentials.Contains(preferential.PreferentialCode.ToString()))
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("در تنظیمات پیکربندی از این تفضیل استفاده شده است و قابل حذف نیست!");
+                return;
+            }
             db.Preferential.Remove(preferential);
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             Preferentials.Remove((datagrid.SelectedItem as Preferential));            
             btnCancel_Click(null, null);
         }
@@ -453,6 +495,7 @@ namespace WpfCol
                 catch
                 {
                     txtCodePreferential.Text = "1";
+                    txtGroupName.Text = "";
                 }
         }
 
@@ -542,7 +585,7 @@ namespace WpfCol
                     });
                 }
             }
-            db.SaveChanges();*/
+            if (!db.SafeSaveChanges())  return;*/
         }
 
         private void txtEmail_GotFocus(object sender, RoutedEventArgs e)
@@ -574,6 +617,17 @@ namespace WpfCol
                 dataPager.Source = null;
                 dataPager.Source = g;
             }
+        }
+
+        private void txtGroup_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Text == "\r")
+            {
+                txtPreferentialName.Focus();
+
+                return;
+            }
+            e.Handled = !IsTextAllowed(e.Text);
         }
     }
 }

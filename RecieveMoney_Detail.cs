@@ -17,10 +17,10 @@ namespace WpfCol
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public RecieveMoney_Detail()
         {
-            this.MoneyType = 255;
             this.CheckRecieveEvent = new HashSet<CheckRecieveEvent>();
         }
     
+        public int Indexer { get; set; }
         public System.Guid Id { get; set; }
         public System.Guid fkHeaderId { get; set; }
         public decimal Price { get; set; }
@@ -35,10 +35,10 @@ namespace WpfCol
         public Nullable<bool> Registered { get; set; }
     
         public virtual Bank Bank { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CheckRecieveEvent> CheckRecieveEvent { get; set; }
         public virtual Moein Moein { get; set; }
         public virtual Preferential Preferential { get; set; }
         public virtual RecieveMoneyHeader RecieveMoneyHeader { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CheckRecieveEvent> CheckRecieveEvent { get; set; }
     }
 }

@@ -121,13 +121,13 @@
                 </Border.Triggers>
             </Border>
             <Syncfusion:SfTextInputLayout Name="Sf_txtGroup" OutlineCornerRadius="8" Hint="کد گروه تفضیلی" Grid.Row="1"  VerticalAlignment="Center" Margin="30 0"  HorizontalAlignment="Stretch">
-                <TextBox Name="txtGroup" LostFocus="TxtGroup_LostFocus" VerticalContentAlignment="Center" TextChanged="TxtGroup_TextChanged" IsEnabled="True" IsReadOnly="False" PreviewTextInput="Txt_PreviewTextInput" Margin="0" FontSize="18"/>
-            </Syncfusion:SfTextInputLayout>
-            <Syncfusion:SfTextInputLayout Name="Sf_txtCodePreferential"  OutlineCornerRadius="8" Hint="کد تفضیلی" Grid.Row="2"  VerticalAlignment="Center" Margin="30 0"  HorizontalAlignment="Stretch">
-                <TextBox Name="txtCodePreferential" TextChanged="TxtCodePreferential_TextChanged" VerticalContentAlignment="Center"  IsEnabled="True" IsReadOnly="False" PreviewTextInput="Txt_PreviewTextInput" Margin="0" FontSize="18"/>
+                <TextBox Name="txtGroup" LostFocus="TxtGroup_LostFocus" VerticalContentAlignment="Center" TextChanged="TxtGroup_TextChanged" IsEnabled="True" IsReadOnly="False" PreviewTextInput="txtGroup_PreviewTextInput" Margin="0" FontSize="18"/>
             </Syncfusion:SfTextInputLayout>
             <Syncfusion:SfTextInputLayout Name="Sf_txtGroupName" OutlineCornerRadius="8" Hint="نام گروه" Grid.Row="1"  VerticalAlignment="Center" Margin="30 0" Grid.Column="1"  HorizontalAlignment="Stretch">
                 <TextBox Name="txtGroupName" VerticalContentAlignment="Center"  IsEnabled="True" IsReadOnly="True" Margin="0" FontSize="18"/>
+            </Syncfusion:SfTextInputLayout>
+            <Syncfusion:SfTextInputLayout Name="Sf_txtCodePreferential"  OutlineCornerRadius="8" Hint="کد تفضیلی" Grid.Row="2"  VerticalAlignment="Center" Margin="30 0"  HorizontalAlignment="Stretch">
+                <TextBox Name="txtCodePreferential" TextChanged="TxtCodePreferential_TextChanged" VerticalContentAlignment="Center"  IsEnabled="True" IsReadOnly="False" PreviewTextInput="Txt_PreviewTextInput" Margin="0" FontSize="18"/>
             </Syncfusion:SfTextInputLayout>
             <Syncfusion:SfTextInputLayout  Name="Sf_txtPreferentialName" OutlineCornerRadius="8" Grid.Row="2" Grid.Column="1" Hint="نام تفضیلی" VerticalAlignment="Center" Margin="30 0"  HorizontalAlignment="Stretch">
                 <TextBox Name="txtPreferentialName" Text="" TextChanged="txtPreferentialName_TextChanged" MaxLength="50" VerticalContentAlignment="Center"   PreviewTextInput="Txt_PreviewTextInput" Margin="0" FontSize="16"/>
@@ -204,7 +204,7 @@
                     <Image Source="/Images/Delete.png" IsHitTestVisible="False" Width="37.5" Stretch="Fill" Height="39" Margin="0 0 0 2"/>
                 </Grid>
             </DockPanel>
-            <Grid  Grid.Row="1" Grid.RowSpan="4" Grid.Column="2">
+            <Grid  Grid.Row="1" Grid.RowSpan="4" Grid.Column="2" Name="gridContainer">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="80"/>
                     <RowDefinition/>

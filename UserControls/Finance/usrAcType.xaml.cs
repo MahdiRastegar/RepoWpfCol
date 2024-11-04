@@ -99,7 +99,7 @@ namespace WpfCol
                 }
                 group.Name = txtAcType.Text;
             }
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             var M = db.DocumentType.ToList();
             datagrid.ItemsSource = M;
             if (group == null)
@@ -294,7 +294,7 @@ namespace WpfCol
             }
             var db = new ColDbEntities1();
             db.DocumentType.Remove(db.DocumentType.Find((datagrid.SelectedItem as DocumentType).Id));
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             (datagrid.ItemsSource as List<DocumentType>).Remove((datagrid.SelectedItem as DocumentType));
             var u = datagrid.ItemsSource;
             datagrid.ItemsSource = null;

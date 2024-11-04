@@ -115,7 +115,7 @@ namespace WpfCol
                     }
                 }
             }
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             Close();
         }
 

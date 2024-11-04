@@ -9,6 +9,8 @@ using System.Windows.Media;
 using System.Windows;
 using System.IO;
 using System.Xml.Serialization;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 
 namespace WpfCol
 {
@@ -42,6 +44,33 @@ namespace WpfCol
                 catch { continue; }
             }
             return result;
+        }
+        public static bool SafeSaveChanges(this DbContext  dbContext)
+        {
+            try
+            {
+                dbContext.SaveChanges();
+                return true;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                if (dbEx.InnerException?.InnerException != null && dbEx.InnerException.InnerException.Message.Contains("FK_"))
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("این حساب دارای گردش است ابتدا باید گردش و حسابهای وابسته آن پاک شود!", "خطای پایگاه داده", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+
+                throw new Exception(dbEx.InnerException?.Message ?? dbEx.Message);
+            }
+            catch (Exception ex)
+            {
+                if(ex.Message.Contains("foreign-key"))
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("این حساب دارای گردش است ابتدا باید گردش و حسابهای وابسته آن پاک شود!", "خطای پایگاه داده", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+                throw new Exception(ex.Message);
+            }
         }
         public static void AddUniqueItem(this List<string> strings,string a)
         {

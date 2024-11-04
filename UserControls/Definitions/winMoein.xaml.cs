@@ -32,6 +32,7 @@ namespace WpfCol
         {
             Moeins = new ObservableCollection<Moein>();
             InitializeComponent();
+            isCancel = true;
         }
         Brush brush = null;
         public ObservableCollection<Moein> Moeins { get; set; }
@@ -39,7 +40,12 @@ namespace WpfCol
         {
             if (e.Text == "\r")
             {
-                if ((sender as TextBox).Name == "txtMoeinName")
+                if ((sender as TextBox).Name == "txtCol")
+                {
+                    txtMoeinName.Focus();
+                    return;
+                }
+                else if ((sender as TextBox).Name == "txtMoeinName")
                 {
                     btnConfirm.Focus();
                 }
@@ -87,7 +93,6 @@ namespace WpfCol
             txtCol.Focus();
             dataPager.Source = null;
             dataPager.Source = Moeins;
-            isCancel = true;
         }
 
         private void btnConfirm_Click(object sender, RoutedEventArgs e)
@@ -161,7 +166,7 @@ namespace WpfCol
                 //    });
                 //}
             }
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             if (id == Guid.Empty)
             {
                 Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت معین");
@@ -319,11 +324,11 @@ namespace WpfCol
         bool forceClose = false;
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Escape)
+            if (e.Key == Key.Escape)
             {
                 CloseForm();
             }
-            else if(e.Key == Key.F1&&txtCol.IsFocused)
+            else if (e.Key == Key.F1 && txtCol.IsFocused && !txtCol.IsReadOnly)
             {
                 if (window != null)
                     return;
@@ -358,14 +363,32 @@ namespace WpfCol
                 return;
             }
         }
-        bool isCancel = true;
+        private bool _iscancel = false;
+
+        public bool isCancel
+        {
+            get
+            {
+                return _iscancel;
+            }
+            set
+            {
+                _iscancel = value;
+
+                gridContainer.Opacity = .6;
+                gridContainer.IsEnabled = false;
+            }
+        }
+
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            if (isCancel && id == Guid.Empty)
+            if (isCancel && sender != null && id == Guid.Empty)
             {
+                gridContainer.Opacity = 1;
+                gridContainer.IsEnabled = true;
                 return;
             }
-            if (sender != null && Xceed.Wpf.Toolkit.MessageBox.Show("آیا می خواهید از این عملیات انصراف دهید؟", "انصراف", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+            if (!isCancel && sender != null && Xceed.Wpf.Toolkit.MessageBox.Show("آیا می خواهید از این عملیات انصراف دهید؟", "انصراف", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             {
                 return;
             }
@@ -389,7 +412,15 @@ namespace WpfCol
             txtColName.Text = txtCol.Text = txtCodeMoein.Text = "";
             txtCol.TextChanged += TxtCol_TextChanged;
             isCancel = true;
-            id = Guid.Empty;
+            if (sender != null)
+            {
+                if (id == Guid.Empty)
+                {
+                    gridContainer.Opacity = 1;
+                    gridContainer.IsEnabled = true;
+                }
+                id = Guid.Empty;
+            }
         }
 
         private void datagrid_SelectionChanged(object sender, Syncfusion.UI.Xaml.Grid.GridSelectionChangedEventArgs e)
@@ -414,6 +445,8 @@ namespace WpfCol
                 txtCol.IsReadOnly = true;
                 isCancel = true;
                 GetError();
+                gridContainer.Opacity = 1;
+                gridContainer.IsEnabled = true;
             }
         }
 
@@ -432,8 +465,23 @@ namespace WpfCol
                 Xceed.Wpf.Toolkit.MessageBox.Show("قبلا با این معین سند حسابداری زده شده است و قابل حذف نیست!");
                 return;
             }
+            var listColMoeins = new List<string>();
+            foreach (var item in db.CodeSetting.Where(s=>s.Name.Contains("ColCode")))
+            {
+                var name = item.Name.Replace("ColCode", "MoeinCode");
+                var moeinh = db.CodeSetting.FirstOrDefault(j => j.Name == name);
+                if(moeinh!=null)
+                {
+                    listColMoeins.Add(item.Value + moeinh.Value);
+                }
+            }
+            if (listColMoeins.Contains(moein.Col.ColCode.ToString() + moein.MoeinCode.ToString()))
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("در تنظیمات پیکربندی از این معین و کل استفاده شده است و قابل حذف نیست!");
+                return;
+            }
             db.Moein.Remove(db.Moein.Find(id));
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             Moeins.Remove((datagrid.SelectedItem as Moein));            
             btnCancel_Click(null, null);
         }
@@ -481,6 +529,7 @@ namespace WpfCol
                 catch
                 {
                     txtCodeMoein.Text = "1";
+                    txtColName.Text = "";
                 }
         }
 

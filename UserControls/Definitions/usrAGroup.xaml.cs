@@ -28,6 +28,7 @@ namespace WpfCol
         public usrAGroup()
         {
             InitializeComponent();            
+            isCancel = true;
         }
         Brush brush = null;
 
@@ -89,7 +90,7 @@ namespace WpfCol
             {
                 group.GroupName = txtGroupName.Text;
             }
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             var M = db.AGroup.ToList();
             datagrid.ItemsSource = M;
             if (group == null)
@@ -106,9 +107,9 @@ namespace WpfCol
             datagrid.ClearFilters();
             gridDelete.Visibility = Visibility.Hidden;
             borderEdit.Visibility = Visibility.Hidden;
-            if (group != null)
-                txtGroup.Focus();
-            else
+            //if (group != null)
+            //    txtGroup.Focus();
+            //else
                 txtGroupName.Focus();
         }
 
@@ -227,15 +228,32 @@ namespace WpfCol
                 CloseForm();
             }
         }
-    
-        bool isCancel = true;
+
+        private bool _iscancel = false;
+
+        public bool isCancel
+        {
+            get
+            {
+                return _iscancel;
+            }
+            set
+            {
+                _iscancel = value;
+
+                gridContainer.Opacity = .6;
+                gridContainer.IsEnabled = false;
+            }
+        }
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            if(txtGroupName.Text.Trim()=="")
+            if (isCancel && sender != null && datagrid.SelectedIndex == -1)
             {
+                gridContainer.Opacity = 1;
+                gridContainer.IsEnabled = true;
                 return;
             }
-            if (sender != null && Xceed.Wpf.Toolkit.MessageBox.Show("آیا می خواهید از این عملیات انصراف دهید؟", "انصراف", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+            if (!isCancel && sender != null && Xceed.Wpf.Toolkit.MessageBox.Show("آیا می خواهید از این عملیات انصراف دهید؟", "انصراف", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             {
                 return;
             }
@@ -249,6 +267,16 @@ namespace WpfCol
             else
                 txtGroup.Text = "1";
             txtGroupName.Focus();
+
+            if (sender != null)
+            {
+                if (datagrid.SelectedIndex == -1)
+                {
+                    gridContainer.Opacity = 1;
+                    gridContainer.IsEnabled = true;
+                }
+            }
+
             datagrid.SelectedIndex = -1;
             datagrid.ClearFilters();
             gridDelete.Visibility = Visibility.Hidden;
@@ -276,6 +304,8 @@ namespace WpfCol
                 isCancel = true;
                 borderEdit.Visibility = Visibility.Visible;
                 GetError();
+                gridContainer.Opacity = 1;
+                gridContainer.IsEnabled = true;
             }
         }
 
@@ -289,7 +319,7 @@ namespace WpfCol
             }
             var db = new ColDbEntities1();
             db.AGroup.Remove(db.AGroup.Find((datagrid.SelectedItem as AGroup).Id));
-            db.SaveChanges();
+            if (!db.SafeSaveChanges())  return;
             (datagrid.ItemsSource as List<AGroup>).Remove((datagrid.SelectedItem as AGroup));
             var u = datagrid.ItemsSource;
             datagrid.ItemsSource = null;
