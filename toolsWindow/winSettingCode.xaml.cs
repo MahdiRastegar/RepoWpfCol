@@ -93,7 +93,7 @@ namespace WpfCol
                         db.CodeSetting.Add(new CodeSetting()
                         {
                             Id = Guid.NewGuid(),
-                            Name = item.HelperText,
+                            Name = item.Tag.ToString(),
                             Value = (item.InputView as System.Windows.Controls.TextBox).Text
                         });
                 }
@@ -116,6 +116,7 @@ namespace WpfCol
                 }
             }
             if (!db.SafeSaveChanges())  return;
+            Xceed.Wpf.Toolkit.MessageBox.Show("تنظیمات با موفقیت ثبت شد");
             Close();
         }
 

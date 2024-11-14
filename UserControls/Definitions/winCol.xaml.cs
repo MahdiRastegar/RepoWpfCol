@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Office2010.Excel;
 using Syncfusion.Data.Extensions;
+using Syncfusion.Windows.Tools.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -111,20 +112,33 @@ namespace WpfCol
             datagrid.ItemsSource = M;
             if (col == null)
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت کل");
-                cmbAction.SelectedIndex = -1;
-                cmbType.SelectedIndex = -1;
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت کل");                
                 checkbox.IsChecked = false;
+                isCancel = false;
             }
             else
             {
                 Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش کل");
                 btnCancel_Click(null, null);
+                isCancel = true;
             }
 
             txtColName.Text = "";
-            cmbType.SelectedIndex = -1;
-            isCancel = true;
+            if (cmbAction.SelectedIndex == 0)
+                cmbAction.SelectedIndex = 1;
+            else
+                cmbAction.SelectedIndex = 0;
+
+            if (cmbType.SelectedIndex < 2)
+                cmbType.SelectedIndex = 2;
+            else
+                cmbType.SelectedIndex = 0;
+            Dispatcher.BeginInvoke(new Action(async () =>
+            {
+                //await Task.Delay(2000);
+                cmbAction.SelectedItem = null;
+                cmbType.SelectedItem = null;
+            }));
             datagrid.SelectedIndex = -1;
             datagrid.ClearFilters();
             gridDelete.Visibility = Visibility.Hidden;
@@ -341,14 +355,16 @@ namespace WpfCol
                 return;
             }
             txtCol.Text = txtGroupName.Text = txtGroup.Text = txtColName.Text = txtColName.Text = "";
-            cmbAction.SelectedIndex= cmbType.SelectedIndex = -1;
             Sf_Actin.HasError = false;
             Sf_txtVra.HasError = false;
             Sf_txtName.HasError = false;
             txtGroup.IsReadOnly = false;
             checkbox.IsChecked = false;
-            isCancel = true;
-
+            Dispatcher.BeginInvoke(new Action(async () =>
+            {
+                await Task.Delay(50);                
+                isCancel = true;
+            }));
             if (sender != null)
             {
                 if (datagrid.SelectedIndex == -1)
@@ -413,6 +429,23 @@ namespace WpfCol
             datagrid.ItemsSource = null;
             datagrid.ItemsSource = u;
             btnCancel_Click(null, null);
+            txtGroup.Focus();
+
+            if (cmbAction.SelectedIndex == 0)
+                cmbAction.SelectedIndex = 1;
+            else
+                cmbAction.SelectedIndex = 0;
+
+            if (cmbType.SelectedIndex < 2)
+                cmbType.SelectedIndex = 2;
+            else
+                cmbType.SelectedIndex = 0;
+            Dispatcher.BeginInvoke(new Action(async () =>
+            {
+                //await Task.Delay(2000);
+                cmbAction.SelectedItem = null;
+                cmbType.SelectedItem = null;
+            }));
         }
 
         private void SearchTermTextBox_TextChanged(object sender, TextChangedEventArgs e)

@@ -540,7 +540,7 @@ namespace WpfCol
                     win.datagrid.Columns[1].Width = 255;
                     win.datagrid.Columns[0].Width = 100;
                     win.datagrid.Columns.Add(new GridTextColumn() {TextAlignment= TextAlignment.Center, HeaderText = "معین", MappingName = "AdditionalEntity.Moein", Width = 100, AllowSorting = true });
-                    win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "نام", MappingName = "AdditionalEntity.MoeinName", AllowSorting = true });
+                    win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "نام", MappingName = "AdditionalEntity.MoeinName", AllowSorting = true, ColumnSizer= GridLengthUnitType.AutoWithLastColumnFill });
                     win.datagrid.AllowResizingColumns = true;
                     win.Tag = this;
                     win.ParentTextBox = y;

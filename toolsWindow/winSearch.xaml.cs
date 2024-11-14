@@ -103,6 +103,12 @@ namespace WpfCol.Windows.toolWindows
             IsLoaded = true;
             datagrid.SearchHelper.AllowFiltering = true;
             datagrid.SearchHelper.SearchBrush = Brushes.LightBlue;
+            if (datagrid.Columns[0].HeaderText=="کل")
+            {
+                datagrid.Columns[0].Width = 80;
+                datagrid.Columns[1].Width = 200;
+                datagrid.Columns[2].Width = 80;
+            }
             /*Dispatcher.BeginInvoke(new Action(() =>
             {
                 SearchTermTextBox.Focus();
@@ -246,6 +252,11 @@ namespace WpfCol.Windows.toolWindows
         private void ClearSearch_MouseEnter(object sender, MouseEventArgs e)
         {
             ClearSearch.Opacity = 1;
+        }
+
+        private void Window_Loaded_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

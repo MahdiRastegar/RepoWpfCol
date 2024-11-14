@@ -50,7 +50,7 @@ namespace WpfCol
         {
             get
             {
-                return datagrid.IsFocused;
+                return DataGridFocused;
             }
         }
         PaymentMoneyViewModel acDocumentViewModel;
@@ -659,8 +659,12 @@ namespace WpfCol
                             th.Start();
                             return;
                         }
+                    }                    
+                    winSearch win = ShowSearchPreferential(y);
+                    if (y.MoneyType == 1)
+                    {
+                        win.datagrid.ItemsSource = (win.datagrid.ItemsSource as ObservableCollection<Mu>).Where(u => u.Name2.Trim() == "بانک ها"|| u.Name2.Trim() == "بانکها");
                     }
-                    ShowSearchPreferential(y);
                     datagrid.IsHitTestVisible = false;
                 }
                 else if (datagrid.SelectionController.CurrentCellManager?.CurrentCell?.ColumnIndex == 5)
@@ -816,7 +820,8 @@ namespace WpfCol
                     else if (e.RowColumnIndex.ColumnIndex == 2)
                     {
                         var db = new ColDbEntities1();
-                        var mu = mus2.Find(t => t.Value == CurrentCellText);
+                        var mu = (datagrid.SelectedItem as PaymentMoney_Detail).MoneyType == 1 ? mus2.Find(t => (t.Name2.Trim() == "بانک ها" || t.Name2.Trim() == "بانکها") && t.Value == CurrentCellText)
+                            : mus2.Find(t => t.Value == CurrentCellText);
                         if (mu == null)
                         {
 
@@ -2071,7 +2076,7 @@ namespace WpfCol
             win.datagrid.Columns[1].Width = 100;
             win.datagrid.Columns.MoveTo(0, 1);
             win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "معین", MappingName = "AdditionalEntity.Moein", Width = 100, AllowSorting = true });
-            win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "نام", MappingName = "AdditionalEntity.MoeinName", AllowSorting = true });
+            win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "نام", MappingName = "AdditionalEntity.MoeinName", AllowSorting = true, ColumnSizer= GridLengthUnitType.AutoWithLastColumnFill });
             win.datagrid.AllowResizingColumns = true;
             if (owner == null)
                 win.Tag = this;
@@ -2271,7 +2276,7 @@ namespace WpfCol
             {
                 exist = true;
             }
-            GroupBox groupBox = SettingDefinitionGroupBox(win, db, exist, "چک", "ColCodeCheckPayment", "MoeinCodeCheckPayment", "PreferentialCodeCheckPayment");
+            GroupBox groupBox = SettingDefinitionGroupBox(win, db, exist, "چک", "ColCodeCheckPayment", "MoeinCodeCheckPayment", null);
             Dispatcher.BeginInvoke(new Action(async () =>
             {
                 groupBox.GetChildOfType<TextBox>().Focus();
@@ -2341,52 +2346,69 @@ namespace WpfCol
                 }
             };
             stackPanel.Children.Add(textInputLayout);
-
-            textInputLayout = new SfTextInputLayout() { Tag = str3, Hint = "کد تفضیل", Margin = new Thickness(10, 0, 10, 0) };
-            textBox = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == str3).Value : "", Tag = true };
-            textInputLayout.InputView = textBox;
-            if (exist)
+            if (str3 != null)
             {
-                var mu = mus2.Find(t => t.Value == textBox.Text);
-                textInputLayout.HelperText = mu.Name;
+                textInputLayout = new SfTextInputLayout() { Tag = str3, Hint = "کد تفضیل", Margin = new Thickness(10, 0, 10, 0) };
+                textBox = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == str3).Value : "", Tag = true };
+                textInputLayout.InputView = textBox;
+                if (exist)
+                {
+                    var mu = mus2.Find(t => t.Value == textBox.Text);
+                    textInputLayout.HelperText = mu.Name;
+                }
+                textBox.PreviewKeyDown += (s1, e1) =>
+                {
+                    if (e1.Key == Key.F1)
+                    {
+                        win.childWindow = ShowSearchPreferential(s1, win);
+                    }
+                    else if (e1.Key == Key.Enter)
+                    {
+                        TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+                        request.Wrapped = true;
+                        (s1 as TextBox).MoveFocus(request);
+                    }
+                };
+                textBox.LostFocus += (s1, e1) =>
+                {
+                    var txt = s1 as TextBox;
+                    var sfTextInput = txt.GetParentOfType<SfTextInputLayout>();
+                    if (txt.Text == "")
+                    {
+                        sfTextInput.HelperText = string.Empty;
+                        return;
+                    }
+                    var mu = mus2.Find(t => t.Value == txt.Text);
+                    if (mu == null)
+                    {
+                        Xceed.Wpf.Toolkit.MessageBox.Show("چنین تفضیلی وجود ندارد!");
+                        sfTextInput.HelperText = txt.Text = string.Empty;
+                    }
+                    else
+                    {
+                        txt.Tag = mu;
+                        sfTextInput.HelperText = mu.Name;
+                    }
+                };
+                stackPanel.Children.Add(textInputLayout);
             }
-            textBox.PreviewKeyDown += (s1, e1) =>
+            else
             {
-                if (e1.Key == Key.F1)
-                {
-                    win.childWindow = ShowSearchPreferential(s1, win);
-                }
-                else if (e1.Key == Key.Enter)
-                {
-                    TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
-                    request.Wrapped = true;
-                    (s1 as TextBox).MoveFocus(request);
-                }
-            };
-            textBox.LostFocus += (s1, e1) =>
-            {
-                var txt = s1 as TextBox;
-                var sfTextInput = txt.GetParentOfType<SfTextInputLayout>();
-                if (txt.Text == "")
-                {
-                    sfTextInput.HelperText = string.Empty;
-                    return;
-                }
-                var mu = mus2.Find(t => t.Value == txt.Text);
-                if (mu == null)
-                {
-                    Xceed.Wpf.Toolkit.MessageBox.Show("چنین تفضیلی وجود ندارد!");
-                    sfTextInput.HelperText = txt.Text = string.Empty;
-                }
-                else
-                {
-                    txt.Tag = mu;
-                    sfTextInput.HelperText = mu.Name;
-                }
-            };
-            stackPanel.Children.Add(textInputLayout);
+                stackPanel.HorizontalAlignment= HorizontalAlignment.Left;
+            }
             return groupBox;
         }
+        bool DataGridFocused = false;
+        private void datagrid_GotFocus(object sender, RoutedEventArgs e)
+        {
+            DataGridFocused = true;
+        }
+
+        private void datagrid_LostFocus(object sender, RoutedEventArgs e)
+        {
+            DataGridFocused = false;
+        }
+
         private void persianCalendarE_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!rl2)
