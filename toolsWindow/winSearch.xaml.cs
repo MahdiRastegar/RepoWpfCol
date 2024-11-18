@@ -108,6 +108,11 @@ namespace WpfCol.Windows.toolWindows
                 datagrid.Columns[0].Width = 80;
                 datagrid.Columns[1].Width = 200;
                 datagrid.Columns[2].Width = 80;
+                datagrid.ItemsSource = new ObservableCollection<Mu>((datagrid.ItemsSource as ObservableCollection<Mu>).OrderBy(y => y.Value).ThenBy(y => (y.AdditionalEntity as AccountSearchClass).Moein).ToList());
+            }
+            else if (datagrid.Columns[0].HeaderText == "نام")
+            {
+                datagrid.ItemsSource = new ObservableCollection<Mu>((datagrid.ItemsSource as ObservableCollection<Mu>).OrderBy(y => y.Name2).ThenBy(y => y.Value).ToList());
             }
             /*Dispatcher.BeginInvoke(new Action(() =>
             {

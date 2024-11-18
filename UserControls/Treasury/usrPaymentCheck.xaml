@@ -387,6 +387,7 @@
                 <RowDefinition Height="1*" MinHeight="90"/>
                 <RowDefinition Height="25"/>
             </Grid.RowDefinitions>
+            <Border Name="borderRirgt" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="6" Grid.Row="2" Panel.ZIndex="10" Opacity=".4" Background="White" Visibility="Collapsed"/>
             <DockPanel VerticalAlignment="Center" Margin="20 0"  HorizontalAlignment="Stretch"  Grid.Row="3">
                 <Border Width="12.5" Height="54" Tag="id" Visibility="Collapsed" MouseLeave="border_MouseLeave" Name="border" Panel.ZIndex="1" MouseUp="border_MouseUp" MouseEnter="Border_MouseEnter" MouseDown="Border_MouseDown" BorderThickness=".9" CornerRadius="10 1 1 10" BorderBrush="Black" Margin="0 -14.5 -12.5 0">
                     <Border.Background>
@@ -429,9 +430,9 @@ FontFamily="{StaticResource IranSans}" Width="27"
                 </Syncfusion:SfTextInputLayout>
                 <Syncfusion:SfTextInputLayout Name="Sf_cmbChangeState" OutlineCornerRadius="8" Hint="تغییر وضعیت" Grid.Row="1"  VerticalAlignment="Top" Margin="20 0 13 0"  HorizontalAlignment="Stretch">
                     <Syncfusion:ComboBoxAdv PreviewKeyDown="cmbChangeState_PreviewKeyDown" SelectionChanged="cmbChangeState_SelectionChanged" Name="cmbChangeState" FlowDirection="RightToLeft">
+                        <Syncfusion:ComboBoxItemAdv Content="عودتی" Name="item3"/>
                         <Syncfusion:ComboBoxItemAdv Content="پاس نشده" Name="item1"/>
                         <Syncfusion:ComboBoxItemAdv Content="پاس شده" Name="item2"/>
-                        <Syncfusion:ComboBoxItemAdv Content="عودتی" Name="item3"/>
                     </Syncfusion:ComboBoxAdv>
                 </Syncfusion:SfTextInputLayout>
 

@@ -34,7 +34,15 @@ namespace WpfCol
             InitializeComponent();
             MainWindow.Current.Effect = new BlurEffect() { Radius = 4 };
         }
-
+        private bool AnyId_Value(ColDbEntities1 db,Guid guid)
+        {
+            if (db.RecieveMoney_Detail.Any(y => y.fk_MoeinId == guid) || db.RecieveMoney_Detail.Any(y => y.fk_PreferentialId == guid) ||
+                db.PaymentMoney_Detail.Any(y => y.fk_MoeinId == guid) || db.PaymentMoney_Detail.Any(y => y.fk_PreferentialId == guid) ||
+                db.CheckRecieveEvent.Any(y => y.fk_MoeinId == guid) || db.CheckRecieveEvent.Any(y => y.fk_PreferentialId == guid) ||
+                db.CheckPaymentEvent.Any(y => y.fk_MoeinId == guid) || db.CheckPaymentEvent.Any(y => y.fk_PreferentialId == guid))
+                return true;
+            return false;
+        }
         private void btnConfirm_Click(object sender, RoutedEventArgs e)
         {
             foreach (var item in stack.Children)
@@ -79,6 +87,7 @@ namespace WpfCol
             }
             if (error)
                 return;
+            Mouse.OverrideCursor = Cursors.Wait;
             var db = new ColDbEntities1();
             foreach (SfTextInputLayout item in sfTextInputs)
             {
@@ -88,13 +97,25 @@ namespace WpfCol
                 {
                     y = db.CodeSetting.FirstOrDefault(t => t.Name == aff);
                     if (y != null)
-                        y.Value = (item.InputView as System.Windows.Controls.TextBox).Text;
+                    {
+                        var newvalue = (item.InputView as System.Windows.Controls.TextBox).Text;
+                        if (y.Value != newvalue && AnyId_Value(db, y.Id_Value))
+                        {
+                            Mouse.OverrideCursor = null;
+                            Xceed.Wpf.Toolkit.MessageBox.Show("بعضی از فیلدهای پیکربندی در وضعیت های مختلف دارای گردش است و باید برای تغییر ابتدا تکلیف آنها مشخص شوند!", "خطای پایگاه داده", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                        if ((item.InputView as System.Windows.Controls.TextBox).Tag is Mu mu1)
+                            y.Id_Value = mu1.Id;
+                        y.Value = newvalue;
+                    }
                     else
                         db.CodeSetting.Add(new CodeSetting()
                         {
                             Id = Guid.NewGuid(),
                             Name = item.Tag.ToString(),
-                            Value = (item.InputView as System.Windows.Controls.TextBox).Text
+                            Value = (item.InputView as System.Windows.Controls.TextBox).Text,
+                            Id_Value = ((item.InputView as System.Windows.Controls.TextBox).Tag as Mu).Id
                         });
                 }
                 else if (item.Tag is Dictionary<string, string> ss)
@@ -104,18 +125,34 @@ namespace WpfCol
 
                         y = db.CodeSetting.FirstOrDefault(t => t.Name == itemv.Key);
                         if (y != null)
+                        {
+                            if (y.Value != itemv.Value && AnyId_Value(db, y.Id_Value))
+                            {
+                                Mouse.OverrideCursor = null;
+                                Xceed.Wpf.Toolkit.MessageBox.Show("بعضی از فیلدهای پیکربندی در وضعیت های مختلف دارای گردش است و باید برای تغییر ابتدا تکلیف آنها مشخص شوند!", "خطای پایگاه داده", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
+                            if ((item.InputView as System.Windows.Controls.TextBox).Tag is Mu mu1)
+                                y.Id_Value = mu1.Id;
                             y.Value = itemv.Value;
+                        }
                         else
                             db.CodeSetting.Add(new CodeSetting()
                             {
                                 Id = Guid.NewGuid(),
                                 Name = itemv.Key,
-                                Value = itemv.Value
+                                Value = itemv.Value,
+                                Id_Value = ((item.InputView as System.Windows.Controls.TextBox).Tag as Mu).Id
                             });
                     }
                 }
             }
-            if (!db.SafeSaveChanges())  return;
+            if (!db.SafeSaveChanges())
+            {
+                Mouse.OverrideCursor = null;
+                return;
+            }
+            Mouse.OverrideCursor = null;
             Xceed.Wpf.Toolkit.MessageBox.Show("تنظیمات با موفقیت ثبت شد");
             Close();
         }

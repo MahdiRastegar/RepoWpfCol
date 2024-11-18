@@ -2259,17 +2259,123 @@ namespace WpfCol
             {
                 exist = true;
             }
-            GroupBox groupBox = SettingDefinitionGroupBox(win, db, exist, "چک", "ColCodeCheckRecieve", "MoeinCodeCheckRecieve", "PreferentialCodeCheckRecieve");
+            GroupBox groupBox = SettingDefinitionGroupBox(win, db, exist, "نوع وجه چک", "ColCodeCheckRecieve", "MoeinCodeCheckRecieve", "PreferentialCodeCheckRecieve");
             Dispatcher.BeginInvoke(new Action(async () =>
             {
                 groupBox.GetChildOfType<TextBox>().Focus();
             }), DispatcherPriority.Render);
             win.stack.Children.Add(groupBox);
-            var groupBox2 = SettingDefinitionGroupBox(win, db, exist, "نقد", "ColCodeMoneyRecieve", "MoeinCodeMoneyRecieve", "PreferentialCodeMoneyRecieve");
+            var groupBox2 = SettingDefinitionGroupBox(win, db, exist, "نوع وجه نقد", "ColCodeMoneyRecieve", "MoeinCodeMoneyRecieve", "PreferentialCodeMoneyRecieve");
             win.stack.Children.Add(groupBox2);
 
-            groupBox2 = SettingDefinitionGroupBox(win, db, exist, "تخفیف", "ColCodeDiscountRecieve", "MoeinCodeDiscountRecieve", "PreferentialCodeDiscountRecieve");
+            groupBox2 = SettingDefinitionGroupBox(win, db, exist, "نوع وجه تخفیف", "ColCodeDiscountRecieve", "MoeinCodeDiscountRecieve", "PreferentialCodeDiscountRecieve");
             win.stack.Children.Add(groupBox2);
+
+            var keyValuePairs = new Dictionary<string, string>();
+            keyValuePairs.Add("ColCodeTransferLCheckRecieve", exist ? db.CodeSetting.First(i => i.Name == "ColCodeTransferLCheckRecieve").Value : "");
+            keyValuePairs.Add("MoeinCodeTransferLCheckRecieve", exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeTransferLCheckRecieve").Value : "");
+
+            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین چکهای واگذار شده به بانک ",Margin=new Thickness(0,30,0,0) };
+            var textBox = new TextBox() { Text = exist ? keyValuePairs.ElementAt(0).Value + keyValuePairs.ElementAt(1).Value : "", Tag = true };
+            textBox.Loaded += (sf, ef) =>
+            {
+                (sf as TextBox).Focus();
+            };
+            textInputLayout.InputView = textBox;
+            if (exist)
+            {
+                var mu = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == textBox.Text);
+                textInputLayout.HelperText = (mu.AdditionalEntity as AccountSearchClass).MoeinName;
+            }
+            textBox.PreviewKeyDown += (s1, e1) =>
+            {
+                if (e1.Key == Key.F1)
+                {
+                    win.childWindow = ShowSearchMoein(s1, win);
+                }
+                else if (e1.Key == Key.Enter)
+                {
+                    TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+                    request.Wrapped = true;
+                    (s1 as TextBox).MoveFocus(request);
+                }
+            };
+            textBox.LostFocus += (s1, e1) =>
+            {
+                var txt = s1 as TextBox;
+                var sfTextInput = txt.GetParentOfType<SfTextInputLayout>();
+                if (txt.Text == "")
+                {
+                    sfTextInput.HelperText = string.Empty;
+                    return;
+                }
+                var mu = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == txt.Text);
+                if (mu == null)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("چنین کل و معینی وجود ندارد!");
+                    sfTextInput.HelperText = txt.Text = string.Empty;
+                }
+                else
+                {
+                    txt.Tag = mu;
+                    sfTextInput.HelperText = (mu.AdditionalEntity as AccountSearchClass).MoeinName;
+                    keyValuePairs = sfTextInput.Tag as Dictionary<string, string>;
+                    keyValuePairs[keyValuePairs.ElementAt(0).Key] = mu.Value;
+                    keyValuePairs[keyValuePairs.ElementAt(1).Key] = (mu.AdditionalEntity as AccountSearchClass).Moein;
+                }
+            };
+            win.stack.Children.Add(textInputLayout);
+
+            keyValuePairs = new Dictionary<string, string>();
+            keyValuePairs.Add("ColCodeDoneLCheckRecieve", exist ? db.CodeSetting.First(i => i.Name == "ColCodeDoneLCheckRecieve").Value : "");
+            keyValuePairs.Add("MoeinCodeDoneLCheckRecieve", exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeDoneLCheckRecieve").Value : "");
+            textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین حساب های بانکی " };
+            textBox = new TextBox() { Text = exist ? keyValuePairs.ElementAt(0).Value + keyValuePairs.ElementAt(1).Value : "", Tag = true };
+            textInputLayout.InputView = textBox;
+            if (exist)
+            {
+                var mu = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == textBox.Text);
+                textInputLayout.HelperText = (mu.AdditionalEntity as AccountSearchClass).MoeinName;
+            }
+            textBox.PreviewKeyDown += (s1, e1) =>
+            {
+                if (e1.Key == Key.F1)
+                {
+                    win.childWindow = ShowSearchMoein(s1, win);
+                }
+                else if (e1.Key == Key.Enter)
+                {
+                    TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+                    request.Wrapped = true;
+                    (s1 as TextBox).MoveFocus(request);
+                }
+            };
+            textBox.LostFocus += (s1, e1) =>
+            {
+                var txt = s1 as TextBox;
+                var sfTextInput = txt.GetParentOfType<SfTextInputLayout>();
+                if (txt.Text == "")
+                {
+                    sfTextInput.HelperText = string.Empty;
+                    return;
+                }
+                var mu = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == txt.Text);
+                if (mu == null)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("چنین کل و معینی وجود ندارد!");
+                    sfTextInput.HelperText = txt.Text = string.Empty;
+                }
+                else
+                {
+                    txt.Tag = mu;
+                    sfTextInput.HelperText = (mu.AdditionalEntity as AccountSearchClass).MoeinName;
+                    keyValuePairs = sfTextInput.Tag as Dictionary<string, string>;
+                    keyValuePairs[keyValuePairs.ElementAt(0).Key] = mu.Value;
+                    keyValuePairs[keyValuePairs.ElementAt(1).Key] = (mu.AdditionalEntity as AccountSearchClass).Moein;
+                }
+            };
+            win.stack.Children.Add(textInputLayout);
+
             win.ShowDialog();
         }
 

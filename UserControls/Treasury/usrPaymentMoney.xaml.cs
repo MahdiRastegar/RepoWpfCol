@@ -2276,17 +2276,18 @@ namespace WpfCol
             {
                 exist = true;
             }
-            GroupBox groupBox = SettingDefinitionGroupBox(win, db, exist, "چک", "ColCodeCheckPayment", "MoeinCodeCheckPayment", null);
+            GroupBox groupBox = SettingDefinitionGroupBox(win, db, exist, "نوع وجه چک", "ColCodeCheckPayment", "MoeinCodeCheckPayment", null);
             Dispatcher.BeginInvoke(new Action(async () =>
             {
                 groupBox.GetChildOfType<TextBox>().Focus();
             }), DispatcherPriority.Render);
             win.stack.Children.Add(groupBox);
-            var groupBox2 = SettingDefinitionGroupBox(win, db, exist, "نقد", "ColCodeMoneyPayment", "MoeinCodeMoneyPayment", "PreferentialCodeMoneyPayment");
+            var groupBox2 = SettingDefinitionGroupBox(win, db, exist, "نوع وجه نقد", "ColCodeMoneyPayment", "MoeinCodeMoneyPayment", "PreferentialCodeMoneyPayment");
             win.stack.Children.Add(groupBox2);
 
-            groupBox2 = SettingDefinitionGroupBox(win, db, exist, "تخفیف", "ColCodeDiscountPayment", "MoeinCodeDiscountPayment", "PreferentialCodeDiscountPayment");
-            win.stack.Children.Add(groupBox2);
+            groupBox2 = SettingDefinitionGroupBox(win, db, exist, "نوع وجه تخفیف", "ColCodeDiscountPayment", "MoeinCodeDiscountPayment", "PreferentialCodeDiscountPayment");
+            win.stack.Children.Add(groupBox2);            
+
             win.ShowDialog();
         }
 
@@ -2300,7 +2301,10 @@ namespace WpfCol
             keyValuePairs.Add(str1, exist ? db.CodeSetting.First(i => i.Name == str1).Value : "");
             keyValuePairs.Add(str2, exist ? db.CodeSetting.First(i => i.Name == str2).Value : "");
 
-            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین ", Width = 175 };
+            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint =(str1== "ColCodeCheckPayment"? "کد کل و معین اسناد پرداختنی "
+                : "کد کل و معین "), Width = 175 };
+            if (str1 == "ColCodeCheckPayment")
+                textInputLayout.Width = 190;
             var textBox = new TextBox() { Text = exist ? keyValuePairs.ElementAt(0).Value + keyValuePairs.ElementAt(1).Value : "", Tag = true };
             textInputLayout.InputView = textBox;
             if (exist)

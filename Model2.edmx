@@ -89,6 +89,7 @@
           <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
           <Property Name="Value" Type="nvarchar(max)" />
           <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Id_Value" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
         <EntityType Name="Col">
           <Key>
@@ -1074,6 +1075,7 @@
           <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Id_Value" Type="Guid" Nullable="false" />
         </EntityType>
         <EntityType Name="AcDocument_Detail">
           <Key>
@@ -1558,6 +1560,7 @@
           <EntitySetMapping Name="CodeSetting">
             <EntityTypeMapping TypeName="ColDbModel.CodeSetting">
               <MappingFragment StoreEntitySet="CodeSetting">
+                <ScalarProperty Name="Id_Value" ColumnName="Id_Value" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Value" ColumnName="Value" />
                 <ScalarProperty Name="Name" ColumnName="Name" />

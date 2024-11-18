@@ -179,13 +179,72 @@ namespace WpfCol
                 {
                     ChEvent = db.ChEvent.First(t => t.ChEventCode == cmbChangeState.SelectedIndex),
                     fk_AcId = item.AcDocument_Header?.Id,
-                    EventDate = pcw1.SelectedDate.ToDateTime(),
-                    fk_PreferentialId = (txtPreferential.Tag as Mu).Id,
-                    fk_MoeinId = (txtMoein.Tag as Mu).Id,
+                    EventDate = pcw1.SelectedDate.ToDateTime(),                    
                     fk_DetaiId = item.fk_DetaiId,
                     Description = txtDescription.Text,
                     Id = Guid.NewGuid()
                 };
+                var checkRecieve_Not = db.CheckRecieveEvent.First(t => t.fk_DetaiId == item.fk_DetaiId && t.ChEvent.ChEventCode == 0);
+                switch (control.SelectedIndex)
+                {
+                    case 2:
+                        if (cmbChangeState.SelectedIndex == 0)
+                        {
+                            en.fk_PreferentialId = checkRecieve_Not.fk_PreferentialId;
+                            en.fk_MoeinId = checkRecieve_Not.fk_MoeinId;
+                        }
+                        else if (cmbChangeState.SelectedIndex == 2)
+                        {
+                            en.fk_PreferentialId = checkRecieve_Not.fk_PreferentialId;
+                            en.fk_MoeinId = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == txtMoein.Text).Id;
+                        }
+                        else
+                        {
+                            en.fk_PreferentialId = checkRecieve_Not.RecieveMoney_Detail.RecieveMoneyHeader.fk_PreferentialId.Value;
+                            en.fk_MoeinId = checkRecieve_Not.RecieveMoney_Detail.RecieveMoneyHeader.fk_MoeinId.Value;
+                        }
+                        break;
+                    case 3:
+                        if (cmbChangeState.SelectedIndex == 0)
+                        {
+                            en.fk_PreferentialId = checkRecieve_Not.fk_PreferentialId;
+                            en.fk_MoeinId = checkRecieve_Not.fk_MoeinId;
+                        }
+                        else if (cmbChangeState.SelectedIndex == 1)
+                        {
+                            en.fk_PreferentialId = item.fk_PreferentialId;
+                            en.fk_MoeinId = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == txtMoein.Text).Id;
+                        }
+                        break;
+                    case 4:
+                        if (cmbChangeState.SelectedIndex == 4)
+                        {
+                            en.fk_PreferentialId = checkRecieve_Not.RecieveMoney_Detail.RecieveMoneyHeader.fk_PreferentialId.Value;
+                            en.fk_MoeinId = checkRecieve_Not.RecieveMoney_Detail.RecieveMoneyHeader.fk_MoeinId.Value;
+                        }
+                        else
+                        {
+                            en.fk_PreferentialId = item.fk_PreferentialId;
+                            en.fk_MoeinId = item.fk_MoeinId;
+                        }
+                        break;
+                    case 5:
+                        if (cmbChangeState.SelectedIndex == 0)
+                        {
+                            en.fk_PreferentialId = checkRecieve_Not.fk_PreferentialId;
+                            en.fk_MoeinId = checkRecieve_Not.fk_MoeinId;
+                        }                        
+                        else
+                        {
+                            en.fk_PreferentialId = item.fk_PreferentialId;
+                            en.fk_MoeinId = item.fk_MoeinId;
+                        }
+                        break;
+                    default:
+                        en.fk_PreferentialId = mus2.Find(t => t.Value == txtPreferential.Text).Id;
+                        en.fk_MoeinId = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == txtMoein.Text).Id;
+                        break;
+                }
                 db.CheckRecieveEvent.Add(en);
                 x.Add(item);
                 en.RecieveMoney_Detail = db.RecieveMoney_Detail.Find(en.fk_DetaiId);
@@ -206,7 +265,7 @@ namespace WpfCol
         {
             var haserror = false;
             datagrid.BorderBrush = new  System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)ColorConverter.ConvertFromString("#FF808080"));
-            if (txtMoein.Text.Trim() == "")
+            if (Sf_txtMoein.IsEnabled && txtMoein.Text.Trim() == "")
             {
                 Sf_txtMoein.HasError = true;
                 haserror = true;
@@ -216,7 +275,7 @@ namespace WpfCol
                 Sf_txtMoein.HasError = false;
                 Sf_txtMoein.ErrorText = "";
             }
-            if (txtPreferential.Text.Trim() == "")
+            if (Sf_txtPreferential.IsEnabled && txtPreferential.Text.Trim() == "")
             {
                 Sf_txtPreferential.HasError = true;
                 haserror = true;
@@ -896,7 +955,7 @@ namespace WpfCol
 
         private void txtMoein_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F1)
+            if (txtMoein.IsReadOnly == false && e.Key == Key.F1)
             {
                 txtMoein.Tag = true;
                 ShowSearchMoein(txtMoein);
@@ -940,11 +999,15 @@ namespace WpfCol
             if (e.Key == Key.F1)
             {
                 txtPreferential.Tag = true;
-                ShowSearchPreferential(txtPreferential);
+                var winSearch = ShowSearchPreferential(txtPreferential);
+                if (control.SelectedIndex == 1 && cmbChangeState.SelectedIndex == 1)
+                {
+                    winSearch.datagrid.ItemsSource = (winSearch.datagrid.ItemsSource as ObservableCollection<Mu>).Where(u => u.Name2.Trim() == "بانک ها" || u.Name2.Trim() == "بانکها");
+                }
             }
         }
 
-        private void ShowSearchPreferential(dynamic y)
+        private winSearch ShowSearchPreferential(dynamic y, Window owner = null)
         {
             var win = new winSearch(mus2);
             win.Closed += (yf, rs) =>
@@ -953,7 +1016,12 @@ namespace WpfCol
             };
             win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "گروه", MappingName = "Name2", Width = 150, AllowSorting = true });
             win.Width = 640;
-            win.Tag = this;
+            if (owner == null)
+                win.Tag = this;
+            else
+                win.Tag = owner;
+            if (owner == null)
+                owner = MainWindow.Current;
             win.ParentTextBox = y;
             win.SearchTermTextBox.Text = "";
             win.SearchTermTextBox.Select(1, 0);
@@ -961,6 +1029,7 @@ namespace WpfCol
             window = win;
             win.Show();
             win.Focus();
+            return win;
         }
 
         private void datagrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -999,7 +1068,8 @@ namespace WpfCol
                 txbPreferential.Text = string.Empty;
                 return;
             }
-            var mu = mus2.Find(t => t.Value == txtPreferential.Text);
+            var mu = (control.SelectedIndex == 1 && cmbChangeState.SelectedIndex == 1) ? mus2.Find(t => (t.Name2.Trim() == "بانک ها" || t.Name2.Trim() == "بانکها") && t.Value == txtPreferential.Text)
+                            : mus2.Find(t => t.Value == txtPreferential.Text);
             if (mu == null)
             {
                 Xceed.Wpf.Toolkit.MessageBox.Show("چنین تفضیلی وجود ندارد!");
@@ -1058,18 +1128,36 @@ namespace WpfCol
 
         private void btnSetting_Click(object sender, RoutedEventArgs e)
         {
-            var win = new winSettingCode();            
+            var win = new winSettingCode() { Width = 460 };
+            win.grid.Width = 435;
             var db = new ColDbEntities1();
             var exist = false;
-            if (db.CodeSetting.Any(t => t.Name == "MoeinCodeTransferLCheckRecieve"))
+            if (db.CodeSetting.Any(t => t.Name == "MoeinCodeCheckRecieve"))
             {
                 exist = true;
             }
+            /*var exist = false;
+            if (db.CodeSetting.Any(t => t.Name == "MoeinCodeTransferLCheckRecieve"))
+            {
+                exist = true;
+            }*/
+            GroupBox groupBox = SettingDefinitionGroupBox(win, db, exist, "نوع وجه چک", "ColCodeCheckRecieve", "MoeinCodeCheckRecieve", "PreferentialCodeCheckRecieve");
+            Dispatcher.BeginInvoke(new Action(async () =>
+            {
+                groupBox.GetChildOfType<TextBox>().Focus();
+            }), DispatcherPriority.Render);
+            win.stack.Children.Add(groupBox);
+            var groupBox2 = SettingDefinitionGroupBox(win, db, exist, "نوع وجه نقد", "ColCodeMoneyRecieve", "MoeinCodeMoneyRecieve", "PreferentialCodeMoneyRecieve");
+            win.stack.Children.Add(groupBox2);
+
+            groupBox2 = SettingDefinitionGroupBox(win, db, exist, "نوع وجه تخفیف", "ColCodeDiscountRecieve", "MoeinCodeDiscountRecieve", "PreferentialCodeDiscountRecieve");
+            win.stack.Children.Add(groupBox2);
+
             var keyValuePairs = new Dictionary<string, string>();
             keyValuePairs.Add("ColCodeTransferLCheckRecieve", exist ? db.CodeSetting.First(i => i.Name == "ColCodeTransferLCheckRecieve").Value : "");
             keyValuePairs.Add("MoeinCodeTransferLCheckRecieve", exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeTransferLCheckRecieve").Value : "");
 
-            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین چکهای واگذار شده به بانک " };
+            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین چکهای واگذار شده به بانک ", Margin = new Thickness(0, 30, 0, 0) };
             var textBox = new TextBox() { Text = exist ? keyValuePairs.ElementAt(0).Value + keyValuePairs.ElementAt(1).Value : "", Tag = true };
             textBox.Loaded += (sf, ef) =>
             {
@@ -1123,7 +1211,7 @@ namespace WpfCol
             keyValuePairs = new Dictionary<string, string>();
             keyValuePairs.Add("ColCodeDoneLCheckRecieve", exist ? db.CodeSetting.First(i => i.Name == "ColCodeDoneLCheckRecieve").Value : "");
             keyValuePairs.Add("MoeinCodeDoneLCheckRecieve", exist ? db.CodeSetting.First(i => i.Name == "MoeinCodeDoneLCheckRecieve").Value : "");
-            textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین چکهای وصول شده " };
+            textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین حساب های بانکی " };
             textBox = new TextBox() { Text = exist ? keyValuePairs.ElementAt(0).Value + keyValuePairs.ElementAt(1).Value : "", Tag = true };
             textInputLayout.InputView = textBox;
             if (exist)
@@ -1173,6 +1261,109 @@ namespace WpfCol
             win.ShowDialog();
         }
 
+        private GroupBox SettingDefinitionGroupBox(winSettingCode win, ColDbEntities1 db, bool exist, string name, string str1, string str2, string str3)
+        {
+            var groupBox = new GroupBox() { Header = name };
+            var stackPanel = new DockPanel();
+            groupBox.Content = stackPanel;
+
+            var keyValuePairs = new Dictionary<string, string>();
+            keyValuePairs.Add(str1, exist ? db.CodeSetting.First(i => i.Name == str1).Value : "");
+            keyValuePairs.Add(str2, exist ? db.CodeSetting.First(i => i.Name == str2).Value : "");
+
+            var textInputLayout = new SfTextInputLayout() { Tag = keyValuePairs, Hint = "کد کل و معین ", Width = 175 };
+            var textBox = new TextBox() { Text = exist ? keyValuePairs.ElementAt(0).Value + keyValuePairs.ElementAt(1).Value : "", Tag = true };
+            textInputLayout.InputView = textBox;
+            if (exist)
+            {
+                var mu = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == textBox.Text);
+                textInputLayout.HelperText = (mu.AdditionalEntity as AccountSearchClass).MoeinName;
+            }
+            textBox.PreviewKeyDown += (s1, e1) =>
+            {
+                if (e1.Key == Key.F1)
+                {
+                    win.childWindow = ShowSearchMoein(s1, win);
+                }
+                else if (e1.Key == Key.Enter)
+                {
+                    TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+                    request.Wrapped = true;
+                    (s1 as TextBox).MoveFocus(request);
+                }
+            };
+            textBox.LostFocus += (s1, e1) =>
+            {
+                var txt = s1 as TextBox;
+                var sfTextInput = txt.GetParentOfType<SfTextInputLayout>();
+                if (txt.Text == "")
+                {
+                    sfTextInput.HelperText = string.Empty;
+                    return;
+                }
+                var mu = mus1.Find(t => (t.AdditionalEntity as AccountSearchClass).ColMoein == txt.Text);
+                if (mu == null)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("چنین کل و معینی وجود ندارد!");
+                    sfTextInput.HelperText = txt.Text = string.Empty;
+                }
+                else
+                {
+                    txt.Tag = mu;
+                    sfTextInput.HelperText = (mu.AdditionalEntity as AccountSearchClass).MoeinName;
+                    keyValuePairs = sfTextInput.Tag as Dictionary<string, string>;
+                    keyValuePairs[keyValuePairs.ElementAt(0).Key] = mu.Value;
+                    keyValuePairs[keyValuePairs.ElementAt(1).Key] = (mu.AdditionalEntity as AccountSearchClass).Moein;
+                }
+            };
+            stackPanel.Children.Add(textInputLayout);
+
+            textInputLayout = new SfTextInputLayout() { Tag = str3, Hint = "کد تفضیل", Margin = new Thickness(10, 0, 10, 0) };
+            textBox = new TextBox() { Text = exist ? db.CodeSetting.First(i => i.Name == str3).Value : "", Tag = true };
+            textInputLayout.InputView = textBox;
+            if (exist)
+            {
+                var mu = mus2.Find(t => t.Value == textBox.Text);
+                textInputLayout.HelperText = mu.Name;
+            }
+            textBox.PreviewKeyDown += (s1, e1) =>
+            {
+                if (e1.Key == Key.F1)
+                {
+                    win.childWindow = ShowSearchPreferential(s1, win);
+                }
+                else if (e1.Key == Key.Enter)
+                {
+                    TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+                    request.Wrapped = true;
+                    (s1 as TextBox).MoveFocus(request);
+                }
+            };
+            textBox.LostFocus += (s1, e1) =>
+            {
+                var txt = s1 as TextBox;
+                var sfTextInput = txt.GetParentOfType<SfTextInputLayout>();
+                if (txt.Text == "")
+                {
+                    sfTextInput.HelperText = string.Empty;
+                    return;
+                }
+                var mu = mus2.Find(t => t.Value == txt.Text);
+                if (mu == null)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("چنین تفضیلی وجود ندارد!");
+                    sfTextInput.HelperText = txt.Text = string.Empty;
+                }
+                else
+                {
+                    txt.Tag = mu;
+                    sfTextInput.HelperText = mu.Name;
+                }
+            };
+            stackPanel.Children.Add(textInputLayout);
+            return groupBox;
+        }
+
         private void cmbChangeState_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             isCancel = false;
@@ -1191,21 +1382,32 @@ namespace WpfCol
                             txtPreferential.Focus();
                         }), DispatcherPriority.Render);
                         txtMoein.Focus();
+                        txtMoein.IsReadOnly = true;
                         break;
                     case 2:
-                        db = new ColDbEntities1();
-                        moein = db.CodeSetting.First(j => j.Name == "MoeinCodeDoneLCheckRecieve").Value;
-                        col = db.CodeSetting.First(j => j.Name == "ColCodeDoneLCheckRecieve").Value;
-                        txtMoein.Text = col + moein;
-                        Dispatcher.BeginInvoke(new Action(async () =>
+                        if (!(control.SelectedIndex == 1))
                         {
-                            await Task.Delay(30);
-                            txtPreferential.Focus();
-                        }), DispatcherPriority.Render);
-                        txtMoein.Focus();
+                            db = new ColDbEntities1();
+                            moein = db.CodeSetting.First(j => j.Name == "MoeinCodeDoneLCheckRecieve").Value;
+                            col = db.CodeSetting.First(j => j.Name == "ColCodeDoneLCheckRecieve").Value;
+                            txtMoein.Text = col + moein;
+                            Dispatcher.BeginInvoke(new Action(async () =>
+                            {
+                                await Task.Delay(30);
+                                txtPreferential.Focus();
+                            }), DispatcherPriority.Render);
+                            txtMoein.Focus();
+                            txtMoein.IsReadOnly = true;
+                        }
+                        else
+                        {
+                            txtMoein.Focus();
+                            txtMoein.IsReadOnly = false;
+                        }
                         break;
                     default:
                         txtMoein.Focus();
+                        txtMoein.IsReadOnly = false;
                         break;
                 }
             }
@@ -1230,6 +1432,14 @@ namespace WpfCol
                 return;
             (datagrid.Parent as TabItemExt).Content = null;
             (control.SelectedItem as TabItemExt).Content = datagrid;
+            if (control.SelectedIndex == 0|| control.SelectedIndex == 6)
+            {
+                borderRirgt.Visibility= Visibility.Visible;
+            }
+            else
+            {
+                borderRirgt.Visibility = Visibility.Collapsed;
+            }
             if (control.SelectedIndex == 0)
             {
                 datagrid.Columns[0].IsHidden = true;
@@ -1240,6 +1450,18 @@ namespace WpfCol
                 datagrid.Columns[0].IsHidden = false;
                 datagrid.Columns[1].IsHidden = true;
                 item1.Visibility= item2.Visibility = item3.Visibility = item4.Visibility = item5.Visibility = item6.Visibility =  Visibility.Visible;
+            }
+            if (control.SelectedIndex == 1)
+            {
+                Sf_txtMoein.IsEnabled = true;
+                Sf_txtPreferential.IsEnabled = true;
+            }
+            else
+            {
+                Sf_txtMoein.IsEnabled = false;
+                txbMoein.Text = txtMoein.Text = "";
+                Sf_txtPreferential.IsEnabled = false;
+                txbPreferential.Text = txtPreferential.Text = "";
             }
             switch (control.SelectedIndex)
             {
@@ -1265,7 +1487,7 @@ namespace WpfCol
                     dataPager.Source = mini_checkRecieveEvents;
                     datagrid.SelectedIndex = -1;
                     item2.Visibility = item4.Visibility = item6.Visibility = Visibility.Collapsed;
-                    cmbChangeState.SelectedIndex = -1;
+                    cmbChangeState.SelectedIndex = -1;                    
                     break;
                 case 3:
                     dataPager.Source = null;
