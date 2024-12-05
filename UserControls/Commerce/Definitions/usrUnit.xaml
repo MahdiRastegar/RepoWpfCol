@@ -24,8 +24,8 @@
                  BorderThickness="{TemplateBinding BorderThickness}">
                                 <Border.Background>
                                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                        <GradientStop Color="#FFCFE5F5"/>
-                                        <GradientStop Color="#FFBEDDF5" Offset="1"/>
+                                        <GradientStop Color="#FFF5DAD0"/>
+                                        <GradientStop Color="#FFF5CEC2" Offset="1"/>
                                     </LinearGradientBrush>
                                 </Border.Background>
                                 <Grid>
@@ -43,8 +43,10 @@
                 <Setter Property="Background">
                     <Setter.Value>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FF89B2CC"/>
-                            <GradientStop Color="White" Offset="1"/>
+                            <GradientStop Color="#FFF5C9BC" Offset="0"/>
+                            <GradientStop Color="#FFE4B2A3" Offset="0.567"/>
+                            <GradientStop Color="#FFD8A090" Offset="0.573"/>
+                            <GradientStop Color="#FFCCAA9A" Offset="0.82"/>
                         </LinearGradientBrush>
                     </Setter.Value>
                 </Setter>
