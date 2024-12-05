@@ -1304,6 +1304,7 @@ namespace WpfCol
                     dataPager.Source = mini_checkPaymentEvents;
                     datagrid.SelectedIndex = -1;
                     //item3.Visibility = item4.Visibility = item5.Visibility = item6.Visibility = Visibility.Collapsed;
+                    item2.Visibility= Visibility.Collapsed;
                     cmbChangeState.SelectedIndex = -1;
                     break;               
                 case 3:

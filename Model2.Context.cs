@@ -42,5 +42,21 @@ namespace WpfCol
         public virtual DbSet<CheckRecieveEvent> CheckRecieveEvent { get; set; }
         public virtual DbSet<PaymentMoney_Detail> PaymentMoney_Detail { get; set; }
         public virtual DbSet<RecieveMoney_Detail> RecieveMoney_Detail { get; set; }
+        public virtual DbSet<Province> Province { get; set; }
+        public virtual DbSet<City> City { get; set; }
+        public virtual DbSet<CustomerGroup> CustomerGroup { get; set; }
+        public virtual DbSet<PriceGroup> PriceGroup { get; set; }
+        public virtual DbSet<GroupStorage> GroupStorage { get; set; }
+        public virtual DbSet<Storage> Storage { get; set; }
+        public virtual DbSet<Unit> Unit { get; set; }
+        public virtual DbSet<Commodity> Commodity { get; set; }
+        public virtual DbSet<GroupCommodity> GroupCommodity { get; set; }
+        public virtual DbSet<CommodityPricingPanel> CommodityPricingPanel { get; set; }
+        public virtual DbSet<CodingReceiptTypes> CodingReceiptTypes { get; set; }
+        public virtual DbSet<CodingTypesTransfer> CodingTypesTransfer { get; set; }
+        public virtual DbSet<StorageReceipt_Detail> StorageReceipt_Detail { get; set; }
+        public virtual DbSet<StorageReceiptHeader> StorageReceiptHeader { get; set; }
+        public virtual DbSet<StorageTransfer_Detail> StorageTransfer_Detail { get; set; }
+        public virtual DbSet<StorageTransferHeader> StorageTransferHeader { get; set; }
     }
 }

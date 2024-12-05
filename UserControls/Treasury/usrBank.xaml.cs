@@ -86,10 +86,10 @@ namespace WpfCol
             var M = db.Bank.ToList();
             datagrid.ItemsSource = M;
             if (group == null)
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت گروه");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت بانک");
             else
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش گروه");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش بانک");
             }
             btnCancel_Click(null, null);
 

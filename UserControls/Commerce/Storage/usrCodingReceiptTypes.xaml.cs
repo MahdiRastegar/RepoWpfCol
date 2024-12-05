@@ -23,9 +23,9 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class usrAGroup : UserControl,ITabForm
+    public partial class usrCodingReceiptTypes : UserControl,ITabForm
     {
-        public usrAGroup()
+        public usrCodingReceiptTypes()
         {
             InitializeComponent();            
             isCancel = true;
@@ -59,10 +59,10 @@ namespace WpfCol
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var db=new ColDbEntities1();
-            var M = db.AGroup.AsNoTracking().ToList();
-            var en = db.AGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
+            var M = db.CodingReceiptTypes.AsNoTracking().ToList();
+            var en = db.CodingReceiptTypes.OrderByDescending(y => y.Code).FirstOrDefault();
             if (en != null)
-                txtGroup.Text = (en.GroupCode+1).ToString();
+                txtGroup.Text = (en.Code + 1).ToString();
             else
                 txtGroup.Text = "1";
             datagrid.ItemsSource = M;
@@ -78,26 +78,44 @@ namespace WpfCol
                 return;
             var db = new ColDbEntities1();
             var i = int.Parse(txtGroup.Text);
-            var group = db.AGroup.FirstOrDefault(h => h.GroupCode == i);
+            var group = db.CodingReceiptTypes.FirstOrDefault(h => h.Code == i);
             if (group == null)
-                db.AGroup.Add(new AGroup()
+            {                
+                if(checkbox.IsChecked==true)
+                {
+                    foreach (var item in db.CodingReceiptTypes)
+                    {
+                        item.IsDefault = false;
+                    }
+                }
+                db.CodingReceiptTypes.Add(new CodingReceiptTypes()
                 {
                     Id = Guid.NewGuid(),
-                    GroupCode = int.Parse(txtGroup.Text),
-                    GroupName = txtGroupName.Text
+                    Code = int.Parse(txtGroup.Text),
+                    Name = txtGroupName.Text,
+                    IsDefault = checkbox.IsChecked
                 });
+            }
             else
             {
-                group.GroupName = txtGroupName.Text;
+                if (checkbox.IsChecked == true)
+                {
+                    foreach (var item in db.CodingReceiptTypes)
+                    {
+                        item.IsDefault = false;
+                    }
+                }
+                group.Name = txtGroupName.Text;
+                group.IsDefault = checkbox.IsChecked;
             }
             if (!db.SafeSaveChanges())  return;
-            var M = db.AGroup.ToList();
+            var M = db.CodingReceiptTypes.ToList();
             datagrid.ItemsSource = M;
             if (group == null)
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت گروه");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت کدینگ انواع رسید");
             else
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش گروه");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش کدینگ انواع رسید");
             }
             btnCancel_Click(null, null);
 
@@ -257,13 +275,14 @@ namespace WpfCol
             {
                 return;
             }
+            checkbox.IsChecked = false;
             txtGroupName.Text = "";
             Sf_txtVra.HasError = false;
             isCancel = true;
             var db = new ColDbEntities1();
-            var en = db.AGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
+            var en = db.CodingReceiptTypes.OrderByDescending(y => y.Code).FirstOrDefault();
             if (en != null)
-                txtGroup.Text = (en.GroupCode + 1).ToString();
+                txtGroup.Text = (en.Code + 1).ToString();
             else
                 txtGroup.Text = "1";
             txtGroupName.Focus();
@@ -297,9 +316,10 @@ namespace WpfCol
         {
             if (isCancel&&datagrid.SelectedItem!=null) 
             {
-                var group = datagrid.SelectedItem as AGroup;
-                txtGroup.Text = group.GroupCode.ToString();
-                txtGroupName.Text = group.GroupName;
+                var group = datagrid.SelectedItem as CodingReceiptTypes;
+                txtGroup.Text = group.Code.ToString();
+                txtGroupName.Text = group.Name;
+                checkbox.IsChecked = group.IsDefault;
                 gridDelete.Visibility = Visibility.Visible;
                 isCancel = true;
                 borderEdit.Visibility = Visibility.Visible;
@@ -318,9 +338,9 @@ namespace WpfCol
                 return;
             }
             var db = new ColDbEntities1();
-            db.AGroup.Remove(db.AGroup.Find((datagrid.SelectedItem as AGroup).Id));
+            db.CodingReceiptTypes.Remove(db.CodingReceiptTypes.Find((datagrid.SelectedItem as CodingReceiptTypes).Id));
             if (!db.SafeSaveChanges())  return;
-            (datagrid.ItemsSource as List<AGroup>).Remove((datagrid.SelectedItem as AGroup));
+            (datagrid.ItemsSource as List<CodingReceiptTypes>).Remove((datagrid.SelectedItem as CodingReceiptTypes));
             var u = datagrid.ItemsSource;
             datagrid.ItemsSource = null;
             datagrid.ItemsSource = u;
@@ -343,7 +363,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "گروه حساب");
+            var item = list.FirstOrDefault(u => u.Header == "کدینگ انواع رسید");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             return true;
         }

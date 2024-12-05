@@ -23,12 +23,11 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class usrAGroup : UserControl,ITabForm
+    public partial class usrProvince : UserControl,ITabForm
     {
-        public usrAGroup()
+        public usrProvince()
         {
             InitializeComponent();            
-            isCancel = true;
         }
         Brush brush = null;
 
@@ -59,12 +58,7 @@ namespace WpfCol
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var db=new ColDbEntities1();
-            var M = db.AGroup.AsNoTracking().ToList();
-            var en = db.AGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
-            if (en != null)
-                txtGroup.Text = (en.GroupCode+1).ToString();
-            else
-                txtGroup.Text = "1";
+            var M = db.Province.AsNoTracking().ToList();
             datagrid.ItemsSource = M;
             datagrid.SearchHelper.AllowFiltering = true;
             txtGroupName.Focus();
@@ -77,27 +71,25 @@ namespace WpfCol
             if (haserror)
                 return;
             var db = new ColDbEntities1();
-            var i = int.Parse(txtGroup.Text);
-            var group = db.AGroup.FirstOrDefault(h => h.GroupCode == i);
+            var group = db.Province.Find(id);
             if (group == null)
-                db.AGroup.Add(new AGroup()
+                db.Province.Add(new Province()
                 {
                     Id = Guid.NewGuid(),
-                    GroupCode = int.Parse(txtGroup.Text),
-                    GroupName = txtGroupName.Text
+                    Name = txtGroupName.Text
                 });
             else
             {
-                group.GroupName = txtGroupName.Text;
+                group.Name = txtGroupName.Text;
             }
             if (!db.SafeSaveChanges())  return;
-            var M = db.AGroup.ToList();
+            var M = db.Province.ToList();
             datagrid.ItemsSource = M;
             if (group == null)
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت گروه");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت استان");
             else
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش گروه");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش استان");
             }
             btnCancel_Click(null, null);
 
@@ -107,9 +99,7 @@ namespace WpfCol
             datagrid.ClearFilters();
             gridDelete.Visibility = Visibility.Hidden;
             borderEdit.Visibility = Visibility.Hidden;
-            //if (group != null)
-            //    txtGroup.Focus();
-            //else
+            if (group == null)
                 txtGroupName.Focus();
         }
 
@@ -228,56 +218,24 @@ namespace WpfCol
                 CloseForm();
             }
         }
-
-        private bool _iscancel = false;
-
-        public bool isCancel
-        {
-            get
-            {
-                return _iscancel;
-            }
-            set
-            {
-                _iscancel = value;
-
-                gridContainer.Opacity = .6;
-                gridContainer.IsEnabled = false;
-            }
-        }
+    
+        bool isCancel = true;
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            if (isCancel && sender != null && datagrid.SelectedIndex == -1 && borderEdit.Visibility != Visibility.Visible)
+            if(txtGroupName.Text.Trim()=="")
             {
-                gridContainer.Opacity = 1;
-                gridContainer.IsEnabled = true;
                 return;
             }
-            if (!isCancel && sender != null && Xceed.Wpf.Toolkit.MessageBox.Show("آیا می خواهید از این عملیات انصراف دهید؟", "انصراف", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+            if (sender != null && Xceed.Wpf.Toolkit.MessageBox.Show("آیا می خواهید از این عملیات انصراف دهید؟", "انصراف", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             {
                 return;
             }
             txtGroupName.Text = "";
             Sf_txtVra.HasError = false;
-            isCancel = true;
-            var db = new ColDbEntities1();
-            var en = db.AGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
-            if (en != null)
-                txtGroup.Text = (en.GroupCode + 1).ToString();
-            else
-                txtGroup.Text = "1";
+            isCancel = true;            
             txtGroupName.Focus();
-
-            if (sender != null)
-            {
-                if (datagrid.SelectedIndex == -1 && borderEdit.Visibility != Visibility.Visible)
-                {
-                    gridContainer.Opacity = 1;
-                    gridContainer.IsEnabled = true;
-                }
-            }
-
             datagrid.SelectedIndex = -1;
+            id = Guid.Empty;
             datagrid.ClearFilters();
             gridDelete.Visibility = Visibility.Hidden;
             borderEdit.Visibility = Visibility.Hidden;
@@ -292,20 +250,18 @@ namespace WpfCol
         {
             isCancel = false;
         }
-
+        Guid id = Guid.Empty;
         private void datagrid_SelectionChanged(object sender, Syncfusion.UI.Xaml.Grid.GridSelectionChangedEventArgs e)
         {
-            if (isCancel&&datagrid.SelectedItem!=null) 
+            if (isCancel && datagrid.SelectedItem != null)
             {
-                var group = datagrid.SelectedItem as AGroup;
-                txtGroup.Text = group.GroupCode.ToString();
-                txtGroupName.Text = group.GroupName;
+                var group = datagrid.SelectedItem as Province;
+                txtGroupName.Text = group.Name;
                 gridDelete.Visibility = Visibility.Visible;
                 isCancel = true;
                 borderEdit.Visibility = Visibility.Visible;
+                id = group.Id;
                 GetError();
-                gridContainer.Opacity = 1;
-                gridContainer.IsEnabled = true;
             }
         }
 
@@ -318,9 +274,9 @@ namespace WpfCol
                 return;
             }
             var db = new ColDbEntities1();
-            db.AGroup.Remove(db.AGroup.Find((datagrid.SelectedItem as AGroup).Id));
+            db.Province.Remove(db.Province.Find((datagrid.SelectedItem as Province).Id));
             if (!db.SafeSaveChanges())  return;
-            (datagrid.ItemsSource as List<AGroup>).Remove((datagrid.SelectedItem as AGroup));
+            (datagrid.ItemsSource as List<Province>).Remove((datagrid.SelectedItem as Province));
             var u = datagrid.ItemsSource;
             datagrid.ItemsSource = null;
             datagrid.ItemsSource = u;
@@ -343,7 +299,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "گروه حساب");
+            var item = list.FirstOrDefault(u => u.Header == "استان");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             return true;
         }

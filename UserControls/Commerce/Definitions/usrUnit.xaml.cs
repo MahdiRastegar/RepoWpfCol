@@ -23,9 +23,9 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class usrAGroup : UserControl,ITabForm
+    public partial class usrUnit : UserControl,ITabForm
     {
-        public usrAGroup()
+        public usrUnit()
         {
             InitializeComponent();            
             isCancel = true;
@@ -59,10 +59,10 @@ namespace WpfCol
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var db=new ColDbEntities1();
-            var M = db.AGroup.AsNoTracking().ToList();
-            var en = db.AGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
+            var M = db.Unit.AsNoTracking().ToList();
+            var en = db.Unit.OrderByDescending(y => y.Code).FirstOrDefault();
             if (en != null)
-                txtGroup.Text = (en.GroupCode+1).ToString();
+                txtGroup.Text = (en.Code + 1).ToString();
             else
                 txtGroup.Text = "1";
             datagrid.ItemsSource = M;
@@ -78,26 +78,26 @@ namespace WpfCol
                 return;
             var db = new ColDbEntities1();
             var i = int.Parse(txtGroup.Text);
-            var group = db.AGroup.FirstOrDefault(h => h.GroupCode == i);
+            var group = db.Unit.FirstOrDefault(h => h.Code == i);
             if (group == null)
-                db.AGroup.Add(new AGroup()
+                db.Unit.Add(new Unit()
                 {
                     Id = Guid.NewGuid(),
-                    GroupCode = int.Parse(txtGroup.Text),
-                    GroupName = txtGroupName.Text
+                    Code = int.Parse(txtGroup.Text),
+                    Name = txtGroupName.Text
                 });
             else
             {
-                group.GroupName = txtGroupName.Text;
+                group.Name = txtGroupName.Text;
             }
             if (!db.SafeSaveChanges())  return;
-            var M = db.AGroup.ToList();
+            var M = db.Unit.ToList();
             datagrid.ItemsSource = M;
             if (group == null)
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت گروه");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت واحد اندازه گیری");
             else
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش گروه");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش واحد اندازه گیری");
             }
             btnCancel_Click(null, null);
 
@@ -261,9 +261,9 @@ namespace WpfCol
             Sf_txtVra.HasError = false;
             isCancel = true;
             var db = new ColDbEntities1();
-            var en = db.AGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
+            var en = db.Unit.OrderByDescending(y => y.Code).FirstOrDefault();
             if (en != null)
-                txtGroup.Text = (en.GroupCode + 1).ToString();
+                txtGroup.Text = (en.Code + 1).ToString();
             else
                 txtGroup.Text = "1";
             txtGroupName.Focus();
@@ -297,9 +297,9 @@ namespace WpfCol
         {
             if (isCancel&&datagrid.SelectedItem!=null) 
             {
-                var group = datagrid.SelectedItem as AGroup;
-                txtGroup.Text = group.GroupCode.ToString();
-                txtGroupName.Text = group.GroupName;
+                var group = datagrid.SelectedItem as Unit;
+                txtGroup.Text = group.Code.ToString();
+                txtGroupName.Text = group.Name;
                 gridDelete.Visibility = Visibility.Visible;
                 isCancel = true;
                 borderEdit.Visibility = Visibility.Visible;
@@ -318,9 +318,9 @@ namespace WpfCol
                 return;
             }
             var db = new ColDbEntities1();
-            db.AGroup.Remove(db.AGroup.Find((datagrid.SelectedItem as AGroup).Id));
+            db.Unit.Remove(db.Unit.Find((datagrid.SelectedItem as Unit).Id));
             if (!db.SafeSaveChanges())  return;
-            (datagrid.ItemsSource as List<AGroup>).Remove((datagrid.SelectedItem as AGroup));
+            (datagrid.ItemsSource as List<Unit>).Remove((datagrid.SelectedItem as Unit));
             var u = datagrid.ItemsSource;
             datagrid.ItemsSource = null;
             datagrid.ItemsSource = u;
@@ -343,7 +343,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "گروه حساب");
+            var item = list.FirstOrDefault(u => u.Header == "واحد اندازه گیری");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             return true;
         }

@@ -246,7 +246,16 @@
     <Compile Include="ChEvent.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
+    <Compile Include="City.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
     <Compile Include="CodeSetting.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CodingReceiptTypes.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CodingTypesTransfer.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
     <Compile Include="Col.cs">
@@ -254,7 +263,22 @@
     </Compile>
     <Compile Include="ColorConverter\ColorConverter.cs" />
     <Compile Include="ColorConverter\DeleteRowStyleConverter.cs" />
+    <Compile Include="Commodity.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CommodityPricingPanel.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CustomerGroup.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
     <Compile Include="DocumentType.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GroupCommodity.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GroupStorage.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\ISearch.cs" />
@@ -272,11 +296,80 @@
     <Compile Include="PaymentMoney_Detail.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
+    <Compile Include="PriceGroup.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Province.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
     <Compile Include="RecieveMoneyHeader.cs">
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
     <Compile Include="RecieveMoney_Detail.cs">
       <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Storage.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StorageReceiptHeader.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StorageReceipt_Detail.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StorageTransferHeader.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StorageTransfer_Detail.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Unit.cs">
+      <DependentUpon>Model2.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Definitions\GroupCommodity.xaml.cs">
+      <DependentUpon>GroupCommodity.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Storage\usrCodingTypesTransfer.xaml.cs">
+      <DependentUpon>usrCodingTypesTransfer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Storage\usrCodingReceiptTypes.xaml.cs">
+      <DependentUpon>usrCodingReceiptTypes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Definitions\usrCommodityPricingPanel.xaml.cs">
+      <DependentUpon>usrCommodityPricingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Definitions\usrCommodity.xaml.cs">
+      <DependentUpon>usrCommodity.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Definitions\usrUnit.xaml.cs">
+      <DependentUpon>usrUnit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Definitions\usrStorage.xaml.cs">
+      <DependentUpon>usrStorage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Definitions\usrGroupStorage.xaml.cs">
+      <DependentUpon>usrGroupStorage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Definitions\usrCustomerGroup.xaml.cs">
+      <DependentUpon>usrCustomerGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Definitions\usrPriceGroup.xaml.cs">
+      <DependentUpon>usrPriceGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Definitions\usrCity.xaml.cs">
+      <DependentUpon>usrCity.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Definitions\usrProvince.xaml.cs">
+      <DependentUpon>usrProvince.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Storage\usrStorageBetweenTransfer.xaml.cs">
+      <DependentUpon>usrStorageBetweenTransfer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Storage\usrStorageTransfer.xaml.cs">
+      <DependentUpon>usrStorageTransfer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Commerce\Storage\usrStorageReceipt.xaml.cs">
+      <DependentUpon>usrStorageReceipt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\Treasury\usrBank.xaml.cs">
       <DependentUpon>usrBank.xaml</DependentUpon>
@@ -361,6 +454,8 @@
     <Compile Include="toolsWindow\winSettingCode.xaml.cs">
       <DependentUpon>winSettingCode.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\StorageTransferViewModel.cs" />
+    <Compile Include="ViewModels\StorageReceiptViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -376,6 +471,66 @@
     <Page Include="toolsWindow\winSearch.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Definitions\GroupCommodity.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Storage\usrCodingTypesTransfer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Storage\usrCodingReceiptTypes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Definitions\usrCommodityPricingPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Definitions\usrCommodity.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Definitions\usrUnit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Definitions\usrStorage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Definitions\usrGroupStorage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Definitions\usrCustomerGroup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Definitions\usrPriceGroup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Definitions\usrCity.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Definitions\usrProvince.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Storage\usrStorageBetweenTransfer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Storage\usrStorageTransfer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\Commerce\Storage\usrStorageReceipt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="UserControls\Treasury\usrBank.xaml">
       <Generator>MSBuild:Compile</Generator>

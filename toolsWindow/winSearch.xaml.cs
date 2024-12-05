@@ -73,7 +73,13 @@ namespace WpfCol.Windows.toolWindows
                         ParentTextBox.Moein = db.Moein.Find(accountSearchClass.Id);
                     }
                     else
-                        ParentTextBox.Preferential = db.Preferential.Find(MuText.Id);
+                    {
+                        try
+                        {
+                            ParentTextBox.Preferential = db.Preferential.Find(MuText.Id);
+                        }
+                        catch { }
+                    }
                     //ParentTextBox.Text = $"{MuText.Name}-{(MuText.AdditionalEntity as AccountSearchClass).Tafzili}";
                     //ParentTextBox.AccountName = $"{MuText.Value}-{(MuText.AdditionalEntity as AccountSearchClass).T_Name}";
                     //ParentTextBox.AccountName = $"{(MuText.AdditionalEntity as AccountSearchClass).T_Name}-{MuText.Value.Split('-')[1]}";
@@ -136,7 +142,13 @@ namespace WpfCol.Windows.toolWindows
                         ParentTextBox.Moein = db.Moein.Find(accountSearchClass.Id);
                     }
                     else
-                        ParentTextBox.Preferential = db.Preferential.Find(MuText.Id);
+                    {
+                        try
+                        {
+                            ParentTextBox.Preferential = db.Preferential.Find(MuText.Id);
+                        }
+                        catch { }
+                    }
                     //ParentTextBox.Text = $"{MuText.Name}-{(MuText.AdditionalEntity as AccountSearchClass).Tafzili}";
                     //ParentTextBox.AccountName = $"{MuText.Value}-{(MuText.AdditionalEntity as AccountSearchClass).T_Name}";
                     //ParentTextBox.AccountName = $"{(MuText.AdditionalEntity as AccountSearchClass).T_Name}-{MuText.Value.Split('-')[1]}";
@@ -166,7 +178,13 @@ namespace WpfCol.Windows.toolWindows
                             ParentTextBox.Moein = db.Moein.Find(accountSearchClass.Id);
                         }
                         else
-                            ParentTextBox.Preferential = db.Preferential.Find(MuText.Id);
+                        {
+                            try
+                            {
+                                ParentTextBox.Preferential = db.Preferential.Find(MuText.Id);
+                            }
+                            catch { }
+                        }
                         //ParentTextBox.Text = $"{MuText.Name}-{(MuText.AdditionalEntity as AccountSearchClass).Tafzili}";
                         //ParentTextBox.AccountName = $"{MuText.Value}-{(MuText.AdditionalEntity as AccountSearchClass).T_Name}";
                         //ParentTextBox.AccountName = $"{(MuText.AdditionalEntity as AccountSearchClass).T_Name}-{MuText.Value.Split('-')[1]}";

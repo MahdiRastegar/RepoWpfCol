@@ -23,9 +23,9 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class usrAGroup : UserControl,ITabForm
+    public partial class usrCity : UserControl,ITabForm
     {
-        public usrAGroup()
+        public usrCity()
         {
             InitializeComponent();            
             isCancel = true;
@@ -59,12 +59,9 @@ namespace WpfCol
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var db=new ColDbEntities1();
-            var M = db.AGroup.AsNoTracking().ToList();
-            var en = db.AGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
-            if (en != null)
-                txtGroup.Text = (en.GroupCode+1).ToString();
-            else
-                txtGroup.Text = "1";
+            cmbProvince.ItemsSource = db.Province.ToList();
+
+            var M = db.City.AsNoTracking().ToList();
             datagrid.ItemsSource = M;
             datagrid.SearchHelper.AllowFiltering = true;
             txtGroupName.Focus();
@@ -77,27 +74,28 @@ namespace WpfCol
             if (haserror)
                 return;
             var db = new ColDbEntities1();
-            var i = int.Parse(txtGroup.Text);
-            var group = db.AGroup.FirstOrDefault(h => h.GroupCode == i);
+            var group = db.City.Find(id);
             if (group == null)
-                db.AGroup.Add(new AGroup()
+                db.City.Add(new City()
                 {
                     Id = Guid.NewGuid(),
-                    GroupCode = int.Parse(txtGroup.Text),
-                    GroupName = txtGroupName.Text
+                    Name = txtGroupName.Text,
+                    fk_ProvinceId = (cmbProvince.SelectedItem as Province).Id
                 });
             else
             {
-                group.GroupName = txtGroupName.Text;
+                group.Name = txtGroupName.Text;
+                group.fk_ProvinceId = (cmbProvince.SelectedItem as Province).Id;
             }
             if (!db.SafeSaveChanges())  return;
-            var M = db.AGroup.ToList();
+            var cities = db.City.Include("Province");
+            var M = cities.ToList();
             datagrid.ItemsSource = M;
             if (group == null)
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت گروه");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت شهر");
             else
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش گروه");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش شهر");
             }
             btnCancel_Click(null, null);
 
@@ -107,15 +105,20 @@ namespace WpfCol
             datagrid.ClearFilters();
             gridDelete.Visibility = Visibility.Hidden;
             borderEdit.Visibility = Visibility.Hidden;
-            //if (group != null)
-            //    txtGroup.Focus();
-            //else
+            if (group == null)
                 txtGroupName.Focus();
         }
 
         private bool GetError()
         {
             bool haserror = false;
+            if (cmbProvince.SelectedIndex == -1)
+            {
+                Sf_txtProvince.HasError = true;
+                haserror = true;
+            }
+            else
+                Sf_txtProvince.HasError = false;
             if (txtGroupName.Text.Trim() == "")
             {
                 Sf_txtVra.HasError = true;
@@ -247,7 +250,7 @@ namespace WpfCol
         }
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            if (isCancel && sender != null && datagrid.SelectedIndex == -1 && borderEdit.Visibility != Visibility.Visible)
+            if (isCancel && sender != null && datagrid.SelectedIndex == -1)
             {
                 gridContainer.Opacity = 1;
                 gridContainer.IsEnabled = true;
@@ -259,18 +262,13 @@ namespace WpfCol
             }
             txtGroupName.Text = "";
             Sf_txtVra.HasError = false;
-            isCancel = true;
-            var db = new ColDbEntities1();
-            var en = db.AGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
-            if (en != null)
-                txtGroup.Text = (en.GroupCode + 1).ToString();
-            else
-                txtGroup.Text = "1";
+            Sf_txtProvince.HasError = false;
+            isCancel = true;            
             txtGroupName.Focus();
 
             if (sender != null)
             {
-                if (datagrid.SelectedIndex == -1 && borderEdit.Visibility != Visibility.Visible)
+                if (datagrid.SelectedIndex == -1)
                 {
                     gridContainer.Opacity = 1;
                     gridContainer.IsEnabled = true;
@@ -278,6 +276,7 @@ namespace WpfCol
             }
 
             datagrid.SelectedIndex = -1;
+            id = Guid.Empty;
             datagrid.ClearFilters();
             gridDelete.Visibility = Visibility.Hidden;
             borderEdit.Visibility = Visibility.Hidden;
@@ -292,17 +291,18 @@ namespace WpfCol
         {
             isCancel = false;
         }
-
+        Guid id = Guid.Empty;
         private void datagrid_SelectionChanged(object sender, Syncfusion.UI.Xaml.Grid.GridSelectionChangedEventArgs e)
         {
-            if (isCancel&&datagrid.SelectedItem!=null) 
+            if (isCancel && datagrid.SelectedItem != null)
             {
-                var group = datagrid.SelectedItem as AGroup;
-                txtGroup.Text = group.GroupCode.ToString();
-                txtGroupName.Text = group.GroupName;
+                var group = datagrid.SelectedItem as City;
+                txtGroupName.Text = group.Name;
+                cmbProvince.SelectedItem = (cmbProvince.ItemsSource as List<Province>).First(t => t.Id == group.Province.Id);
                 gridDelete.Visibility = Visibility.Visible;
                 isCancel = true;
                 borderEdit.Visibility = Visibility.Visible;
+                id = group.Id;
                 GetError();
                 gridContainer.Opacity = 1;
                 gridContainer.IsEnabled = true;
@@ -318,12 +318,13 @@ namespace WpfCol
                 return;
             }
             var db = new ColDbEntities1();
-            db.AGroup.Remove(db.AGroup.Find((datagrid.SelectedItem as AGroup).Id));
+            db.City.Remove(db.City.Find((datagrid.SelectedItem as City).Id));
             if (!db.SafeSaveChanges())  return;
-            (datagrid.ItemsSource as List<AGroup>).Remove((datagrid.SelectedItem as AGroup));
+            (datagrid.ItemsSource as List<City>).Remove((datagrid.SelectedItem as City));
             var u = datagrid.ItemsSource;
             datagrid.ItemsSource = null;
             datagrid.ItemsSource = u;
+            id = Guid.Empty;
             btnCancel_Click(null, null);
         }
 
@@ -343,7 +344,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "گروه حساب");
+            var item = list.FirstOrDefault(u => u.Header == "شهر");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             return true;
         }
@@ -378,6 +379,34 @@ namespace WpfCol
         public void SetNull()
         {
 
+        }
+
+        private void cmbProvince_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            isCancel = false;
+            if (cmbProvince.SelectedIndex != -1)
+                txtGroupName.Focus();
+        }
+
+        private void cmbProvince_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Dispatcher.BeginInvoke(new Action(async () =>
+                {
+                    await Task.Delay(50);
+                    txtGroupName.Focus();
+                }));
+                return;
+            }
+            cmbProvince.SelectedIndex = -1;
+        }
+
+        private void cmbProvince_LostFocus(object sender, RoutedEventArgs e)
+        {
+          
+                if (cmbProvince.SelectedIndex == -1)
+                    cmbProvince.Text = "";
         }
     }
 }

@@ -336,5 +336,244 @@ namespace WpfCol
                 tabcontrol.Items.Add(item);
             }
         }
+
+        private void rbnProvince_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "استان");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "استان" };
+                item.Content = new usrProvince();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnCity_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "شهر");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "شهر" };
+                item.Content = new usrCity();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnPriceGroup_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "گروه قیمت");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "گروه قیمت" };
+                item.Content = new usrPriceGroup();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnCustomerGroup_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "گروه مشتریان");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "گروه مشتریان" };
+                item.Content = new usrCustomerGroup();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnGroupStorage_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "گروه انبار");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "گروه انبار" };
+                item.Content = new usrGroupStorage();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnDefinitionStorage_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "انبار");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "انبار" };
+                item.Content = new usrStorage();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnUnit_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "واحد اندازه گیری");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "واحد اندازه گیری" };
+                item.Content = new usrUnit();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnGroupCommodity_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "گروه کالا");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "گروه کالا" };
+                item.Content = new usrGroupCommodity();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnDefinitionCommodity_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "کالا");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "کالا" };
+                item.Content = new usrCommodity();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnCommodityPricingPanel_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "پنل قیمت گذاری کالا");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "پنل قیمت گذاری کالا" };
+                item.Content = new usrCommodityPricingPanel();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnCodingReceiptTypes_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "کدینگ انواع رسید");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "کدینگ انواع رسید" };
+                item.Content = new usrCodingReceiptTypes();
+                tabcontrol.Items.Add(item);
+            }
+        }
+        private void rbnCodingTypesTransfer_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "کدینگ انواع حواله");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "کدینگ انواع حواله" };
+                item.Content = new usrCodingTypesTransfer();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnStorageReceipt_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "رسید انبار");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "رسید انبار" };
+                item.Content = new usrStorageReceipt();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnStorageTransfer_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "حواله انبار");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "حواله انبار" };
+                item.Content = new usrStorageTransfer();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnStorageBetweenTransfer_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "حواله بین انبار");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "حواله بین انبار" };
+                item.Content = new usrStorageBetweenTransfer();
+                tabcontrol.Items.Add(item);
+            }
+        }
     }
 }

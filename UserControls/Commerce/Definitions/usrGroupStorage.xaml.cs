@@ -23,9 +23,9 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class usrAGroup : UserControl,ITabForm
+    public partial class usrGroupStorage : UserControl,ITabForm
     {
-        public usrAGroup()
+        public usrGroupStorage()
         {
             InitializeComponent();            
             isCancel = true;
@@ -59,8 +59,8 @@ namespace WpfCol
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var db=new ColDbEntities1();
-            var M = db.AGroup.AsNoTracking().ToList();
-            var en = db.AGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
+            var M = db.GroupStorage.AsNoTracking().ToList();
+            var en = db.GroupStorage.OrderByDescending(y => y.GroupCode).FirstOrDefault();
             if (en != null)
                 txtGroup.Text = (en.GroupCode+1).ToString();
             else
@@ -78,9 +78,9 @@ namespace WpfCol
                 return;
             var db = new ColDbEntities1();
             var i = int.Parse(txtGroup.Text);
-            var group = db.AGroup.FirstOrDefault(h => h.GroupCode == i);
+            var group = db.GroupStorage.FirstOrDefault(h => h.GroupCode == i);
             if (group == null)
-                db.AGroup.Add(new AGroup()
+                db.GroupStorage.Add(new GroupStorage()
                 {
                     Id = Guid.NewGuid(),
                     GroupCode = int.Parse(txtGroup.Text),
@@ -91,7 +91,7 @@ namespace WpfCol
                 group.GroupName = txtGroupName.Text;
             }
             if (!db.SafeSaveChanges())  return;
-            var M = db.AGroup.ToList();
+            var M = db.GroupStorage.ToList();
             datagrid.ItemsSource = M;
             if (group == null)
                 Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت گروه");
@@ -261,7 +261,7 @@ namespace WpfCol
             Sf_txtVra.HasError = false;
             isCancel = true;
             var db = new ColDbEntities1();
-            var en = db.AGroup.OrderByDescending(y => y.GroupCode).FirstOrDefault();
+            var en = db.GroupStorage.OrderByDescending(y => y.GroupCode).FirstOrDefault();
             if (en != null)
                 txtGroup.Text = (en.GroupCode + 1).ToString();
             else
@@ -297,7 +297,7 @@ namespace WpfCol
         {
             if (isCancel&&datagrid.SelectedItem!=null) 
             {
-                var group = datagrid.SelectedItem as AGroup;
+                var group = datagrid.SelectedItem as GroupStorage;
                 txtGroup.Text = group.GroupCode.ToString();
                 txtGroupName.Text = group.GroupName;
                 gridDelete.Visibility = Visibility.Visible;
@@ -318,9 +318,9 @@ namespace WpfCol
                 return;
             }
             var db = new ColDbEntities1();
-            db.AGroup.Remove(db.AGroup.Find((datagrid.SelectedItem as AGroup).Id));
+            db.GroupStorage.Remove(db.GroupStorage.Find((datagrid.SelectedItem as GroupStorage).Id));
             if (!db.SafeSaveChanges())  return;
-            (datagrid.ItemsSource as List<AGroup>).Remove((datagrid.SelectedItem as AGroup));
+            (datagrid.ItemsSource as List<GroupStorage>).Remove((datagrid.SelectedItem as GroupStorage));
             var u = datagrid.ItemsSource;
             datagrid.ItemsSource = null;
             datagrid.ItemsSource = u;
@@ -343,7 +343,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "گروه حساب");
+            var item = list.FirstOrDefault(u => u.Header == "گروه انبار");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             return true;
         }
