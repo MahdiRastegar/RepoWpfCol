@@ -46,9 +46,9 @@
                     <Setter.Value>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                             <GradientStop Color="#FFF5C9BC" Offset="0"/>
-                            <GradientStop Color="#FFE4B2A3" Offset="0.567"/>
-                            <GradientStop Color="#FFD8A090" Offset="0.573"/>
-                            <GradientStop Color="#FFCCAA9A" Offset="0.82"/>
+                            <GradientStop Color="#FFDEB4B4" Offset="0.567"/>
+                            <GradientStop Color="#FFD89090" Offset="0.573"/>
+                            <GradientStop Color="#FFCC9A9A" Offset="0.82"/>
                         </LinearGradientBrush>
                     </Setter.Value>
                 </Setter>
