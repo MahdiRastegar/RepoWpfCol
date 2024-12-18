@@ -6,18 +6,16 @@
     <edmx:Diagrams>
       <Diagram DiagramId="f4a93ec29c094180a95276281392f4ff" Name="Diagram1">
         <EntityTypeShape EntityType="ColDbModel.AcDocument_Header" Width="1.5" PointX="5.25" PointY="19.125" />
-        <EntityTypeShape EntityType="ColDbModel.AGroup" Width="1.5" PointX="1.5" PointY="0.75" />
         <EntityTypeShape EntityType="ColDbModel.Bank" Width="1.5" PointX="3" PointY="15.875" />
         <EntityTypeShape EntityType="ColDbModel.ChEvent" Width="1.5" PointX="5.25" PointY="1" />
         <EntityTypeShape EntityType="ColDbModel.Col" Width="1.5" PointX="0.75" PointY="4.25" />
         <EntityTypeShape EntityType="ColDbModel.DocumentType" Width="1.5" PointX="3" PointY="19.625" />
         <EntityTypeShape EntityType="ColDbModel.Moein" Width="1.5" PointX="3" PointY="4.125" />
         <EntityTypeShape EntityType="ColDbModel.PaymentMoneyHeader" Width="1.5" PointX="5.25" PointY="14.5" />
-        <EntityTypeShape EntityType="ColDbModel.Preferential" Width="1.5" PointX="3" PointY="9.625" />
+        <EntityTypeShape EntityType="ColDbModel.Preferential" Width="1.5" PointX="0.75" PointY="13.5" />
         <EntityTypeShape EntityType="ColDbModel.RecieveMoneyHeader" Width="1.5" PointX="8.25" PointY="10.5" />
         <EntityTypeShape EntityType="ColDbModel.tGroup" Width="1.5" PointX="0.75" PointY="11" />
         <AssociationConnector Association="ColDbModel.FK_AcDocument_Header_DocumentType" />
-        <AssociationConnector Association="ColDbModel.FK_Col_AGroup" />
         <AssociationConnector Association="ColDbModel.FK_Moein_Col" />
         <AssociationConnector Association="ColDbModel.FK_PaymentMoneyHeader_Moein" />
         <AssociationConnector Association="ColDbModel.FK_RecieveMoneyHeader_Moein" />
@@ -54,8 +52,8 @@
         <EntityTypeShape EntityType="ColDbModel.Province" Width="1.5" PointX="7.375" PointY="3.75" />
         <EntityTypeShape EntityType="ColDbModel.City" Width="1.5" PointX="9.625" PointY="3.625" />
         <AssociationConnector Association="ColDbModel.FK_City_Province" />
-        <EntityTypeShape EntityType="ColDbModel.CustomerGroup" Width="1.5" PointX="14.625" PointY="0.875" />
-        <EntityTypeShape EntityType="ColDbModel.PriceGroup" Width="1.5" PointX="12.375" PointY="1" />
+        <EntityTypeShape EntityType="ColDbModel.CustomerGroup" Width="1.5" PointX="16.5" PointY="0.625" />
+        <EntityTypeShape EntityType="ColDbModel.PriceGroup" Width="1.5" PointX="13.25" PointY="0.875" />
         <AssociationConnector Association="ColDbModel.FK_CustomerGroup_PriceGroup" />
         <EntityTypeShape EntityType="ColDbModel.GroupStorage" Width="1.5" PointX="7.375" PointY="6.75" />
         <EntityTypeShape EntityType="ColDbModel.Storage" Width="1.5" PointX="9.625" PointY="6.625" />
@@ -65,10 +63,10 @@
         <EntityTypeShape EntityType="ColDbModel.GroupCommodity" Width="1.5" PointX="9.375" PointY="18.375" />
         <AssociationConnector Association="ColDbModel.FK_Commodity_GroupCommodity" />
         <AssociationConnector Association="ColDbModel.FK_Commodity_Unit" />
-        <EntityTypeShape EntityType="ColDbModel.CommodityPricingPanel" Width="1.5" PointX="14.625" PointY="0.75" />
+        <EntityTypeShape EntityType="ColDbModel.CommodityPricingPanel" Width="1.5" PointX="19" PointY="0.5" />
         <AssociationConnector Association="ColDbModel.FK_CommodityPricingPanel_Commodity" />
         <AssociationConnector Association="ColDbModel.FK_CommodityPricingPanel_PriceGroup" />
-        <EntityTypeShape EntityType="ColDbModel.CodingReceiptTypes" Width="1.5" PointX="12.375" PointY="4.75" />
+        <EntityTypeShape EntityType="ColDbModel.CodingReceiptTypes" Width="1.5" PointX="12.5" PointY="5.375" />
         <EntityTypeShape EntityType="ColDbModel.CodingTypesTransfer" Width="1.5" PointX="14.375" PointY="3.75" />
         <EntityTypeShape EntityType="ColDbModel.StorageReceipt_Detail" Width="1.5" PointX="18.875" PointY="3.375" />
         <EntityTypeShape EntityType="ColDbModel.StorageReceiptHeader" Width="1.5" PointX="16.625" PointY="5.375" />
@@ -82,6 +80,41 @@
         <AssociationConnector Association="ColDbModel.FK_StorageTransfer_Detail_Commodity" />
         <AssociationConnector Association="ColDbModel.FK_StorageTransferHeader_Storage" />
         <AssociationConnector Association="ColDbModel.FK_StorageTransfer_Detail_StorageTransferHeader" />
+        <AssociationConnector Association="ColDbModel.FK_Preferential_City" />
+        <EntityTypeShape EntityType="ColDbModel.NPStorage_Detail" Width="1.5" PointX="16.875" PointY="2.75" />
+        <EntityTypeShape EntityType="ColDbModel.NPStorageHeader" Width="1.5" PointX="14.625" PointY="22.875" />
+        <EntityTypeShape EntityType="ColDbModel.StorageRotation_Detail" Width="1.5" PointX="14.875" PointY="0.5" />
+        <EntityTypeShape EntityType="ColDbModel.StorageRotationHeader" Width="1.5" PointX="11.875" PointY="23.625" />
+        <AssociationConnector Association="ColDbModel.FK_NPStorage_Detail_Commodity" />
+        <AssociationConnector Association="ColDbModel.FK_StorageRotation_Detail_Commodity" />
+        <AssociationConnector Association="ColDbModel.FK_NPStorage_Detail_NPStorageHeader" />
+        <AssociationConnector Association="ColDbModel.FK_StorageRotation_Detail_StorageRotationHeader" />
+        <EntityTypeShape EntityType="ColDbModel.Order_Detail" Width="1.5" PointX="15.875" PointY="18.75" />
+        <EntityTypeShape EntityType="ColDbModel.OrderHeader" Width="1.5" PointX="5.25" PointY="27.125" />
+        <AssociationConnector Association="ColDbModel.FK_Order_Detail_Commodity" />
+        <AssociationConnector Association="ColDbModel.FK_Order_Detail_OrderHeader" />
+        <AssociationConnector Association="ColDbModel.FK_OrderHeader_Preferential" />
+        <EntityTypeShape EntityType="ColDbModel.ProductBuy_Detail" Width="1.5" PointX="15.875" PointY="15" />
+        <EntityTypeShape EntityType="ColDbModel.ProductBuyHeader" Width="1.5" PointX="5.25" PointY="30.625" />
+        <AssociationConnector Association="ColDbModel.FK_ProductBuy_Detail_Commodity" />
+        <AssociationConnector Association="ColDbModel.FK_ProductBuyHeader_Preferential" />
+        <AssociationConnector Association="ColDbModel.FK_ProductBuy_Detail_ProductBuyHeader" />
+        <EntityTypeShape EntityType="ColDbModel.AGroup" Width="1.5" PointX="0.75" PointY="0.75" />
+        <AssociationConnector Association="ColDbModel.FK_Col_AGroup" />
+        <EntityTypeShape EntityType="ColDbModel.ProductSell_Detail" Width="1.5" PointX="16.875" PointY="22.75" />
+        <EntityTypeShape EntityType="ColDbModel.ProductSellHeader" Width="1.5" PointX="5.25" PointY="36.25" />
+        <AssociationConnector Association="ColDbModel.FK_ProductSell_Detail_Commodity" />
+        <AssociationConnector Association="ColDbModel.FK_ProductSellHeader_Preferential" />
+        <AssociationConnector Association="ColDbModel.FK_ProductSellHeader_Preferential1" />
+        <AssociationConnector Association="ColDbModel.FK_ProductSellHeader_Preferential2" />
+        <AssociationConnector Association="ColDbModel.FK_ProductSellHeader_Preferential3" />
+        <AssociationConnector Association="ColDbModel.FK_ProductSellHeader_Preferential4" />
+        <AssociationConnector Association="ColDbModel.FK_ProductSell_Detail_ProductSellHeader" />
+        <EntityTypeShape EntityType="ColDbModel.PreInvoice_Detail" Width="1.5" PointX="18.875" PointY="11.625" />
+        <EntityTypeShape EntityType="ColDbModel.PreInvoiceHeader" Width="1.5" PointX="5.25" PointY="22.625" />
+        <AssociationConnector Association="ColDbModel.FK_PreInvoice_Detail_Commodity" />
+        <AssociationConnector Association="ColDbModel.FK_PreInvoiceHeader_Preferential" />
+        <AssociationConnector Association="ColDbModel.FK_PreInvoice_Detail_PreInvoiceHeader" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

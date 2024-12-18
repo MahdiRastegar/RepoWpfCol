@@ -26,7 +26,6 @@ namespace WpfCol
         }
     
         public virtual DbSet<AcDocument_Header> AcDocument_Header { get; set; }
-        public virtual DbSet<AGroup> AGroup { get; set; }
         public virtual DbSet<Bank> Bank { get; set; }
         public virtual DbSet<ChEvent> ChEvent { get; set; }
         public virtual DbSet<Col> Col { get; set; }
@@ -58,5 +57,18 @@ namespace WpfCol
         public virtual DbSet<StorageReceiptHeader> StorageReceiptHeader { get; set; }
         public virtual DbSet<StorageTransfer_Detail> StorageTransfer_Detail { get; set; }
         public virtual DbSet<StorageTransferHeader> StorageTransferHeader { get; set; }
+        public virtual DbSet<NPStorage_Detail> NPStorage_Detail { get; set; }
+        public virtual DbSet<NPStorageHeader> NPStorageHeader { get; set; }
+        public virtual DbSet<StorageRotation_Detail> StorageRotation_Detail { get; set; }
+        public virtual DbSet<StorageRotationHeader> StorageRotationHeader { get; set; }
+        public virtual DbSet<Order_Detail> Order_Detail { get; set; }
+        public virtual DbSet<OrderHeader> OrderHeader { get; set; }
+        public virtual DbSet<ProductBuy_Detail> ProductBuy_Detail { get; set; }
+        public virtual DbSet<ProductBuyHeader> ProductBuyHeader { get; set; }
+        public virtual DbSet<AGroup> AGroup { get; set; }
+        public virtual DbSet<ProductSell_Detail> ProductSell_Detail { get; set; }
+        public virtual DbSet<ProductSellHeader> ProductSellHeader { get; set; }
+        public virtual DbSet<PreInvoice_Detail> PreInvoice_Detail { get; set; }
+        public virtual DbSet<PreInvoiceHeader> PreInvoiceHeader { get; set; }
     }
 }

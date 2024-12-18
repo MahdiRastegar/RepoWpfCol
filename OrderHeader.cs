@@ -12,20 +12,23 @@ namespace WpfCol
     using System;
     using System.Collections.Generic;
     
-    public partial class City
+    public partial class OrderHeader
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public City()
+        public OrderHeader()
         {
-            this.Preferential = new HashSet<Preferential>();
+            this.Order_Detail = new HashSet<Order_Detail>();
         }
     
         public System.Guid Id { get; set; }
-        public string Name { get; set; }
-        public System.Guid fk_ProvinceId { get; set; }
+        public System.DateTime Date { get; set; }
+        public long Serial { get; set; }
+        public long NoDoument { get; set; }
+        public System.Guid fk_PreferentialId { get; set; }
+        public string Description { get; set; }
     
-        public virtual Province Province { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Preferential> Preferential { get; set; }
+        public virtual ICollection<Order_Detail> Order_Detail { get; set; }
+        public virtual Preferential Preferential { get; set; }
     }
 }

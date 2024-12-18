@@ -575,5 +575,101 @@ namespace WpfCol
                 tabcontrol.Items.Add(item);
             }
         }
+
+        private void rbnStorageRotation_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "انبارگردانی");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "انبارگردانی" };
+                item.Content = new usrStorageRotation();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnNPStorage_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "کسر و اضافات انبار");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "کسر و اضافات انبار" };
+                item.Content = new usrNPStorage();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnOrder_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "سفارش");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "سفارش" };
+                item.Content = new usrOrder();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnPurchaseInvoice_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "فاکتور خرید");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "فاکتور خرید" };
+                item.Content = new usrProductBuy();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnSalesInvoice_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "فاکتور فروش");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "فاکتور فروش" };
+                item.Content = new usrProductSell();
+                tabcontrol.Items.Add(item);
+            }
+        }
+
+        private void rbnSalesProforma_Click(object sender, RoutedEventArgs e)
+        {
+            var list = GetTabControlItems;
+            var item = list.FirstOrDefault(y => y.Header == "پیش فاکتور فروش");
+            if (item != null)
+            {
+                tabcontrol.SelectedItem = item;
+            }
+            else
+            {
+                item = new TabItemExt() { Header = "پیش فاکتور فروش" };
+                item.Content = new usrPreInvoice();
+                tabcontrol.Items.Add(item);
+            }
+        }
     }
 }

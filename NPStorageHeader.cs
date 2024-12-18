@@ -12,20 +12,21 @@ namespace WpfCol
     using System;
     using System.Collections.Generic;
     
-    public partial class City
+    public partial class NPStorageHeader
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public City()
+        public NPStorageHeader()
         {
-            this.Preferential = new HashSet<Preferential>();
+            this.NPStorage_Detail = new HashSet<NPStorage_Detail>();
         }
     
         public System.Guid Id { get; set; }
-        public string Name { get; set; }
-        public System.Guid fk_ProvinceId { get; set; }
+        public System.DateTime Date { get; set; }
+        public long Serial { get; set; }
+        public string Type { get; set; }
+        public string Description { get; set; }
     
-        public virtual Province Province { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Preferential> Preferential { get; set; }
+        public virtual ICollection<NPStorage_Detail> NPStorage_Detail { get; set; }
     }
 }

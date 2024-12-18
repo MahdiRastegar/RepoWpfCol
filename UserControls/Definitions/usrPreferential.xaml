@@ -139,6 +139,16 @@
                             <Syncfusion:SfTextInputLayout  Width="150" Name="Sf_Mobile"  OutlineCornerRadius="8" Hint="تلفن همراه" Grid.Row="2"  VerticalAlignment="Center" Margin="10 0"  HorizontalAlignment="Left">
                                 <TextBox Name="txtMobile" TextChanged="TxtCodePreferential_TextChanged" VerticalContentAlignment="Center"  IsEnabled="True" IsReadOnly="False" PreviewTextInput="Txt_PreviewTextInput" Margin="0" FontSize="18"/>
                             </Syncfusion:SfTextInputLayout>
+                            <DockPanel>
+                                <Syncfusion:SfTextInputLayout  Name="Sf_txtProvince" OutlineCornerRadius="8" Hint="نام استان" VerticalAlignment="Center" Margin="10 0 0 0"  HorizontalAlignment="Center" Width="200">
+                                    <Syncfusion:ComboBoxAdv AutoCompleteMode="Suggest" LostFocus="cmbProvince_LostFocus" IsEditable="True" PreviewKeyDown="cmbProvince_PreviewKeyDown" SelectionChanged="cmbProvince_SelectionChanged" DisplayMemberPath="Name" Name="cmbProvince" FlowDirection="RightToLeft">
+                                    </Syncfusion:ComboBoxAdv>
+                                </Syncfusion:SfTextInputLayout>
+                                <Syncfusion:SfTextInputLayout  Name="Sf_txtCity" OutlineCornerRadius="8" Hint="نام شهر" VerticalAlignment="Center" Margin="10 0 0 0"  HorizontalAlignment="Center" Width="200">
+                                    <Syncfusion:ComboBoxAdv AutoCompleteMode="Suggest" LostFocus="cmbProvince_LostFocus" IsEditable="True" PreviewKeyDown="cmbProvince_PreviewKeyDown" SelectionChanged="cmbProvince_SelectionChanged" DisplayMemberPath="Name" Name="cmbCity" FlowDirection="RightToLeft">
+                                    </Syncfusion:ComboBoxAdv>
+                                </Syncfusion:SfTextInputLayout>
+                            </DockPanel>
                             <DockPanel >
                                 <Syncfusion:SfTextInputLayout Width="120" Name="Sf_Phone1"  OutlineCornerRadius="8" Hint="تلفن 1" Grid.Row="2"  VerticalAlignment="Center" Margin="10 0"  HorizontalAlignment="Stretch">
                                     <TextBox Name="txtPhone1" TextChanged="TxtCodePreferential_TextChanged" VerticalContentAlignment="Center"  IsEnabled="True" IsReadOnly="False" PreviewTextInput="Txt_PreviewTextInput" Margin="0" FontSize="18"/>

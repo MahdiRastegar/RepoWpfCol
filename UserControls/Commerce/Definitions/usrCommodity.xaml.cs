@@ -123,7 +123,8 @@ namespace WpfCol
                     Code = i,
                     fk_GroupId = col.Id,
                     Name = txtCommodityName.Text,
-                    Unit = mu
+                    Unit = mu,
+                    Taxable = checkbox.IsChecked
                 };
                 db.Commodity.Add(e_add);
                 Commodities.Add(e_add);
@@ -134,8 +135,11 @@ namespace WpfCol
                 e_Edidet.fk_GroupId = Commodity.fk_GroupId = col.Id;
                 e_Edidet.Code = Commodity.Code = i;
                 e_Edidet.Name = Commodity.Name = txtCommodityName.Text;
+                Commodity.Unit = mu;
                 e_Edidet.GroupCommodity.GroupName = txtGroupName.Text;
                 e_Edidet.Unit = mu;
+                e_Edidet.Taxable= checkbox.IsChecked;
+                Commodity.Taxable = checkbox.IsChecked;
             }
             if (!db.SafeSaveChanges())  return;
             if (id == Guid.Empty)
@@ -363,6 +367,7 @@ namespace WpfCol
             Sf_txtUnit.HasError = false;
             txtUnit.Text = "";
             txtUnitName.Text = "";
+            checkbox.IsChecked= false;
 
             txtGroup.Focus();
             datagrid.SelectedIndex = -1;
@@ -400,6 +405,7 @@ namespace WpfCol
                 txtCodeCommodity.Text = Commodity.Code.ToString();
                 txtUnit.Text = Commodity.Unit.Code.ToString();
                 txtUnitName.Text = Commodity.Unit.Name.ToString();
+                checkbox.IsChecked = Commodity.Taxable;
 
                 gridDelete.Visibility = Visibility.Visible;
                 borderEdit.Visibility = Visibility.Visible;
@@ -544,6 +550,16 @@ namespace WpfCol
             if ((window as winSearch).ParentTextBox == txtUnit)
             {
                 window = null;
+                var db = new ColDbEntities1();
+                var g = int.Parse(txtUnit.Text);
+
+                var y = db.Unit.FirstOrDefault(gs => gs.Code == g);
+                if (y != null)
+                    Dispatcher.BeginInvoke(new Action(async () =>
+                    {
+                        await Task.Delay(50);
+                        btnConfirm.Focus();
+                    }));
                 return;
             }
             window = null;

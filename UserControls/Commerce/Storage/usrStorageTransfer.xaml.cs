@@ -1102,6 +1102,7 @@ namespace WpfCol
                         });
                     }
                     catch { }
+                    btnCancel_Click(null, null);
                     datagridSearch.SearchHelper.ClearSearch();
                     FirstLevelNestedGrid.SearchHelper.ClearSearch();
                     SearchTermTextBox.Text = "";

@@ -1,4 +1,5 @@
-﻿using Syncfusion.XlsIO.Parser.Biff_Records;
+﻿using Syncfusion.Windows.Tools.Controls;
+using Syncfusion.XlsIO.Parser.Biff_Records;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -70,8 +71,10 @@ namespace WpfCol
         {
             Preferentials = new ObservableCollection<Preferential>();
             var db = new ColDbEntities1();
+            cmbProvince.ItemsSource = db.Province.AsNoTracking().ToList();            
+
             var count = db.Preferential.Count();
-            var h = db.Preferential.AsNoTracking().ToList();
+            var h = db.Preferential.Include("City").AsNoTracking().ToList();
             //var h = db.Preferential.Take(10).ToList();
             //if(count>10)
             //{
@@ -135,8 +138,9 @@ namespace WpfCol
                     WebSite = txtWebSite.Text,
                     Email = txtEmail.Text,
                     Address = txtAddress.Text,
-                    Description = txtDescription.Text
-                };                
+                    Description = txtDescription.Text,
+                    fk_CityId = (cmbCity.SelectedItem as City)?.Id
+                };
                 db.Preferential.Add(e_add);
                 Preferentials.Add(e_add);
             }
@@ -148,14 +152,18 @@ namespace WpfCol
                 e_Edidet.PreferentialName = preferential.PreferentialName = txtPreferentialName.Text;
                 e_Edidet.tGroup.GroupName = txtGroupName.Text;
 
-                e_Edidet.Mobile = txtMobile.Text;
-                e_Edidet.Phone1 = txtPhone1.Text;
-                e_Edidet.Phone2 = txtPhone2.Text;
-                e_Edidet.Phone3 = txtPhone3.Text;
-                e_Edidet.WebSite = txtWebSite.Text;
-                e_Edidet.Email = txtEmail.Text;
-                e_Edidet.Address = txtAddress.Text;
-                e_Edidet.Description = txtDescription.Text;
+                e_Edidet.Mobile = preferential.Mobile = txtMobile.Text;
+                e_Edidet.Phone1 = preferential.Phone1 = txtPhone1.Text;
+                e_Edidet.Phone2 = preferential.Phone2 = txtPhone2.Text;
+                e_Edidet.Phone3 = preferential.Phone3 = txtPhone3.Text;
+                e_Edidet.WebSite = preferential.WebSite = txtWebSite.Text;
+                e_Edidet.Email = preferential.Email = txtEmail.Text;
+                e_Edidet.Address = preferential.Address = txtAddress.Text;
+                e_Edidet.Description = preferential.Description = txtDescription.Text;
+                preferential.fk_CityId = (cmbCity.SelectedItem as City)?.Id;
+                e_Edidet.City = cmbCity.SelectedItem as City;
+                if (e_Edidet.City != null)
+                    e_Edidet.City.Province = cmbProvince.SelectedItem as Province;
             }
             if (!db.SafeSaveChanges())  return;
             if (id == Guid.Empty)
@@ -376,6 +384,8 @@ namespace WpfCol
             txtEmail.Text = "";
             txtAddress.Text = "";
             txtDescription.Text = "";
+            cmbCity.SelectedItem = null;
+            cmbProvince.SelectedItem = null;
         }
 
         private void datagrid_SelectionChanged(object sender, Syncfusion.UI.Xaml.Grid.GridSelectionChangedEventArgs e)
@@ -399,6 +409,23 @@ namespace WpfCol
                 txtEmail.Text = preferential.Email;
                 txtAddress.Text = preferential.Address;
                 txtDescription.Text = preferential.Description;
+                if (preferential.City != null)
+                {
+                    cmbCity.SelectionChanged -= cmbProvince_SelectionChanged;
+                    cmbProvince.SelectionChanged -= cmbProvince_SelectionChanged;
+                    cmbProvince.SelectedItem = (cmbProvince.ItemsSource as List<Province>).First(u => u.Id == preferential.City?.Province.Id);
+                    var id = (cmbProvince.SelectedItem as Province).Id;
+                    var db = new ColDbEntities1();
+                    cmbCity.ItemsSource = db.City.AsNoTracking().Where(y => y.fk_ProvinceId == id).ToList();
+                    cmbCity.SelectedItem = (cmbCity.ItemsSource as List<City>).First(u => u.Id == preferential.City.Id);
+                    cmbCity.SelectionChanged += cmbProvince_SelectionChanged;
+                    cmbProvince.SelectionChanged += cmbProvince_SelectionChanged;
+                }
+                else
+                {
+                    cmbCity.SelectedItem = null;
+                    cmbProvince.SelectedItem = null;
+                }
                 gridDelete.Visibility = Visibility.Visible;
                 borderEdit.Visibility = Visibility.Visible;
                 txtCodePreferential.IsReadOnly = true;
@@ -628,6 +655,68 @@ namespace WpfCol
                 return;
             }
             e.Handled = !IsTextAllowed(e.Text);
+        }
+        private void cmbProvince_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var cmb = sender as ComboBoxAdv;
+            isCancel = false;
+            switch (cmb.Name)
+            {
+                case "cmbProvince":
+                    if (cmb.SelectedIndex != -1)
+                    {
+                        cmbCity.Focus();
+                        var db = new ColDbEntities1();
+                        var id = (cmbProvince.SelectedItem as Province).Id;
+                        cmbCity.ItemsSource = db.City.AsNoTracking().Where(y=>y.fk_ProvinceId==id).ToList();
+                    }
+                    break;
+                case "cmbCity":
+                    if (cmb.SelectedIndex != -1)
+                    {
+                        txtPhone1.Focus();
+                    }
+                    break;
+
+            }
+        }
+
+        private void cmbProvince_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var cmb = sender as ComboBoxAdv;
+            if (e.Key == Key.Enter)
+            {
+                switch (cmb.Name)
+                {
+                    case "cmbProvince":
+                        Dispatcher.BeginInvoke(new Action(async () =>
+                        {
+                            await Task.Delay(50);
+                            cmbCity.Focus();
+                            var db = new ColDbEntities1();
+                            var id = (cmbProvince.SelectedItem as Province).Id;
+                            cmbCity.ItemsSource = db.City.AsNoTracking().Where(y => y.fk_ProvinceId == id).ToList();
+                        }));
+                        break;
+                    case "cmbCity":
+                        Dispatcher.BeginInvoke(new Action(async () =>
+                        {
+                            await Task.Delay(50);
+                            txtPhone1.Focus();
+                        }));
+                        break;
+
+                }
+                return;
+            }
+            cmb.SelectedIndex = -1;
+        }
+
+        private void cmbProvince_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var cmb=sender as ComboBoxAdv;
+            if (cmb.SelectedIndex == -1)
+                cmb.Text = "";
         }
     }
 }

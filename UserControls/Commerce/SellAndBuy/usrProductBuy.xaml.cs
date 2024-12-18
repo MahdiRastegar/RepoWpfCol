@@ -42,7 +42,7 @@ namespace WpfCol
     /// <summary>
     /// Interaction logic for winCol.xaml
     /// </summary>
-    public partial class usrStorageReceipt : UserControl,ITabForm,ITabEdidGrid,IDisposable
+    public partial class usrProductBuy : UserControl,ITabForm,ITabEdidGrid,IDisposable
     {
         public bool DataGridIsFocused
         {
@@ -51,45 +51,45 @@ namespace WpfCol
                 return datagrid.IsFocused;
             }
         }
-        StorageReceiptViewModel StorageReceiptViewModel;
+        ProductBuyViewModel ProductBuyViewModel;
         List<Mu> mus1 = new List<Mu>();
         List<Mu> mus2 = new List<Mu>();
-        public usrStorageReceipt()
+        public usrProductBuy()
         {
-            StorageReceipt_Details = new ObservableCollection<StorageReceipt_Detail>();
-            StorageReceiptHeaders = new ObservableCollection<StorageReceiptHeader>();
+            ProductBuy_Details = new ObservableCollection<ProductBuy_Detail>();
+            ProductBuyHeaders = new ObservableCollection<ProductBuyHeader>();
             InitializeComponent();
-            StorageReceiptViewModel = Resources["viewmodel"] as StorageReceiptViewModel;
-            StorageReceiptViewModel.StorageReceipt_Details.CollectionChanged += StorageReceipt_Details_CollectionChanged;
+            ProductBuyViewModel = Resources["viewmodel"] as ProductBuyViewModel;
+            ProductBuyViewModel.ProductBuy_Details.CollectionChanged += ProductBuy_Details_CollectionChanged;
             txbCalender.Text = pcw1.SelectedDate.ToString();
         }
 
         public void Dispose()
         {
-            if (StorageReceiptViewModel == null)
+            if (ProductBuyViewModel == null)
                 return;
-            StorageReceiptHeaders.Clear();
-            StorageReceipt_Details.Clear();
+            ProductBuyHeaders.Clear();
+            ProductBuy_Details.Clear();
             datagridSearch.Dispose();
             dataPager.Dispose();
             DataContext = null;
-            StorageReceiptViewModel.StorageReceipt_Details.CollectionChanged -= StorageReceipt_Details_CollectionChanged;
-            StorageReceiptViewModel = null;
+            ProductBuyViewModel.ProductBuy_Details.CollectionChanged -= ProductBuy_Details_CollectionChanged;
+            ProductBuyViewModel = null;
             GC.Collect();
         }
 
         Brush brush = null;
-        public ObservableCollection<StorageReceipt_Detail> StorageReceipt_Details { get; set; }
-        public ObservableCollection<StorageReceiptHeader> StorageReceiptHeaders { get; set; }
+        public ObservableCollection<ProductBuy_Detail> ProductBuy_Details { get; set; }
+        public ObservableCollection<ProductBuyHeader> ProductBuyHeaders { get; set; }
         private void Txt_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (e.Text == "\r")
             {
-                if ((sender as TextBox).Name == "txtNoDocumen")
-                {
-                    cmbType.Focus();
-                }
-                else
+                //if ((sender as TextBox).Name == "txtInvoiceNumber")
+                //{
+                    
+                //}
+                //else
                 {
                     TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
                     request.Wrapped = true;
@@ -104,7 +104,7 @@ namespace WpfCol
                 }));
                 return;
             }            
-            if ((sender as TextBox).Name != "cmbType")
+            if ((sender as TextBox).Name != "txtDescription"&& (sender as TextBox).Name != "txtCarPlate"&& (sender as TextBox).Name != "txtCarType" && (sender as TextBox).Name != "txtWayBillNumber")
                 e.Handled = !IsTextAllowed(e.Text);            
         }
         private static readonly Regex _regex = new Regex("[^0-9]"); //regex that matches disallowed text
@@ -117,25 +117,19 @@ namespace WpfCol
         {
             var db = new ColDbEntities1();
 
-            var temp = cmbType.SelectedIndex;
-            cmbType.ItemsSource = db.CodingReceiptTypes.ToList();
-            if (temp == -1)
-                cmbType.SelectedItem = (cmbType.ItemsSource as List<CodingReceiptTypes>).FirstOrDefault(t => t.IsDefault == true);
-            else
-                cmbType.SelectedIndex = temp;
             mus1.Clear();
             mus2.Clear();
-            var storages = db.Storage.ToList();
+            //var storages = db.Preferential.ToList();
             var commodities = db.Commodity.ToList();
-            foreach (var item in storages)
-            {                
-                mus1.Add(new Mu()
-                {
-                    Id = item.Id,
-                    Name = $"{item.StorageName}",
-                    Value = $"{item.StorageCode}",
-                });
-            }
+            //foreach (var item in storages)
+            //{                
+            //    mus1.Add(new Mu()
+            //    {
+            //        Id = item.Id,
+            //        Name = $"{item.PreferentialName}",
+            //        Value = $"{item.PreferentialCode}",
+            //    });
+            //}
             foreach (var item in commodities)
             {                
                 mus2.Add(new Mu()
@@ -146,46 +140,33 @@ namespace WpfCol
                     Name2 = item.Unit.Name
                 });
             }
-            cmbType.SelectedIndex = 0;
-            if (temp > 0)
-                cmbType.SelectedIndex = temp;
+
             if (AddedMode)
             {               
-                StorageReceipt_Details = StorageReceiptViewModel.StorageReceipt_Details;
-                //StorageReceipt_Details.Clear();
-                var y = db.StorageReceiptHeader.OrderByDescending(k => k.NoDoument).FirstOrDefault();
-                if (y == null)
-                {
-                    txtSerial.Text = txtNoDocumen.Text = "1";
-                }
-                else
-                {
-                    txtNoDocumen.Text = (y.NoDoument + 1).ToString();
-                    var yb = db.StorageReceiptHeader.OrderByDescending(k => k.NoDoument).FirstOrDefault();
-                    txtSerial.Text = (y.Serial + 1).ToString();
-                }
+                ProductBuy_Details = ProductBuyViewModel.ProductBuy_Details;
+                //ProductBuy_Details.Clear();                
                 dataPager.Source = null;
-                dataPager.Source = StorageReceipt_Details;
+                dataPager.Source = ProductBuy_Details;
+                txtPreferential.Focus();
             }
             else
             {
-                StorageReceipt_Details = StorageReceiptViewModel.StorageReceipt_Details;
-                StorageReceipt_Details.Clear();
-                //StorageReceipt_Details.Clear();
-                var h = db.StorageReceipt_Detail.Where(u=>u.fk_HeaderId==id).ToList();
-                h.ForEach(u => StorageReceipt_Details.Add(u));
+                ProductBuy_Details = ProductBuyViewModel.ProductBuy_Details;
+                ProductBuy_Details.Clear();
+                //ProductBuy_Details.Clear();
+                var h = db.ProductBuy_Detail.Where(u=>u.fk_HeaderId==id).ToList();
+                h.ForEach(u => ProductBuy_Details.Add(u));
                 RefreshDataGridForSetPersianNumber();
             }
             dataPager.Source = null;
-            dataPager.Source = StorageReceiptHeaders;
+            dataPager.Source = ProductBuyHeaders;
             datagrid.SearchHelper.AllowFiltering = true;
             datagridSearch.SearchHelper.AllowFiltering = true;
             FirstLevelNestedGrid.SearchHelper.AllowFiltering = true;
-            cmbType.Focus();
             isCancel = true;
         }
 
-        private static void SetAccountName(ColDbEntities1 db, StorageReceipt_Detail item2)
+        private static void SetAccountName(ColDbEntities1 db, ProductBuy_Detail item2)
         {/*
             var strings = item2.AcCode.Split('-');
             var moein = int.Parse(strings[0]);
@@ -202,38 +183,31 @@ namespace WpfCol
                 return;
             var db = new ColDbEntities1();
 
-            var codingReceipt=db.CodingReceiptTypes.FirstOrDefault(y=>y.Name==cmbType.Text);
-            if(codingReceipt == null)
-            {
-                Sf_txtDoumentType.HasError = true;
-                Sf_txtDoumentType.ErrorText = "این نوع رسید وجود ندارد!";
-                return;
-            }
-            StorageReceiptHeader e_Edidet = null;
+            ProductBuyHeader e_Edidet = null;
+            var code = int.Parse(txtPreferential.Text);
+            var preferential = db.Preferential.First(t => t.PreferentialCode == code);
             if (id == Guid.Empty)
             {
-                var h = long.Parse(txtNoDocumen.Text);
-                if (db.StorageReceiptHeader.Any(u => u.NoDoument == h))
+                var h = long.Parse(txtInvoiceNumber.Text);
+                if (db.ProductBuyHeader.Any(u => u.InvoiceNumber == h&&u.fk_PreferentialId==preferential.Id))
                 {
-                    Xceed.Wpf.Toolkit.MessageBox.Show("شماره رسید انبار تکراریست!");
+                    Xceed.Wpf.Toolkit.MessageBox.Show("شماره فاکتور برای این تفضیلی تکراریست!");
                     return;
                 }
             }
             else
             {
-                e_Edidet = db.StorageReceiptHeader.Find(id);
-                var h = long.Parse(txtNoDocumen.Text);
-                if (h != e_Edidet.NoDoument && db.StorageReceiptHeader.Any(u => u.NoDoument == h))
+                e_Edidet = db.ProductBuyHeader.Find(id);
+                var h = long.Parse(txtInvoiceNumber.Text);
+                if (h != e_Edidet.InvoiceNumber && db.ProductBuyHeader.Any(u => u.InvoiceNumber == h && u.fk_PreferentialId == preferential.Id))
                 {
-                    Xceed.Wpf.Toolkit.MessageBox.Show("شماره رسید انبار تکراریست!");
+                    Xceed.Wpf.Toolkit.MessageBox.Show("شماره فاکتور برای این تفضیلی تکراریست!");
                     return;
                 }
-            }
-            var code = int.Parse(txtStorage.Text);
-            var storage = db.Storage.First(t => t.StorageCode == code);
-            StorageReceiptHeader e_addHeader = null;
-            StorageReceiptHeader header = null;
-            var yx = db.StorageReceiptHeader.OrderByDescending(k => k.Serial).FirstOrDefault();
+            }            
+            ProductBuyHeader e_addHeader = null;
+            ProductBuyHeader header = null;
+            var yx = db.ProductBuyHeader.OrderByDescending(k => k.Serial).FirstOrDefault();
             string serial = "1";
             if (yx != null)
             {
@@ -241,94 +215,117 @@ namespace WpfCol
             }
             if (id == Guid.Empty)
             {
-                e_addHeader = new StorageReceiptHeader()
+                e_addHeader = new ProductBuyHeader()
                 {
                     Id = Guid.NewGuid(),
                     Date = pcw1.SelectedDate.ToDateTime(),
-                    NoDoument = long.Parse(txtNoDocumen.Text),
+                    InvoiceNumber = long.Parse(txtInvoiceNumber.Text),
                     Serial = long.Parse(serial),
                     Description = txtDescription.Text,
-                    CodingReceiptTypes = codingReceipt,
-                    Storage = storage,
+                    Preferential = preferential,
+                    WayBillNumber = txtWayBillNumber.Text,
+                    CarPlate = txtCarPlate.Text,
+                    CarType = txtCarType.Text,
+                    SumDiscount = decimal.Parse(txtSumDiscount.Text.Replace(",", "")),
+                    InvoiceDiscount = decimal.Parse(txtInvoiceDiscount.Text)
                 };
-                DbSet<StorageReceipt_Detail> details = null;
+                if (txtOrderNumber.Text != "")
+                    e_addHeader.OrderNumber = long.Parse(txtOrderNumber.Text);
+                if (txtShippingCost.Text != "")
+                    e_addHeader.ShippingCost = decimal.Parse(txtShippingCost.Text);
+                DbSet<ProductBuy_Detail> details = null;
                 int index = 0;
-                foreach (var item in StorageReceipt_Details)
+                foreach (var item in ProductBuy_Details)
                 {
                     index++;
-                    var en = new StorageReceipt_Detail()
+                    var en = new ProductBuy_Detail()
                     {
-                        StorageReceiptHeader = e_addHeader,
+                        ProductBuyHeader = e_addHeader,
                         fk_CommodityId = item.Commodity.Id,
                         Value = item.Value,
                         Indexer = index,
+                        Discount = item.Discount,
+                        Fee = item.Fee,
+                        TaxPercent = item.Commodity.Taxable == true ? item.TaxPercent : 0,
                         Id = Guid.NewGuid()
                     };
-                    db.StorageReceipt_Detail.Add(en);
+                    db.ProductBuy_Detail.Add(en);
                 }
-                db.StorageReceiptHeader.Add(e_addHeader);
+                db.ProductBuyHeader.Add(e_addHeader);
                 if (LoadedFill)
-                    StorageReceiptHeaders.Add(e_addHeader);
+                    ProductBuyHeaders.Add(e_addHeader);
             }
             else
             {
-                var h = db.StorageReceipt_Detail.Where(v => v.fk_HeaderId == id);
-                header = StorageReceiptHeaders.First(u => u.Id == id);
+                var h = db.ProductBuy_Detail.Where(v => v.fk_HeaderId == id);
+                header = ProductBuyHeaders.First(u => u.Id == id);
                 foreach (var item in h)
                 {
-                    db.StorageReceipt_Detail.Remove(item);
-                    header.StorageReceipt_Detail.Remove(header.StorageReceipt_Detail.First(x => x.Id == item.Id));
+                    db.ProductBuy_Detail.Remove(item);
+                    header.ProductBuy_Detail.Remove(header.ProductBuy_Detail.First(x => x.Id == item.Id));
                 }                
-                e_Edidet.NoDoument = header.NoDoument = long.Parse(txtNoDocumen.Text);
+                e_Edidet.InvoiceNumber = header.InvoiceNumber = long.Parse(txtInvoiceNumber.Text);
                 e_Edidet.Date = header.Date = pcw1.SelectedDate.ToDateTime();
-                e_Edidet.CodingReceiptTypes = header.CodingReceiptTypes = codingReceipt;
                 e_Edidet.Description= header.Description=txtDescription.Text;
-                e_Edidet.Storage = header.Storage = storage;
+                e_Edidet.Preferential = header.Preferential = preferential;
+                if (txtOrderNumber.Text != "")
+                    e_Edidet.OrderNumber = header.OrderNumber = long.Parse(txtOrderNumber.Text);
+                if (txtShippingCost.Text != "")
+                    e_Edidet.ShippingCost = header.ShippingCost = decimal.Parse(txtShippingCost.Text);
+                e_Edidet.WayBillNumber = header.WayBillNumber = txtWayBillNumber.Text;
+                e_Edidet.CarPlate = header.CarPlate = txtCarPlate.Text;
+                e_Edidet.CarType = header.CarType = txtCarType.Text;
+                e_Edidet.SumDiscount = header.SumDiscount = decimal.Parse(txtSumDiscount.Text);
+                e_Edidet.InvoiceDiscount = header.InvoiceDiscount = decimal.Parse(txtInvoiceDiscount.Text);
+
                 int index = 0;
-                foreach (var item in StorageReceipt_Details)
+                foreach (var item in ProductBuy_Details)
                 {
                     index++;
-                    var en = new StorageReceipt_Detail()
+                    var en = new ProductBuy_Detail()
                     {
-                        StorageReceiptHeader = e_Edidet,
+                        ProductBuyHeader = e_Edidet,
                         fk_CommodityId = item.Commodity.Id,
                         Value = item.Value,
                         Indexer = index,
+                        Discount = item.Discount,
+                        Fee = item.Fee,
+                        TaxPercent = item.Commodity.Taxable == true ? item.TaxPercent : 0,
                         Id = Guid.NewGuid()
                     };
-                    db.StorageReceipt_Detail.Add(en);
-                    header.StorageReceipt_Detail.Add(en);
+                    db.ProductBuy_Detail.Add(en);
+                    header.ProductBuy_Detail.Add(en);
                 }
-                //e_Edidet.fk_GroupId = StorageReceipt_Detail.fk_GroupId = col.Id;
-                //e_Edidet.StorageReceipt_DetailName = StorageReceipt_Detail.StorageReceipt_DetailName = txtNoDocumen.Text;
+                //e_Edidet.fk_GroupId = ProductBuy_Detail.fk_GroupId = col.Id;
+                //e_Edidet.ProductBuy_DetailName = ProductBuy_Detail.ProductBuy_DetailName = txtInvoiceNumber.Text;
             }
             if (!db.SafeSaveChanges())  return;
             if (header != null)
             {
                 int i = 0;
-                foreach (var item in header.StorageReceipt_Detail)
+                foreach (var item in header.ProductBuy_Detail)
                 {
-                    item.Commodity = StorageReceipt_Details[i].Commodity;
+                    item.Commodity = ProductBuy_Details[i].Commodity;
                     i++;
                 }
             }
             if(e_addHeader!=null)
             {
                 int i = 0;
-                foreach (var item in e_addHeader.StorageReceipt_Detail)
+                foreach (var item in e_addHeader.ProductBuy_Detail)
                 {
-                    item.Commodity = StorageReceipt_Details[i].Commodity;
+                    item.Commodity = ProductBuy_Details[i].Commodity;
                     i++;
                 }
             }
             datagrid.SelectedIndex = -1;
             datagrid.ClearFilters();
             datagrid.SearchHelper.ClearSearch();
-            if (StorageReceipt_Details.Count > 0)
+            if (ProductBuy_Details.Count > 0)
             {
                 datagrid.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    StorageReceipt_Details.Clear();
+                    ProductBuy_Details.Clear();
                 }));
                 RefreshDataGridForSetPersianNumber();
             }
@@ -350,20 +347,18 @@ namespace WpfCol
                 });
                 th.Start();
                 searchImage.Visibility = Visibility.Collapsed;
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت رسید انبار");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت فاکتور خرید");
                 searchImage.Visibility = Visibility.Visible;
                 this.gifImage.Visibility = Visibility.Collapsed;
-                txtNoDocumen.Text = (long.Parse(txtNoDocumen.Text) + 1).ToString();
+                txtInvoiceNumber.Text = (long.Parse(txtInvoiceNumber.Text) + 1).ToString();
                 txtSerial.Text = (long.Parse(serial) + 1).ToString();
-
-                cmbType.SelectedIndex = 0;
-                cmbType.Focus();
             }
             else
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش رسید انبار");
+                Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات ویرایش شد.", "ویرایش فاکتور خرید");
             }
             btnCancel_Click(null, null);
+            txtPreferential.Focus();
                             
             isCancel = true;                        
             id = Guid.Empty;
@@ -374,39 +369,30 @@ namespace WpfCol
             var haserror = false;
             datagrid.BorderBrush = new  System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)ColorConverter.ConvertFromString("#FF808080"));
 
-            if (txtNoDocumen.Text.Trim() == "")
+            if (txtInvoiceNumber.Text.Trim() == "")
             {
-                Sf_txtNoDocumen.HasError = true;
+                Sf_txtInvoiceNumber.HasError = true;
                 haserror = true;
             }
             else
-                Sf_txtNoDocumen.HasError = false;
-            if (cmbType.Text.Trim() == "")
+                Sf_txtInvoiceNumber.HasError = false;
+            
+            if (txtPreferential.Text.Trim() == "")
             {
-                Sf_txtDoumentType.HasError = true;
-                haserror = true;
-            }
-            else
-            {
-                Sf_txtDoumentType.HasError = false;
-                Sf_txtDoumentType.ErrorText = "";
-            }
-            if (txtStorage.Text.Trim() == "")
-            {
-                Sf_txtStorage.HasError = true;
+                Sf_txtPreferential.HasError = true;
                 haserror = true;
             }
             else
             {
-                Sf_txtStorage.HasError = false;
-                Sf_txtStorage.ErrorText = "";
+                Sf_txtPreferential.HasError = false;
+                Sf_txtPreferential.ErrorText = "";
             }
-            if (StorageReceipt_Details.Count == 0)//StorageReceipt_Details.Any(g => !viewModel.AllCommodities.Any(y => y.CommodityCode == g.CommodityCode)))
+            if (ProductBuy_Details.Count == 0)//ProductBuy_Details.Any(g => !viewModel.AllCommodities.Any(y => y.CommodityCode == g.CommodityCode)))
             {
                 datagrid.BorderBrush = Brushes.Red;
                 haserror = true;
             }
-            else if (StorageReceipt_Details.Any(t => t.Commodity == null || t.Value == 0 ))
+            else if (ProductBuy_Details.Any(t => t.Commodity == null || t.Value == 0 )|| (ProductBuy_Details.Any(t => t.Error != string.Empty)))
             {
                 datagrid.BorderBrush = Brushes.Red;
                 haserror = true;
@@ -553,7 +539,7 @@ namespace WpfCol
             isCancel = false;
             CalDebCre();
 
-            if (window == null && datagrid.GetRecordAtRowIndex(e.RowColumnIndex.RowIndex) is StorageReceipt_Detail StorageReceipt_Detail)
+            if (window == null && datagrid.GetRecordAtRowIndex(e.RowColumnIndex.RowIndex) is ProductBuy_Detail ProductBuy_Detail)
             {
                 if ((CurrentCellText ?? "") != "")
                 {                   
@@ -568,7 +554,7 @@ namespace WpfCol
                         else
                         {
                             var commodity = db.Commodity.Find(mu.Id);
-                            StorageReceipt_Detail.Commodity = commodity;
+                            ProductBuy_Detail.Commodity = commodity;
                         }
                     }
                 }
@@ -598,19 +584,6 @@ namespace WpfCol
             }         
         }
 
-        private void cmbType_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                Dispatcher.BeginInvoke(new Action(async () =>
-                {
-                    await Task.Delay(50);
-                    txtStorage.Focus();
-                }));
-                return;
-            }
-            cmbType.SelectedIndex = -1;
-        }
         bool isCancel = true;
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
@@ -638,35 +611,55 @@ namespace WpfCol
             {
                 if (id != Guid.Empty)
                 {
-                    var e_Edidet = db.StorageReceiptHeader.Find(id);
-                    var header = StorageReceiptHeaders.FirstOrDefault(o => o.Id == id);
-                    header.StorageReceipt_Detail.Clear();
-                    foreach (var item in e_Edidet.StorageReceipt_Detail)
+                    var e_Edidet = db.ProductBuyHeader.Find(id);
+                    var header = ProductBuyHeaders.FirstOrDefault(o => o.Id == id);
+                    header.ProductBuy_Detail.Clear();
+                    foreach (var item in e_Edidet.ProductBuy_Detail)
                     {
-                        header.StorageReceipt_Detail.Add(item);
+                        header.ProductBuy_Detail.Add(item);
                         SetAccountName(db, item);
                     }
                 }
-                AddedMode = true;                
-                column1.Width = new GridLength(225);
+                AddedMode = true;
+                column2.Width = column1.Width = new GridLength(225);
                 datagrid.AllowEditing = datagrid.AllowDeleting = true;
                 datagrid.AddNewRowPosition = Syncfusion.UI.Xaml.Grid.AddNewRowPosition.Bottom;
             }
             datagrid.Visibility = Visibility.Visible;
             datagridSearch.Visibility = Visibility.Collapsed;
             gridConfirm.Visibility = Visibility.Visible;
-            cmbType.IsReadOnly = false;
-            txtNoDocumen.Text = "";
-            Sf_txtNoDocumen.HasError = false;
-            Sf_txtDoumentType.HasError = false;
-            Sf_txtDoumentType.ErrorText = "";
-            txtStorage.Text = string.Empty;
+            txtInvoiceNumber.Text = "";
+            Sf_txtInvoiceNumber.HasError = false;
             txtDescription.Text = string.Empty;
-            Sf_txtStorage.HasError = false;
-            Sf_txtStorage.HelperText = "";
-            //txtCodeStorageReceipt_Detail.Text = (en.StorageReceipt_DetailCode + 1).ToString();
+            txtPreferential.Text = string.Empty;
+            Sf_txtPreferential.HasError = false;
+            Sf_txtPreferential.HelperText = "";
 
-            cmbType.Focus();
+            txtOrderNumber.Text = string.Empty;
+            Sf_txtOrderNumber.HasError = false;
+
+            txtWayBillNumber.Text = string.Empty;
+            Sf_txtWayBillNumber.HasError = false;
+
+            txtCarPlate.Text = string.Empty;
+            Sf_txtCarPlate.HasError = false;
+
+            txtCarType.Text = string.Empty;
+            Sf_txtCarType.HasError = false;
+
+            txtShippingCost.Text = string.Empty;
+            Sf_txtShippingCost.HasError = false;
+
+            txtInvoiceDiscount.Text = "0";
+            Sf_txtInvoiceDiscount.HasError = false;
+
+            txtSum.Text = string.Empty;
+            Sf_txtSum.HasError = false;
+
+            txtSumDiscount.Text = string.Empty;
+            Sf_txtSumDiscount.HasError = false;
+            //txtCodeProductBuy_Detail.Text = (en.ProductBuy_DetailCode + 1).ToString();
+
             datagrid.SelectedIndex = -1;
             datagrid.ClearFilters();
             //datagrid.TableSummaryRows.Clear();
@@ -675,28 +668,19 @@ namespace WpfCol
             dataPager.Visibility = Visibility.Collapsed;
             gridDelete.Visibility = Visibility.Hidden;
             borderEdit.Visibility = Visibility.Hidden;
-            cmbType.SelectedIndex = 0;
             txtSerial.Text = "";
             datagrid.BorderBrush = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)ColorConverter.ConvertFromString("#FF808080"));
-            if (StorageReceipt_Details.Count > 0)
+            if (ProductBuy_Details.Count > 0)
             {
                 datagrid.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    StorageReceipt_Details.Clear();
+                    ProductBuy_Details.Clear();
                 }));
                 RefreshDataGridForSetPersianNumber();
             }
-            var y = db.StorageReceiptHeader.OrderByDescending(k => k.NoDoument).FirstOrDefault();
-            if (y == null)
-            {
-                txtSerial.Text = txtNoDocumen.Text = "1";
-            }
-            else
-            {
-                txtNoDocumen.Text = (y.NoDoument + 1).ToString();
-                var yb = db.StorageReceiptHeader.OrderByDescending(k => k.NoDoument).FirstOrDefault();
-                txtSerial.Text = (y.Serial + 1).ToString();
-            }
+            
+            if(sender!=null)
+                txtPreferential.Focus();
             isCancel = true;
             id = Guid.Empty;
         }
@@ -707,13 +691,13 @@ namespace WpfCol
             if (datagrid.SelectedItem != null && !AddedMode)
             {
                 gridDelete.Visibility = Visibility.Visible;
-                /*var StorageReceipt_Detail = datagrid.SelectedItem as StorageReceipt_Detail;
-                id = StorageReceipt_Detail.Id;
+                /*var ProductBuy_Detail = datagrid.SelectedItem as ProductBuy_Detail;
+                id = ProductBuy_Detail.Id;
                 cmbType.TextChanged -= txtDoumentType_TextChanged;
-                cmbType.Text = StorageReceipt_Detail.tGroup.GroupCode.ToString();
+                cmbType.Text = ProductBuy_Detail.tGroup.GroupCode.ToString();
                 cmbType.TextChanged += txtDoumentType_TextChanged;
-                txtSerial.Text = StorageReceipt_Detail.tGroup.GroupName;
-                txtNoDocumen.Text = StorageReceipt_Detail.StorageReceipt_DetailName;
+                txtSerial.Text = ProductBuy_Detail.tGroup.GroupName;
+                txtInvoiceNumber.Text = ProductBuy_Detail.ProductBuy_DetailName;
                 gridDelete.Visibility = Visibility.Visible;
                 borderEdit.Visibility = Visibility.Visible;
                 cmbType.IsReadOnly = true;
@@ -733,15 +717,15 @@ namespace WpfCol
                 return;
             }
             var db = new ColDbEntities1();
-            foreach (var item in db.StorageReceipt_Detail.Where(u => u.fk_HeaderId == id))
+            foreach (var item in db.ProductBuy_Detail.Where(u => u.fk_HeaderId == id))
             {
-                db.StorageReceipt_Detail.Remove(item);
+                db.ProductBuy_Detail.Remove(item);
             }
-            db.StorageReceiptHeader.Remove(db.StorageReceiptHeader.Find(id));
+            db.ProductBuyHeader.Remove(db.ProductBuyHeader.Find(id));
             if (!db.SafeSaveChanges())  return;
             try
             {
-                StorageReceiptHeaders.Remove(StorageReceiptHeaders.First(f => f.Id == id));
+                ProductBuyHeaders.Remove(ProductBuyHeaders.First(f => f.Id == id));
             }
             catch
             {
@@ -805,9 +789,9 @@ namespace WpfCol
                         //var h2 = FirstLevelNestedGrid.SearchHelper.GetSearchRecords();
                         //var h1 = datagridSearch.SearchHelper.GetSearchRecords();
 
-                        /*foreach (StorageReceiptHeader item in datagridSearch.DetailsViewDefinition)
+                        /*foreach (ProductBuyHeader item in datagridSearch.DetailsViewDefinition)
                         {
-                            if(item.StorageReceipt_Detail.Count!=0)
+                            if(item.ProductBuy_Detail.Count!=0)
                             {
 
                             }
@@ -836,8 +820,8 @@ namespace WpfCol
             var list = new List<int>();
             foreach (var item in datagridSearch.View?.Records)
             {
-                var tt = item.Data as StorageReceiptHeader;
-                if (!tt.StorageReceipt_Detail.Any(i => i.Value.ToString().Contains(SearchTermTextBox.Text.ToLower())==true ||
+                var tt = item.Data as ProductBuyHeader;
+                if (!tt.ProductBuy_Detail.Any(i => i.Value.ToString().Contains(SearchTermTextBox.Text.ToLower())==true ||
                 i.Commodity.Unit.Name.ToString().Contains(SearchTermTextBox.Text.ToLower()) ||
                 i.Commodity.Code.ToString().Contains(SearchTermTextBox.Text.ToLower()) ||
                 i.Commodity.Name.ToLower().Contains(SearchTermTextBox.Text.ToLower()) == true))
@@ -863,12 +847,12 @@ namespace WpfCol
                 
         }
 
-        private void txtNoDocumen_TextChanged(object sender, TextChangedEventArgs e)
+        private void txtInvoiceNumber_TextChanged(object sender, TextChangedEventArgs e)
         {
             isCancel = false;
         }
 
-        private void TxtCodeStorageReceipt_Detail_TextChanged(object sender, TextChangedEventArgs e)
+        private void TxtCodeProductBuy_Detail_TextChanged(object sender, TextChangedEventArgs e)
         {
             isCancel = false;
         }
@@ -888,13 +872,13 @@ namespace WpfCol
             var ex = datagrid.View.FilterPredicates;
             
             var db = new ColDbEntities1();
-            //db.StorageReceipt_Detail.Where(ex)
-            var count = db.StorageReceipt_Detail.Count();
-            var F = db.StorageReceipt_Detail.OrderBy(d=>d.Id).Skip(10 * e.NewPageIndex).Take(10).ToList();
+            //db.ProductBuy_Detail.Where(ex)
+            var count = db.ProductBuy_Detail.Count();
+            var F = db.ProductBuy_Detail.OrderBy(d=>d.Id).Skip(10 * e.NewPageIndex).Take(10).ToList();
             int j = 0;
             for (int i = 10 * e.NewPageIndex; i < 10 * (e.NewPageIndex + 1)&&i<count; i++)
             {
-                StorageReceipt_Details[i] = F[j];
+                ProductBuy_Details[i] = F[j];
                 j++;
             }
         }
@@ -906,7 +890,7 @@ namespace WpfCol
             }
             forceClose = true;
             var list = MainWindow.Current.GetTabControlItems;
-            var item = list.FirstOrDefault(u => u.Header == "رسید انبار");
+            var item = list.FirstOrDefault(u => u.Header == "فاکتور خرید");
             MainWindow.Current.tabcontrol.Items.Remove(item);
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -942,9 +926,9 @@ namespace WpfCol
 
         public void SetNull()
         {
-            if(window!=null&&(window as winSearch).ParentTextBox is StorageReceipt_Detail storage)
+            if(window!=null&&(window as winSearch).ParentTextBox is ProductBuy_Detail storage)
             {
-                var y = (window as winSearch).ParentTextBox as StorageReceipt_Detail;
+                var y = (window as winSearch).ParentTextBox as ProductBuy_Detail;
                 //((datagrid.SelectionController.CurrentCellManager.CurrentCell.Element as GridCell).Content as FrameworkElement).DataContext = null;
                 //((datagrid.SelectionController.CurrentCellManager.CurrentCell.Element as GridCell).Content as FrameworkElement).DataContext = y;
                 var detail = y;                
@@ -1003,7 +987,7 @@ namespace WpfCol
         private void datagrid_AddNewRowInitiating(object sender, Syncfusion.UI.Xaml.Grid.AddNewRowInitiatingEventArgs e)
         {
             /*
-            var h = StorageReceiptViewModel.StorageReceipt_Details.FirstOrDefault(q => q.AcCode == ctext);
+            var h = ProductBuyViewModel.ProductBuy_Details.FirstOrDefault(q => q.AcCode == ctext);
             if (h != null)
             {
                 (e.NewObject as UtililtyCommodity).CommodityId = h.ID;
@@ -1033,18 +1017,35 @@ namespace WpfCol
                     };
                     searchImage.Opacity = 1;
                     gridDelete.Visibility = Visibility.Collapsed;
-                    StorageReceipt_Details.Clear();
-                    var header = datagridSearch.SelectedItem as StorageReceiptHeader;
+                    ProductBuy_Details.Clear();
+                    var header = datagridSearch.SelectedItem as ProductBuyHeader;
                     id = header.Id;
-                    header.StorageReceipt_Detail.ForEach(t => StorageReceipt_Details.Add(t));
-                    cmbType.SelectedItem = (cmbType.ItemsSource as List<CodingReceiptTypes>).First(u => u.Id == header.CodingReceiptTypes.Id);
+                    header.ProductBuy_Detail.ForEach(t => ProductBuy_Details.Add(t));
                     pcw1.SelectedDate = new PersianCalendarWPF.PersianDate(header.Date);
                     txbCalender.Text = pcw1.SelectedDate.ToString();
-                    txtNoDocumen.Text = header.NoDoument.ToString();
-                    txtStorage.Text = header.Storage.StorageCode.ToString();
-                    Sf_txtStorage.HelperText = header.Storage.StorageName.ToString();
+                    txtInvoiceNumber.Text = header.InvoiceNumber.ToString();
+                    txtPreferential.Text = header.Preferential.PreferentialCode.ToString();
+                    Sf_txtPreferential.HelperText = header.Preferential.PreferentialName.ToString();
                     txtDescription.Text = header.Description.ToString();
                     txtSerial.Text = header.Serial.ToString();
+
+                    txtOrderNumber.Text = header.OrderNumber?.ToString();
+
+                    txtWayBillNumber.Text = header.WayBillNumber;
+
+                    txtCarPlate.Text = header.CarPlate;
+
+                    txtCarType.Text = header.CarType;
+
+                    txtShippingCost.Text = header.ShippingCost.ToString();
+
+                    txtInvoiceDiscount.Text = header.InvoiceDiscount.ToString();
+
+                    txtSumDiscount.Text = header.SumDiscount.ToString();
+
+                    var Y = header.ProductBuy_Detail.Sum(y => y.Sum);
+                    txtSum.Text = Y.ToString();
+
                     datagrid.AllowEditing = datagrid.AllowDeleting = true;
                     datagrid.AddNewRowPosition = Syncfusion.UI.Xaml.Grid.AddNewRowPosition.Bottom;
                     datagrid.Visibility = Visibility.Visible;
@@ -1056,14 +1057,11 @@ namespace WpfCol
                     SearchTermTextBox.TextChanged+= SearchTermTextBox_TextChanged;
                     datagridSearch.Visibility = Visibility.Collapsed;
                     gridConfirm.Visibility = Visibility.Visible;
-                    cmbType.IsReadOnly = false;
-                    Sf_txtNoDocumen.HasError = false;
-                    Sf_txtDoumentType.HasError = false;
-                    Sf_txtDoumentType.ErrorText = "";
-                    column1.Width = new GridLength(225);
+                    Sf_txtInvoiceNumber.HasError = false;
+                    column2.Width = column1.Width = new GridLength(225);
                     borderEdit.Visibility = Visibility.Visible;
                     RefreshDataGridForSetPersianNumber();
-                    datagrid.SelectedIndex = StorageReceipt_Details.Count - 1;
+                    datagrid.SelectedIndex = ProductBuy_Details.Count - 1;
                     isCancel = true;
                 }
                 else
@@ -1079,15 +1077,15 @@ namespace WpfCol
                     if (!AddedMode)
                     {
                         var db = new ColDbEntities1();
-                        var e_Edidet = db.StorageReceiptHeader.Find(id);
-                        var header = StorageReceiptHeaders.FirstOrDefault(o => o.Id == id);
-                        header.StorageReceipt_Detail.Clear();
-                        e_Edidet.StorageReceipt_Detail = e_Edidet.StorageReceipt_Detail
+                        var e_Edidet = db.ProductBuyHeader.Find(id);
+                        var header = ProductBuyHeaders.FirstOrDefault(o => o.Id == id);
+                        header.ProductBuy_Detail.Clear();
+                        e_Edidet.ProductBuy_Detail = e_Edidet.ProductBuy_Detail
                        .OrderBy(d => d.Indexer)
                        .ToList();
-                        foreach (var item in e_Edidet.StorageReceipt_Detail)
+                        foreach (var item in e_Edidet.ProductBuy_Detail)
                         {
-                            header.StorageReceipt_Detail.Add(item);
+                            header.ProductBuy_Detail.Add(item);
                             SetAccountName(db, item);
                         }
                     }
@@ -1108,7 +1106,7 @@ namespace WpfCol
                     SearchTermTextBox.Text = "";
                     datagridSearch.SelectedItem = null;
                     var t = dataPager.Source;
-                    //foreach (var item in t as ObservableCollection<StorageReceiptHeader>)
+                    //foreach (var item in t as ObservableCollection<ProductBuyHeader>)
                     //{
                     //    item.RefreshSumColumns();
                     //}
@@ -1130,7 +1128,7 @@ namespace WpfCol
                         }), DispatcherPriority.Render);
                     }), DispatcherPriority.Render);
                     gridConfirm.Visibility = Visibility.Collapsed;
-                    if ((t as ObservableCollection<StorageReceiptHeader>).Count == 0)
+                    if ((t as ObservableCollection<ProductBuyHeader>).Count == 0)
                         searchImage.Opacity = .6;
                     searchImage.Source = new BitmapImage(new Uri("pack://application:,,,/Images/dataedit.png"));
                     searchImage.ToolTip = "ویرایش";
@@ -1141,7 +1139,7 @@ namespace WpfCol
                         B = 255,
                         A = 240
                     };
-                    column1.Width = new GridLength(0);
+                    column2.Width = column1.Width = new GridLength(0);
                     datagrid.AllowEditing = datagrid.AllowDeleting = false;
                     datagrid.AddNewRowPosition = Syncfusion.UI.Xaml.Grid.AddNewRowPosition.None;
                     AddedMode = false;
@@ -1161,21 +1159,21 @@ namespace WpfCol
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 var db = new ColDbEntities1();
-                var documents = db.StorageReceiptHeader
-                    .Include(h => h.StorageReceipt_Detail)
+                var documents = db.ProductBuyHeader
+                    .Include(h => h.ProductBuy_Detail)
                     .AsNoTracking()
                     .ToList();
                 foreach (var doc in documents)
                 {
-                    doc.StorageReceipt_Detail = doc.StorageReceipt_Detail
+                    doc.ProductBuy_Detail = doc.ProductBuy_Detail
                         .OrderBy(d => d.Indexer)
                         .ToList();
 
-                    foreach (var item2 in doc.StorageReceipt_Detail)
+                    foreach (var item2 in doc.ProductBuy_Detail)
                     {
                         SetAccountName(db, item2);
                     }
-                    StorageReceiptHeaders.Add(doc);
+                    ProductBuyHeaders.Add(doc);
                 }
                 LoadedFill = true;
                 Mouse.OverrideCursor = null;
@@ -1183,7 +1181,7 @@ namespace WpfCol
             else
             {
                 Mouse.OverrideCursor = Cursors.Wait;
-                StorageReceiptHeaders.ForEach(y => y.StorageReceipt_Detail = y.StorageReceipt_Detail
+                ProductBuyHeaders.ForEach(y => y.ProductBuy_Detail = y.ProductBuy_Detail
                    .OrderBy(d => d.Indexer)
                    .ToList());
                 Mouse.OverrideCursor = null;
@@ -1208,7 +1206,7 @@ namespace WpfCol
             if (datagridSearch.SelectedItem != null)
             {
                 searchImage.Opacity = 1;
-                var header = datagridSearch.SelectedItem as StorageReceiptHeader;
+                var header = datagridSearch.SelectedItem as ProductBuyHeader;
                 id = header.Id;
             }
             else if (datagrid.Visibility != Visibility.Visible)
@@ -1217,10 +1215,10 @@ namespace WpfCol
 
         private void datagrid_RowValidated(object sender, RowValidatedEventArgs e)
         {
-            //var detail = e.RowData as StorageReceipt_Detail;
+            //var detail = e.RowData as ProductBuy_Detail;
             //if (datagrid.SelectedIndex!=-1&& detail.ColeMoein == null && detail.PreferentialCode == null && detail.Debtor == null && detail.Creditor == null && detail.Description == null)
             //{
-            //    StorageReceipt_Details.Remove(detail);
+            //    ProductBuy_Details.Remove(detail);
             //    return;
             //}
             //var currentCell = datagrid.SelectionController.CurrentCellManager?.CurrentCell;
@@ -1232,16 +1230,16 @@ namespace WpfCol
             //    detail.Debtor = null;
         }
 
-        private void StorageReceipt_Details_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ProductBuy_Details_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            //var detail = StorageReceipt_Details.LastOrDefault();
+            //var detail = ProductBuy_Details.LastOrDefault();
             //if (detail == null)
             //    return;
             //if (detail.ColeMoein == null && detail.PreferentialCode == null && detail.Debtor == null && detail.Creditor == null && detail.Description == null)
             //{
             //    datagrid.Dispatcher.BeginInvoke(new Action(() =>
             //    {
-            //        StorageReceipt_Details.Remove(detail);
+            //        ProductBuy_Details.Remove(detail);
             //    }));
             //}
             //datagrid.Dispatcher.BeginInvoke(new Action(() =>
@@ -1252,20 +1250,19 @@ namespace WpfCol
 
         private void CalDebCre()
         {
-            if (datagrid.SelectionController.CurrentCellManager?.CurrentCell?.ColumnIndex >= 4)
+            if (datagrid.SelectionController.CurrentCellManager?.CurrentCell?.ColumnIndex >= 1)
             {
+                var Y = ProductBuy_Details.Sum(y => y.Sum);
+                txtSum.Text = Y.ToString();
+                txtSumDiscount.Text = (Y - decimal.Parse(txtInvoiceDiscount.Text.Replace(",", ""))).ToString();
+                //return;
+
                 var t = datagrid.ItemsSource;
                 datagrid.ItemsSource = null;
                 datagrid.ItemsSource = t;
+                //}
+                datagrid.View?.Refresh();
             }
-            datagrid.View?.Refresh();
-        }
-
-        private void cmbType_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            isCancel = false;
-            if (cmbType.SelectedIndex != -1)
-                txtStorage.Focus();
         }
 
         private void datagridSearch_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -1438,13 +1435,13 @@ namespace WpfCol
         private void datagrid_CurrentCellValueChanged(object sender, CurrentCellValueChangedEventArgs e)
         {
             var textBox = (datagrid.SelectionController.CurrentCellManager?.CurrentCell.Element as GridCell).Content as TextBox;
-            if (textBox.Text != "" && e.Record is StorageReceipt_Detail detail && detail.Commodity?.Code.ToString() != textBox.Text && !Keyboard.IsKeyDown(Key.Enter))
+            if (textBox.Text != "" && e.Record is ProductBuy_Detail detail && detail.Commodity?.Code.ToString() != textBox.Text && !Keyboard.IsKeyDown(Key.Enter))
                 CurrentCellText = textBox.Text;
         }
 
         private void datagrid_RowValidating(object sender, RowValidatingEventArgs e)
         {
-            if (e.RowData is StorageReceipt_Detail detail)
+            if (e.RowData is ProductBuy_Detail detail)
             {
                 var dataColumn = datagrid.SelectionController.CurrentCellManager?.CurrentCell;
                 var textBox = (dataColumn.Element as GridCell).Content as TextBox;
@@ -1517,51 +1514,86 @@ namespace WpfCol
                 datagridSearch.ExpandAllDetailsView();
         }
 
-        private void txtStorage_TextChanged(object sender, TextChangedEventArgs e)
+        private void txtPreferential_TextChanged(object sender, TextChangedEventArgs e)
         {
             isCancel = false;
         }
 
-        private void txtStorage_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void txtPreferential_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (e.Text == "\r")
             {
-                txtDescription.Focus();                
+                txtInvoiceNumber.Focus();                
                 return;
             }
             e.Handled = !IsTextAllowed(e.Text);
         }
 
-        private void txtStorage_LostFocus(object sender, RoutedEventArgs e)
+        private void txtPreferential_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (txtStorage.Text == "")
+            if (txtPreferential.Text == "")
             {
-                txtStorage.Text = string.Empty;
-                Sf_txtStorage.HelperText = string.Empty;
+                txtPreferential.Text = string.Empty;
+                Sf_txtPreferential.HelperText = string.Empty;
                 return;
             }
             var db = new ColDbEntities1();
-            var code = int.Parse(txtStorage.Text);
-            var mu = db.Storage.FirstOrDefault(t => t.StorageCode == code);
+            var code = int.Parse(txtPreferential.Text);
+            var mu = db.Preferential.FirstOrDefault(t => t.PreferentialCode == code);
             if (mu == null)
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("چنین کد انبار وجود ندارد!");
-                txtStorage.Text = Sf_txtStorage.HelperText = string.Empty;
+                Xceed.Wpf.Toolkit.MessageBox.Show("چنین کد تفضیلی وجود ندارد!");
+                txtPreferential.Text = Sf_txtPreferential.HelperText = string.Empty;
             }
             else
             {
-                Sf_txtStorage.HelperText = mu.StorageName;
+                Sf_txtPreferential.HelperText = mu.PreferentialName;
                 Dispatcher.BeginInvoke(new Action(async () =>
                 {
                     await Task.Delay(50);
-                    txtDescription.Focus();
+                    txtInvoiceNumber.Focus();
                 }));
-                
+                long t = 0;
+                try
+                {
+                    t = db.ProductBuyHeader.Where(u => u.fk_PreferentialId == mu.Id).Max(i => i.InvoiceNumber);
+                }
+                catch { }
+                txtInvoiceNumber.Text = (t + 1).ToString();
             }
         }
 
         private void txtDescription_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
+            
+        }
+
+        private void txtPreferential_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F1)
+            {
+                var db = new ColDbEntities1();
+                var list = db.Preferential.ToList().Select(r => new Mu() { Name = r.PreferentialName, Value = r.PreferentialCode.ToString(),Name2=r.tGroup.GroupName }).ToList();
+                var win = new winSearch(list);
+                win.Closed += (yf, rs) =>
+                {
+                    datagrid.IsHitTestVisible = true;
+                };
+                win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "گروه تفضیلی", MappingName = "Name2", Width = 150, AllowSorting = true });
+                win.Width = 640;
+                win.Tag = this;
+                win.ParentTextBox = txtPreferential;
+                win.SearchTermTextBox.Text = "";
+                win.SearchTermTextBox.Select(1, 0);
+                win.Owner = MainWindow.Current;
+                window = win;
+                win.Show();
+                win.Focus();
+            }
+        }
+
+        private void txtInvoiceDiscount_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {            
             if (e.Text == "\r")
             {
                 btnConfirm.Focus();
@@ -1572,37 +1604,50 @@ namespace WpfCol
                         btnConfirm_Click(null, null);
                     }
                 }));
+                return;
             }
+            e.Handled = !IsTextAllowed(e.Text);
+            if (txtInvoiceDiscount.Text == "")
+                txtInvoiceDiscount.Text = "0";
         }
 
-        private void cmbType_LostFocus(object sender, RoutedEventArgs e)
+        private void txtInvoiceDiscount_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (cmbType.SelectedIndex == -1)
-                cmbType.Text = "";
-        }
-
-        private void txtStorage_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.F1)
+            if (e.Key == Key.Space)
             {
-                var db = new ColDbEntities1();
-                var list = db.Storage.ToList().Select(r => new Mu() { Name = r.StorageName, Value = r.StorageCode.ToString(),Name2=r.GroupStorage.GroupName }).ToList();
-                var win = new winSearch(list);
-                win.Closed += (yf, rs) =>
-                {
-                    datagrid.IsHitTestVisible = true;
-                };
-                win.datagrid.Columns.Add(new GridTextColumn() { TextAlignment = TextAlignment.Center, HeaderText = "گروه انبار", MappingName = "Name2", Width = 150, AllowSorting = true });
-                win.Width = 640;
-                win.Tag = this;
-                win.ParentTextBox = txtStorage;
-                win.SearchTermTextBox.Text = "";
-                win.SearchTermTextBox.Select(1, 0);
-                win.Owner = MainWindow.Current;
-                window = win;
-                win.Show();
-                win.Focus();
+                e.Handled = true;
+                return;
             }
+        }
+
+        private void txtInvoiceDiscount_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtInvoiceDiscount.Text == "")
+                txtInvoiceDiscount.Text = "0";
+            try
+            {
+                txtSumDiscount.Text = (decimal.Parse(txtSum.Text.Replace(",", "")) - decimal.Parse(txtInvoiceDiscount.Text.Replace(",", ""))).ToString();
+            }
+            catch { }
+        }
+
+        private void txtSum_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            isCancel = false;
+            var textbox = sender as TextBox;
+            decimal ds = 0;
+            if (decimal.TryParse(textbox.Text.Trim().Replace(",", ""), out ds) && ds >= 0)
+            {
+
+                int temp = textbox.SelectionStart;
+                textbox.TextChanged -= txtSum_TextChanged;
+                textbox.Text = string.Format("{0:#,###}", ds);
+                if (textbox.SelectionStart != temp)
+                    textbox.SelectionStart = temp + 1;
+                if (textbox.Text == "")
+                    textbox.Text = "0";
+                textbox.TextChanged += txtSum_TextChanged;
+            }            
         }
 
         private void persianCalendar_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -1640,7 +1685,7 @@ namespace WpfCol
                 }
 
                 // اگر به انتهای سطرها رسیدیم، به اولین سطر برگردید
-                if (currentRowIndex >= StorageReceipt_Details.Count + 2)
+                if (currentRowIndex >= ProductBuy_Details.Count + 2)
                 {
                     currentRowIndex = 0; // به اولین سطر برگردید
                 }
@@ -1650,7 +1695,7 @@ namespace WpfCol
                 {
                     if (currentColumnIndex == 1)
                         (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex + 1));
-                    else if (currentColumnIndex == 3 && ((datagrid.GetRecordAtRowIndex(currentRowIndex) as StorageReceipt_Detail)?.Value ?? 0) != 0)
+                    else if (currentColumnIndex == 5 && ((datagrid.GetRecordAtRowIndex(currentRowIndex) as ProductBuy_Detail)?.Value ?? 0) != 0)
                         (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex + 1, 0));
                     else
                         (this.datagrid.SelectionController as GridSelectionController).MoveCurrentCell(new RowColumnIndex(currentRowIndex, currentColumnIndex));

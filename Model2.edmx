@@ -138,6 +138,7 @@
           <Property Name="fk_GroupId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
           <Property Name="fk_UnitId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Taxable" Type="bit" />
         </EntityType>
         <EntityType Name="CommodityPricingPanel">
           <Key>
@@ -190,6 +191,50 @@
           <Property Name="fk_ColId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="MoeinName" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="NPStorage_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="fk_CommodityId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Value" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="fk_HeaderId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Indexer" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NPStorageHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Serial" Type="bigint" Nullable="false" />
+          <Property Name="Type" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Order_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="fk_CommodityId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Value" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="fk_HeaderId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Indexer" Type="int" Nullable="false" />
+          <Property Name="Fee" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Discount" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="TaxPercent" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Serial" Type="bigint" Nullable="false" />
+          <Property Name="NoDoument" Type="bigint" Nullable="false" />
+          <Property Name="fk_PreferentialId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="PaymentMoney_Detail">
           <Key>
             <PropertyRef Name="Id" />
@@ -235,6 +280,32 @@
           <Property Name="Email" Type="nvarchar(max)" />
           <Property Name="Address" Type="nvarchar(max)" />
           <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="fk_CityId" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="PreInvoice_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="fk_CommodityId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Value" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="fk_HeaderId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Indexer" Type="int" Nullable="false" />
+          <Property Name="Fee" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Discount" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="TaxPercent" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PreInvoiceHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Serial" Type="bigint" Nullable="false" />
+          <Property Name="fk_PreferentialId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="InvoiceDiscount" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="SumDiscount" Type="decimal" Precision="18" Scale="0" Nullable="false" />
         </EntityType>
         <EntityType Name="PriceGroup">
           <Key>
@@ -243,6 +314,72 @@
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="GroupCode" Type="int" Nullable="false" />
           <Property Name="GroupName" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="ProductBuy_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="fk_CommodityId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Value" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="fk_HeaderId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Indexer" Type="int" Nullable="false" />
+          <Property Name="Fee" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Discount" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="TaxPercent" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductBuyHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Serial" Type="bigint" Nullable="false" />
+          <Property Name="OrderNumber" Type="bigint" />
+          <Property Name="InvoiceNumber" Type="bigint" Nullable="false" />
+          <Property Name="WayBillNumber" Type="nvarchar(max)" />
+          <Property Name="CarPlate" Type="nvarchar(max)" />
+          <Property Name="CarType" Type="nvarchar(max)" />
+          <Property Name="fk_PreferentialId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="InvoiceDiscount" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="ShippingCost" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="SumDiscount" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductSell_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="fk_CommodityId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Value" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="fk_HeaderId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Indexer" Type="int" Nullable="false" />
+          <Property Name="Fee" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Discount" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="TaxPercent" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductSellHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Serial" Type="bigint" Nullable="false" />
+          <Property Name="OrderNumber" Type="bigint" />
+          <Property Name="InvoiceNumber" Type="bigint" Nullable="false" />
+          <Property Name="WayBillNumber" Type="nvarchar(max)" />
+          <Property Name="CarPlate" Type="nvarchar(max)" />
+          <Property Name="CarType" Type="nvarchar(max)" />
+          <Property Name="fk_PreferentialId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="InvoiceDiscount" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="ShippingCost" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="SumDiscount" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="fk_PreferentialId_receiver" Type="uniqueidentifier" />
+          <Property Name="fk_PreferentialId_freight" Type="uniqueidentifier" />
+          <Property Name="fk_PreferentialId_driver" Type="uniqueidentifier" />
+          <Property Name="fk_PreferentialId_personnel" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Province">
           <Key>
@@ -309,6 +446,25 @@
           <Property Name="NoDoument" Type="bigint" Nullable="false" />
           <Property Name="fk_StorageId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="fk_CodingReceiptTypesId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="StorageRotation_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="fk_CommodityId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Value" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="fk_HeaderId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Indexer" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="StorageRotationHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Serial" Type="bigint" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="StorageTransfer_Detail">
@@ -613,6 +769,66 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_NPStorage_Detail_Commodity">
+          <End Role="Commodity" Type="Self.Commodity" Multiplicity="1" />
+          <End Role="NPStorage_Detail" Type="Self.NPStorage_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Commodity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="NPStorage_Detail">
+              <PropertyRef Name="fk_CommodityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NPStorage_Detail_NPStorageHeader">
+          <End Role="NPStorageHeader" Type="Self.NPStorageHeader" Multiplicity="1" />
+          <End Role="NPStorage_Detail" Type="Self.NPStorage_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NPStorageHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="NPStorage_Detail">
+              <PropertyRef Name="fk_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Order_Detail_Commodity">
+          <End Role="Commodity" Type="Self.Commodity" Multiplicity="1" />
+          <End Role="Order_Detail" Type="Self.Order_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Commodity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order_Detail">
+              <PropertyRef Name="fk_CommodityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Order_Detail_OrderHeader">
+          <End Role="OrderHeader" Type="Self.OrderHeader" Multiplicity="1" />
+          <End Role="Order_Detail" Type="Self.Order_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order_Detail">
+              <PropertyRef Name="fk_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderHeader_Preferential">
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="1" />
+          <End Role="OrderHeader" Type="Self.OrderHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OrderHeader">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PaymentMoney_Detail_Bank">
           <End Role="Bank" Type="Self.Bank" Multiplicity="0..1" />
           <End Role="PaymentMoney_Detail" Type="Self.PaymentMoney_Detail" Multiplicity="*" />
@@ -685,6 +901,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Preferential_City">
+          <End Role="City" Type="Self.City" Multiplicity="0..1" />
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="City">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Preferential">
+              <PropertyRef Name="fk_CityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Preferential_tGroup">
           <End Role="tGroup" Type="Self.tGroup" Multiplicity="1" />
           <End Role="Preferential" Type="Self.Preferential" Multiplicity="*" />
@@ -694,6 +922,162 @@
             </Principal>
             <Dependent Role="Preferential">
               <PropertyRef Name="fk_GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreInvoice_Detail_Commodity">
+          <End Role="Commodity" Type="Self.Commodity" Multiplicity="1" />
+          <End Role="PreInvoice_Detail" Type="Self.PreInvoice_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Commodity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PreInvoice_Detail">
+              <PropertyRef Name="fk_CommodityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreInvoice_Detail_PreInvoiceHeader">
+          <End Role="PreInvoiceHeader" Type="Self.PreInvoiceHeader" Multiplicity="1" />
+          <End Role="PreInvoice_Detail" Type="Self.PreInvoice_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PreInvoiceHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PreInvoice_Detail">
+              <PropertyRef Name="fk_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreInvoiceHeader_Preferential">
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="1" />
+          <End Role="PreInvoiceHeader" Type="Self.PreInvoiceHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PreInvoiceHeader">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductBuy_Detail_Commodity">
+          <End Role="Commodity" Type="Self.Commodity" Multiplicity="1" />
+          <End Role="ProductBuy_Detail" Type="Self.ProductBuy_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Commodity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductBuy_Detail">
+              <PropertyRef Name="fk_CommodityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductBuy_Detail_ProductBuyHeader">
+          <End Role="ProductBuyHeader" Type="Self.ProductBuyHeader" Multiplicity="1" />
+          <End Role="ProductBuy_Detail" Type="Self.ProductBuy_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductBuyHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductBuy_Detail">
+              <PropertyRef Name="fk_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductBuyHeader_Preferential">
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="1" />
+          <End Role="ProductBuyHeader" Type="Self.ProductBuyHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductBuyHeader">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSell_Detail_Commodity">
+          <End Role="Commodity" Type="Self.Commodity" Multiplicity="1" />
+          <End Role="ProductSell_Detail" Type="Self.ProductSell_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Commodity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSell_Detail">
+              <PropertyRef Name="fk_CommodityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSell_Detail_ProductSellHeader">
+          <End Role="ProductSellHeader" Type="Self.ProductSellHeader" Multiplicity="1" />
+          <End Role="ProductSell_Detail" Type="Self.ProductSell_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductSellHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSell_Detail">
+              <PropertyRef Name="fk_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSellHeader_Preferential">
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="1" />
+          <End Role="ProductSellHeader" Type="Self.ProductSellHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSellHeader">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSellHeader_Preferential1">
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="0..1" />
+          <End Role="ProductSellHeader" Type="Self.ProductSellHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSellHeader">
+              <PropertyRef Name="fk_PreferentialId_driver" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSellHeader_Preferential2">
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="0..1" />
+          <End Role="ProductSellHeader" Type="Self.ProductSellHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSellHeader">
+              <PropertyRef Name="fk_PreferentialId_freight" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSellHeader_Preferential3">
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="0..1" />
+          <End Role="ProductSellHeader" Type="Self.ProductSellHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSellHeader">
+              <PropertyRef Name="fk_PreferentialId_personnel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSellHeader_Preferential4">
+          <End Role="Preferential" Type="Self.Preferential" Multiplicity="0..1" />
+          <End Role="ProductSellHeader" Type="Self.ProductSellHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSellHeader">
+              <PropertyRef Name="fk_PreferentialId_receiver" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -829,6 +1213,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_StorageRotation_Detail_Commodity">
+          <End Role="Commodity" Type="Self.Commodity" Multiplicity="1" />
+          <End Role="StorageRotation_Detail" Type="Self.StorageRotation_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Commodity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StorageRotation_Detail">
+              <PropertyRef Name="fk_CommodityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StorageRotation_Detail_StorageRotationHeader">
+          <End Role="StorageRotationHeader" Type="Self.StorageRotationHeader" Multiplicity="1" />
+          <End Role="StorageRotation_Detail" Type="Self.StorageRotation_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StorageRotationHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StorageRotation_Detail">
+              <PropertyRef Name="fk_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_StorageTransfer_Detail_Commodity">
           <End Role="Commodity" Type="Self.Commodity" Multiplicity="1" />
           <End Role="StorageTransfer_Detail" Type="Self.StorageTransfer_Detail" Multiplicity="*" />
@@ -897,16 +1305,28 @@
           <EntitySet Name="GroupCommodity" EntityType="Self.GroupCommodity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GroupStorage" EntityType="Self.GroupStorage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Moein" EntityType="Self.Moein" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NPStorage_Detail" EntityType="Self.NPStorage_Detail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NPStorageHeader" EntityType="Self.NPStorageHeader" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Order_Detail" EntityType="Self.Order_Detail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderHeader" EntityType="Self.OrderHeader" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PaymentMoney_Detail" EntityType="Self.PaymentMoney_Detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PaymentMoneyHeader" EntityType="Self.PaymentMoneyHeader" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Preferential" EntityType="Self.Preferential" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PreInvoice_Detail" EntityType="Self.PreInvoice_Detail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PreInvoiceHeader" EntityType="Self.PreInvoiceHeader" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PriceGroup" EntityType="Self.PriceGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductBuy_Detail" EntityType="Self.ProductBuy_Detail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductBuyHeader" EntityType="Self.ProductBuyHeader" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductSell_Detail" EntityType="Self.ProductSell_Detail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductSellHeader" EntityType="Self.ProductSellHeader" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Province" EntityType="Self.Province" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RecieveMoney_Detail" EntityType="Self.RecieveMoney_Detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RecieveMoneyHeader" EntityType="Self.RecieveMoneyHeader" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Storage" EntityType="Self.Storage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StorageReceipt_Detail" EntityType="Self.StorageReceipt_Detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StorageReceiptHeader" EntityType="Self.StorageReceiptHeader" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StorageRotation_Detail" EntityType="Self.StorageRotation_Detail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StorageRotationHeader" EntityType="Self.StorageRotationHeader" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StorageTransfer_Detail" EntityType="Self.StorageTransfer_Detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StorageTransferHeader" EntityType="Self.StorageTransferHeader" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tGroup" EntityType="Self.tGroup" Schema="dbo" store:Type="Tables" />
@@ -999,6 +1419,26 @@
             <End Role="Col" EntitySet="Col" />
             <End Role="Moein" EntitySet="Moein" />
           </AssociationSet>
+          <AssociationSet Name="FK_NPStorage_Detail_Commodity" Association="Self.FK_NPStorage_Detail_Commodity">
+            <End Role="Commodity" EntitySet="Commodity" />
+            <End Role="NPStorage_Detail" EntitySet="NPStorage_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NPStorage_Detail_NPStorageHeader" Association="Self.FK_NPStorage_Detail_NPStorageHeader">
+            <End Role="NPStorageHeader" EntitySet="NPStorageHeader" />
+            <End Role="NPStorage_Detail" EntitySet="NPStorage_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Order_Detail_Commodity" Association="Self.FK_Order_Detail_Commodity">
+            <End Role="Commodity" EntitySet="Commodity" />
+            <End Role="Order_Detail" EntitySet="Order_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Order_Detail_OrderHeader" Association="Self.FK_Order_Detail_OrderHeader">
+            <End Role="OrderHeader" EntitySet="OrderHeader" />
+            <End Role="Order_Detail" EntitySet="Order_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderHeader_Preferential" Association="Self.FK_OrderHeader_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="OrderHeader" EntitySet="OrderHeader" />
+          </AssociationSet>
           <AssociationSet Name="FK_PaymentMoney_Detail_Bank" Association="Self.FK_PaymentMoney_Detail_Bank">
             <End Role="Bank" EntitySet="Bank" />
             <End Role="PaymentMoney_Detail" EntitySet="PaymentMoney_Detail" />
@@ -1023,9 +1463,65 @@
             <End Role="Preferential" EntitySet="Preferential" />
             <End Role="PaymentMoneyHeader" EntitySet="PaymentMoneyHeader" />
           </AssociationSet>
+          <AssociationSet Name="FK_Preferential_City" Association="Self.FK_Preferential_City">
+            <End Role="City" EntitySet="City" />
+            <End Role="Preferential" EntitySet="Preferential" />
+          </AssociationSet>
           <AssociationSet Name="FK_Preferential_tGroup" Association="Self.FK_Preferential_tGroup">
             <End Role="tGroup" EntitySet="tGroup" />
             <End Role="Preferential" EntitySet="Preferential" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreInvoice_Detail_Commodity" Association="Self.FK_PreInvoice_Detail_Commodity">
+            <End Role="Commodity" EntitySet="Commodity" />
+            <End Role="PreInvoice_Detail" EntitySet="PreInvoice_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreInvoice_Detail_PreInvoiceHeader" Association="Self.FK_PreInvoice_Detail_PreInvoiceHeader">
+            <End Role="PreInvoiceHeader" EntitySet="PreInvoiceHeader" />
+            <End Role="PreInvoice_Detail" EntitySet="PreInvoice_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreInvoiceHeader_Preferential" Association="Self.FK_PreInvoiceHeader_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="PreInvoiceHeader" EntitySet="PreInvoiceHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductBuy_Detail_Commodity" Association="Self.FK_ProductBuy_Detail_Commodity">
+            <End Role="Commodity" EntitySet="Commodity" />
+            <End Role="ProductBuy_Detail" EntitySet="ProductBuy_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductBuy_Detail_ProductBuyHeader" Association="Self.FK_ProductBuy_Detail_ProductBuyHeader">
+            <End Role="ProductBuyHeader" EntitySet="ProductBuyHeader" />
+            <End Role="ProductBuy_Detail" EntitySet="ProductBuy_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductBuyHeader_Preferential" Association="Self.FK_ProductBuyHeader_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="ProductBuyHeader" EntitySet="ProductBuyHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSell_Detail_Commodity" Association="Self.FK_ProductSell_Detail_Commodity">
+            <End Role="Commodity" EntitySet="Commodity" />
+            <End Role="ProductSell_Detail" EntitySet="ProductSell_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSell_Detail_ProductSellHeader" Association="Self.FK_ProductSell_Detail_ProductSellHeader">
+            <End Role="ProductSellHeader" EntitySet="ProductSellHeader" />
+            <End Role="ProductSell_Detail" EntitySet="ProductSell_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSellHeader_Preferential" Association="Self.FK_ProductSellHeader_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="ProductSellHeader" EntitySet="ProductSellHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSellHeader_Preferential1" Association="Self.FK_ProductSellHeader_Preferential1">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="ProductSellHeader" EntitySet="ProductSellHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSellHeader_Preferential2" Association="Self.FK_ProductSellHeader_Preferential2">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="ProductSellHeader" EntitySet="ProductSellHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSellHeader_Preferential3" Association="Self.FK_ProductSellHeader_Preferential3">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="ProductSellHeader" EntitySet="ProductSellHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSellHeader_Preferential4" Association="Self.FK_ProductSellHeader_Preferential4">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="ProductSellHeader" EntitySet="ProductSellHeader" />
           </AssociationSet>
           <AssociationSet Name="FK_RecieveMoney_Detail_Bank" Association="Self.FK_RecieveMoney_Detail_Bank">
             <End Role="Bank" EntitySet="Bank" />
@@ -1071,6 +1567,14 @@
             <End Role="Storage" EntitySet="Storage" />
             <End Role="StorageReceiptHeader" EntitySet="StorageReceiptHeader" />
           </AssociationSet>
+          <AssociationSet Name="FK_StorageRotation_Detail_Commodity" Association="Self.FK_StorageRotation_Detail_Commodity">
+            <End Role="Commodity" EntitySet="Commodity" />
+            <End Role="StorageRotation_Detail" EntitySet="StorageRotation_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StorageRotation_Detail_StorageRotationHeader" Association="Self.FK_StorageRotation_Detail_StorageRotationHeader">
+            <End Role="StorageRotationHeader" EntitySet="StorageRotationHeader" />
+            <End Role="StorageRotation_Detail" EntitySet="StorageRotation_Detail" />
+          </AssociationSet>
           <AssociationSet Name="FK_StorageTransfer_Detail_Commodity" Association="Self.FK_StorageTransfer_Detail_Commodity">
             <End Role="Commodity" EntitySet="Commodity" />
             <End Role="StorageTransfer_Detail" EntitySet="StorageTransfer_Detail" />
@@ -1094,7 +1598,6 @@
       <Schema Namespace="ColDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="ColDbEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AcDocument_Header" EntityType="ColDbModel.AcDocument_Header" />
-          <EntitySet Name="AGroup" EntityType="ColDbModel.AGroup" />
           <EntitySet Name="Bank" EntityType="ColDbModel.Bank" />
           <EntitySet Name="ChEvent" EntityType="ColDbModel.ChEvent" />
           <EntitySet Name="Col" EntityType="ColDbModel.Col" />
@@ -1107,10 +1610,6 @@
           <AssociationSet Name="FK_AcDocument_Header_DocumentType" Association="ColDbModel.FK_AcDocument_Header_DocumentType">
             <End Role="DocumentType" EntitySet="DocumentType" />
             <End Role="AcDocument_Header" EntitySet="AcDocument_Header" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Col_AGroup" Association="ColDbModel.FK_Col_AGroup">
-            <End Role="AGroup" EntitySet="AGroup" />
-            <End Role="Col" EntitySet="Col" />
           </AssociationSet>
           <AssociationSet Name="FK_Moein_Col" Association="ColDbModel.FK_Moein_Col">
             <End Role="Col" EntitySet="Col" />
@@ -1302,6 +1801,107 @@
             <End Role="StorageTransferHeader" EntitySet="StorageTransferHeader" />
             <End Role="StorageTransfer_Detail" EntitySet="StorageTransfer_Detail" />
           </AssociationSet>
+          <AssociationSet Name="FK_Preferential_City" Association="ColDbModel.FK_Preferential_City">
+            <End Role="City" EntitySet="City" />
+            <End Role="Preferential" EntitySet="Preferential" />
+          </AssociationSet>
+          <EntitySet Name="NPStorage_Detail" EntityType="ColDbModel.NPStorage_Detail" />
+          <EntitySet Name="NPStorageHeader" EntityType="ColDbModel.NPStorageHeader" />
+          <EntitySet Name="StorageRotation_Detail" EntityType="ColDbModel.StorageRotation_Detail" />
+          <EntitySet Name="StorageRotationHeader" EntityType="ColDbModel.StorageRotationHeader" />
+          <AssociationSet Name="FK_NPStorage_Detail_Commodity" Association="ColDbModel.FK_NPStorage_Detail_Commodity">
+            <End Role="Commodity" EntitySet="Commodity" />
+            <End Role="NPStorage_Detail" EntitySet="NPStorage_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StorageRotation_Detail_Commodity" Association="ColDbModel.FK_StorageRotation_Detail_Commodity">
+            <End Role="Commodity" EntitySet="Commodity" />
+            <End Role="StorageRotation_Detail" EntitySet="StorageRotation_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NPStorage_Detail_NPStorageHeader" Association="ColDbModel.FK_NPStorage_Detail_NPStorageHeader">
+            <End Role="NPStorageHeader" EntitySet="NPStorageHeader" />
+            <End Role="NPStorage_Detail" EntitySet="NPStorage_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StorageRotation_Detail_StorageRotationHeader" Association="ColDbModel.FK_StorageRotation_Detail_StorageRotationHeader">
+            <End Role="StorageRotationHeader" EntitySet="StorageRotationHeader" />
+            <End Role="StorageRotation_Detail" EntitySet="StorageRotation_Detail" />
+          </AssociationSet>
+          <EntitySet Name="Order_Detail" EntityType="ColDbModel.Order_Detail" />
+          <EntitySet Name="OrderHeader" EntityType="ColDbModel.OrderHeader" />
+          <AssociationSet Name="FK_Order_Detail_Commodity" Association="ColDbModel.FK_Order_Detail_Commodity">
+            <End Role="Commodity" EntitySet="Commodity" />
+            <End Role="Order_Detail" EntitySet="Order_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Order_Detail_OrderHeader" Association="ColDbModel.FK_Order_Detail_OrderHeader">
+            <End Role="OrderHeader" EntitySet="OrderHeader" />
+            <End Role="Order_Detail" EntitySet="Order_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderHeader_Preferential" Association="ColDbModel.FK_OrderHeader_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="OrderHeader" EntitySet="OrderHeader" />
+          </AssociationSet>
+          <EntitySet Name="ProductBuy_Detail" EntityType="ColDbModel.ProductBuy_Detail" />
+          <EntitySet Name="ProductBuyHeader" EntityType="ColDbModel.ProductBuyHeader" />
+          <AssociationSet Name="FK_ProductBuy_Detail_Commodity" Association="ColDbModel.FK_ProductBuy_Detail_Commodity">
+            <End Role="Commodity" EntitySet="Commodity" />
+            <End Role="ProductBuy_Detail" EntitySet="ProductBuy_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductBuyHeader_Preferential" Association="ColDbModel.FK_ProductBuyHeader_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="ProductBuyHeader" EntitySet="ProductBuyHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductBuy_Detail_ProductBuyHeader" Association="ColDbModel.FK_ProductBuy_Detail_ProductBuyHeader">
+            <End Role="ProductBuyHeader" EntitySet="ProductBuyHeader" />
+            <End Role="ProductBuy_Detail" EntitySet="ProductBuy_Detail" />
+          </AssociationSet>
+          <EntitySet Name="AGroup" EntityType="ColDbModel.AGroup" />
+          <AssociationSet Name="FK_Col_AGroup" Association="ColDbModel.FK_Col_AGroup">
+            <End Role="AGroup" EntitySet="AGroup" />
+            <End Role="Col" EntitySet="Col" />
+          </AssociationSet>
+          <EntitySet Name="ProductSell_Detail" EntityType="ColDbModel.ProductSell_Detail" />
+          <EntitySet Name="ProductSellHeader" EntityType="ColDbModel.ProductSellHeader" />
+          <AssociationSet Name="FK_ProductSell_Detail_Commodity" Association="ColDbModel.FK_ProductSell_Detail_Commodity">
+            <End Role="Commodity" EntitySet="Commodity" />
+            <End Role="ProductSell_Detail" EntitySet="ProductSell_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSellHeader_Preferential" Association="ColDbModel.FK_ProductSellHeader_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="ProductSellHeader" EntitySet="ProductSellHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSellHeader_Preferential1" Association="ColDbModel.FK_ProductSellHeader_Preferential1">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="ProductSellHeader" EntitySet="ProductSellHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSellHeader_Preferential2" Association="ColDbModel.FK_ProductSellHeader_Preferential2">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="ProductSellHeader" EntitySet="ProductSellHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSellHeader_Preferential3" Association="ColDbModel.FK_ProductSellHeader_Preferential3">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="ProductSellHeader" EntitySet="ProductSellHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSellHeader_Preferential4" Association="ColDbModel.FK_ProductSellHeader_Preferential4">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="ProductSellHeader" EntitySet="ProductSellHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSell_Detail_ProductSellHeader" Association="ColDbModel.FK_ProductSell_Detail_ProductSellHeader">
+            <End Role="ProductSellHeader" EntitySet="ProductSellHeader" />
+            <End Role="ProductSell_Detail" EntitySet="ProductSell_Detail" />
+          </AssociationSet>
+          <EntitySet Name="PreInvoice_Detail" EntityType="ColDbModel.PreInvoice_Detail" />
+          <EntitySet Name="PreInvoiceHeader" EntityType="ColDbModel.PreInvoiceHeader" />
+          <AssociationSet Name="FK_PreInvoice_Detail_Commodity" Association="ColDbModel.FK_PreInvoice_Detail_Commodity">
+            <End Role="Commodity" EntitySet="Commodity" />
+            <End Role="PreInvoice_Detail" EntitySet="PreInvoice_Detail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreInvoiceHeader_Preferential" Association="ColDbModel.FK_PreInvoiceHeader_Preferential">
+            <End Role="Preferential" EntitySet="Preferential" />
+            <End Role="PreInvoiceHeader" EntitySet="PreInvoiceHeader" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PreInvoice_Detail_PreInvoiceHeader" Association="ColDbModel.FK_PreInvoice_Detail_PreInvoiceHeader">
+            <End Role="PreInvoiceHeader" EntitySet="PreInvoiceHeader" />
+            <End Role="PreInvoice_Detail" EntitySet="PreInvoice_Detail" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AcDocument_Header">
           <Key>
@@ -1316,15 +1916,6 @@
           <NavigationProperty Name="AcDocument_Detail" Relationship="ColDbModel.FK_AcDocument_Detail_AcDocument_Header" FromRole="AcDocument_Header" ToRole="AcDocument_Detail" />
           <NavigationProperty Name="CheckPaymentEvent" Relationship="ColDbModel.FK_CheckPaymentEvents_AcDocument_Header" FromRole="AcDocument_Header" ToRole="CheckPaymentEvent" />
           <NavigationProperty Name="CheckRecieveEvent" Relationship="ColDbModel.FK_CheckRecieveEvents_AcDocument_Header" FromRole="AcDocument_Header" ToRole="CheckRecieveEvent" />
-        </EntityType>
-        <EntityType Name="AGroup">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="GroupCode" Type="Int32" Nullable="false" />
-          <Property Name="GroupName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Col" Relationship="ColDbModel.FK_Col_AGroup" FromRole="AGroup" ToRole="Col" />
         </EntityType>
         <EntityType Name="Bank">
           <Key>
@@ -1358,8 +1949,8 @@
           <Property Name="Action" Type="Byte" />
           <Property Name="fk_GroupId" Type="Guid" Nullable="false" />
           <Property Name="PermissionView" Type="Boolean" />
-          <NavigationProperty Name="AGroup" Relationship="ColDbModel.FK_Col_AGroup" FromRole="Col" ToRole="AGroup" />
           <NavigationProperty Name="Moein" Relationship="ColDbModel.FK_Moein_Col" FromRole="Col" ToRole="Moein" />
+          <NavigationProperty Name="AGroup" Relationship="ColDbModel.FK_Col_AGroup" FromRole="Col" ToRole="AGroup" />
         </EntityType>
         <EntityType Name="DocumentType">
           <Key>
@@ -1425,6 +2016,16 @@
           <NavigationProperty Name="CheckRecieveEvent" Relationship="ColDbModel.FK_CheckRecieveEvents_Preferential" FromRole="Preferential" ToRole="CheckRecieveEvent" />
           <NavigationProperty Name="PaymentMoney_Detail" Relationship="ColDbModel.FK_PaymentMoney_Detail_Preferential" FromRole="Preferential" ToRole="PaymentMoney_Detail" />
           <NavigationProperty Name="RecieveMoney_Detail" Relationship="ColDbModel.FK_RecieveMoney_Detail_Preferential" FromRole="Preferential" ToRole="RecieveMoney_Detail" />
+          <Property Name="fk_CityId" Type="Guid" />
+          <NavigationProperty Name="City" Relationship="ColDbModel.FK_Preferential_City" FromRole="Preferential" ToRole="City" />
+          <NavigationProperty Name="OrderHeader" Relationship="ColDbModel.FK_OrderHeader_Preferential" FromRole="Preferential" ToRole="OrderHeader" />
+          <NavigationProperty Name="ProductBuyHeader" Relationship="ColDbModel.FK_ProductBuyHeader_Preferential" FromRole="Preferential" ToRole="ProductBuyHeader" />
+          <NavigationProperty Name="ProductSellHeader" Relationship="ColDbModel.FK_ProductSellHeader_Preferential" FromRole="Preferential" ToRole="ProductSellHeader" />
+          <NavigationProperty Name="ProductSellHeader1" Relationship="ColDbModel.FK_ProductSellHeader_Preferential1" FromRole="Preferential" ToRole="ProductSellHeader" />
+          <NavigationProperty Name="ProductSellHeader2" Relationship="ColDbModel.FK_ProductSellHeader_Preferential2" FromRole="Preferential" ToRole="ProductSellHeader" />
+          <NavigationProperty Name="ProductSellHeader3" Relationship="ColDbModel.FK_ProductSellHeader_Preferential3" FromRole="Preferential" ToRole="ProductSellHeader" />
+          <NavigationProperty Name="ProductSellHeader4" Relationship="ColDbModel.FK_ProductSellHeader_Preferential4" FromRole="Preferential" ToRole="ProductSellHeader" />
+          <NavigationProperty Name="PreInvoiceHeader" Relationship="ColDbModel.FK_PreInvoiceHeader_Preferential" FromRole="Preferential" ToRole="PreInvoiceHeader" />
         </EntityType>
         <EntityType Name="RecieveMoneyHeader">
           <Key>
@@ -1458,18 +2059,6 @@
             </Principal>
             <Dependent Role="AcDocument_Header">
               <PropertyRef Name="fk_DocumentTypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Col_AGroup">
-          <End Type="ColDbModel.AGroup" Role="AGroup" Multiplicity="1" />
-          <End Type="ColDbModel.Col" Role="Col" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AGroup">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Col">
-              <PropertyRef Name="fk_GroupId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1923,6 +2512,7 @@
           <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="fk_ProvinceId" Type="Guid" Nullable="false" />
           <NavigationProperty Name="Province" Relationship="ColDbModel.FK_City_Province" FromRole="City" ToRole="Province" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_Preferential_City" FromRole="City" ToRole="Preferential" />
         </EntityType>
         <Association Name="FK_City_Province">
           <End Type="ColDbModel.Province" Role="Province" Multiplicity="1" />
@@ -2024,6 +2614,13 @@
           <NavigationProperty Name="CommodityPricingPanel" Relationship="ColDbModel.FK_CommodityPricingPanel_Commodity" FromRole="Commodity" ToRole="CommodityPricingPanel" />
           <NavigationProperty Name="StorageReceipt_Detail" Relationship="ColDbModel.FK_StorageReceipt_Detail_Commodity" FromRole="Commodity" ToRole="StorageReceipt_Detail" />
           <NavigationProperty Name="StorageTransfer_Detail" Relationship="ColDbModel.FK_StorageTransfer_Detail_Commodity" FromRole="Commodity" ToRole="StorageTransfer_Detail" />
+          <Property Name="Taxable" Type="Boolean" />
+          <NavigationProperty Name="NPStorage_Detail" Relationship="ColDbModel.FK_NPStorage_Detail_Commodity" FromRole="Commodity" ToRole="NPStorage_Detail" />
+          <NavigationProperty Name="StorageRotation_Detail" Relationship="ColDbModel.FK_StorageRotation_Detail_Commodity" FromRole="Commodity" ToRole="StorageRotation_Detail" />
+          <NavigationProperty Name="Order_Detail" Relationship="ColDbModel.FK_Order_Detail_Commodity" FromRole="Commodity" ToRole="Order_Detail" />
+          <NavigationProperty Name="ProductBuy_Detail" Relationship="ColDbModel.FK_ProductBuy_Detail_Commodity" FromRole="Commodity" ToRole="ProductBuy_Detail" />
+          <NavigationProperty Name="ProductSell_Detail" Relationship="ColDbModel.FK_ProductSell_Detail_Commodity" FromRole="Commodity" ToRole="ProductSell_Detail" />
+          <NavigationProperty Name="PreInvoice_Detail" Relationship="ColDbModel.FK_PreInvoice_Detail_Commodity" FromRole="Commodity" ToRole="PreInvoice_Detail" />
         </EntityType>
         <EntityType Name="GroupCommodity">
           <Key>
@@ -2263,6 +2860,459 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Preferential_City">
+          <End Type="ColDbModel.City" Role="City" Multiplicity="0..1" />
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="City">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Preferential">
+              <PropertyRef Name="fk_CityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="NPStorage_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="fk_CommodityId" Type="Guid" Nullable="false" />
+          <Property Name="Value" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="fk_HeaderId" Type="Guid" Nullable="false" />
+          <Property Name="Indexer" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Commodity" Relationship="ColDbModel.FK_NPStorage_Detail_Commodity" FromRole="NPStorage_Detail" ToRole="Commodity" />
+          <NavigationProperty Name="NPStorageHeader" Relationship="ColDbModel.FK_NPStorage_Detail_NPStorageHeader" FromRole="NPStorage_Detail" ToRole="NPStorageHeader" />
+        </EntityType>
+        <EntityType Name="NPStorageHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Serial" Type="Int64" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="NPStorage_Detail" Relationship="ColDbModel.FK_NPStorage_Detail_NPStorageHeader" FromRole="NPStorageHeader" ToRole="NPStorage_Detail" />
+        </EntityType>
+        <EntityType Name="StorageRotation_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="fk_CommodityId" Type="Guid" Nullable="false" />
+          <Property Name="Value" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="fk_HeaderId" Type="Guid" Nullable="false" />
+          <Property Name="Indexer" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Commodity" Relationship="ColDbModel.FK_StorageRotation_Detail_Commodity" FromRole="StorageRotation_Detail" ToRole="Commodity" />
+          <NavigationProperty Name="StorageRotationHeader" Relationship="ColDbModel.FK_StorageRotation_Detail_StorageRotationHeader" FromRole="StorageRotation_Detail" ToRole="StorageRotationHeader" />
+        </EntityType>
+        <EntityType Name="StorageRotationHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Serial" Type="Int64" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="StorageRotation_Detail" Relationship="ColDbModel.FK_StorageRotation_Detail_StorageRotationHeader" FromRole="StorageRotationHeader" ToRole="StorageRotation_Detail" />
+        </EntityType>
+        <Association Name="FK_NPStorage_Detail_Commodity">
+          <End Type="ColDbModel.Commodity" Role="Commodity" Multiplicity="1" />
+          <End Type="ColDbModel.NPStorage_Detail" Role="NPStorage_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Commodity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="NPStorage_Detail">
+              <PropertyRef Name="fk_CommodityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StorageRotation_Detail_Commodity">
+          <End Type="ColDbModel.Commodity" Role="Commodity" Multiplicity="1" />
+          <End Type="ColDbModel.StorageRotation_Detail" Role="StorageRotation_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Commodity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StorageRotation_Detail">
+              <PropertyRef Name="fk_CommodityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NPStorage_Detail_NPStorageHeader">
+          <End Type="ColDbModel.NPStorageHeader" Role="NPStorageHeader" Multiplicity="1" />
+          <End Type="ColDbModel.NPStorage_Detail" Role="NPStorage_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NPStorageHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="NPStorage_Detail">
+              <PropertyRef Name="fk_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StorageRotation_Detail_StorageRotationHeader">
+          <End Type="ColDbModel.StorageRotationHeader" Role="StorageRotationHeader" Multiplicity="1" />
+          <End Type="ColDbModel.StorageRotation_Detail" Role="StorageRotation_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StorageRotationHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StorageRotation_Detail">
+              <PropertyRef Name="fk_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Order_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="fk_CommodityId" Type="Guid" Nullable="false" />
+          <Property Name="Value" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="fk_HeaderId" Type="Guid" Nullable="false" />
+          <Property Name="Indexer" Type="Int32" Nullable="false" />
+          <Property Name="Fee" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="Discount" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="TaxPercent" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <NavigationProperty Name="Commodity" Relationship="ColDbModel.FK_Order_Detail_Commodity" FromRole="Order_Detail" ToRole="Commodity" />
+          <NavigationProperty Name="OrderHeader" Relationship="ColDbModel.FK_Order_Detail_OrderHeader" FromRole="Order_Detail" ToRole="OrderHeader" />
+        </EntityType>
+        <EntityType Name="OrderHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Serial" Type="Int64" Nullable="false" />
+          <Property Name="NoDoument" Type="Int64" Nullable="false" />
+          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Order_Detail" Relationship="ColDbModel.FK_Order_Detail_OrderHeader" FromRole="OrderHeader" ToRole="Order_Detail" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_OrderHeader_Preferential" FromRole="OrderHeader" ToRole="Preferential" />
+        </EntityType>
+        <Association Name="FK_Order_Detail_Commodity">
+          <End Type="ColDbModel.Commodity" Role="Commodity" Multiplicity="1" />
+          <End Type="ColDbModel.Order_Detail" Role="Order_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Commodity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order_Detail">
+              <PropertyRef Name="fk_CommodityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Order_Detail_OrderHeader">
+          <End Type="ColDbModel.OrderHeader" Role="OrderHeader" Multiplicity="1" />
+          <End Type="ColDbModel.Order_Detail" Role="Order_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Order_Detail">
+              <PropertyRef Name="fk_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderHeader_Preferential">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="1" />
+          <End Type="ColDbModel.OrderHeader" Role="OrderHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OrderHeader">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ProductBuy_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="fk_CommodityId" Type="Guid" Nullable="false" />
+          <Property Name="Value" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="fk_HeaderId" Type="Guid" Nullable="false" />
+          <Property Name="Indexer" Type="Int32" Nullable="false" />
+          <Property Name="Fee" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="Discount" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="TaxPercent" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <NavigationProperty Name="Commodity" Relationship="ColDbModel.FK_ProductBuy_Detail_Commodity" FromRole="ProductBuy_Detail" ToRole="Commodity" />
+          <NavigationProperty Name="ProductBuyHeader" Relationship="ColDbModel.FK_ProductBuy_Detail_ProductBuyHeader" FromRole="ProductBuy_Detail" ToRole="ProductBuyHeader" />
+        </EntityType>
+        <EntityType Name="ProductBuyHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Serial" Type="Int64" Nullable="false" />
+          <Property Name="OrderNumber" Type="Int64" />
+          <Property Name="InvoiceNumber" Type="Int64" Nullable="false" />
+          <Property Name="WayBillNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CarPlate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CarType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
+          <Property Name="InvoiceDiscount" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="ShippingCost" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_ProductBuyHeader_Preferential" FromRole="ProductBuyHeader" ToRole="Preferential" />
+          <NavigationProperty Name="ProductBuy_Detail" Relationship="ColDbModel.FK_ProductBuy_Detail_ProductBuyHeader" FromRole="ProductBuyHeader" ToRole="ProductBuy_Detail" />
+          <Property Name="SumDiscount" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+        </EntityType>
+        <Association Name="FK_ProductBuy_Detail_Commodity">
+          <End Type="ColDbModel.Commodity" Role="Commodity" Multiplicity="1" />
+          <End Type="ColDbModel.ProductBuy_Detail" Role="ProductBuy_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Commodity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductBuy_Detail">
+              <PropertyRef Name="fk_CommodityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductBuyHeader_Preferential">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="1" />
+          <End Type="ColDbModel.ProductBuyHeader" Role="ProductBuyHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductBuyHeader">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductBuy_Detail_ProductBuyHeader">
+          <End Type="ColDbModel.ProductBuyHeader" Role="ProductBuyHeader" Multiplicity="1" />
+          <End Type="ColDbModel.ProductBuy_Detail" Role="ProductBuy_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductBuyHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductBuy_Detail">
+              <PropertyRef Name="fk_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="GroupCode" Type="Int32" Nullable="false" />
+          <Property Name="GroupName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Col" Relationship="ColDbModel.FK_Col_AGroup" FromRole="AGroup" ToRole="Col" />
+        </EntityType>
+        <Association Name="FK_Col_AGroup">
+          <End Type="ColDbModel.AGroup" Role="AGroup" Multiplicity="1" />
+          <End Type="ColDbModel.Col" Role="Col" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AGroup">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Col">
+              <PropertyRef Name="fk_GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ProductSell_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="fk_CommodityId" Type="Guid" Nullable="false" />
+          <Property Name="Value" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="fk_HeaderId" Type="Guid" Nullable="false" />
+          <Property Name="Indexer" Type="Int32" Nullable="false" />
+          <Property Name="Fee" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="Discount" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="TaxPercent" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <NavigationProperty Name="Commodity" Relationship="ColDbModel.FK_ProductSell_Detail_Commodity" FromRole="ProductSell_Detail" ToRole="Commodity" />
+          <NavigationProperty Name="ProductSellHeader" Relationship="ColDbModel.FK_ProductSell_Detail_ProductSellHeader" FromRole="ProductSell_Detail" ToRole="ProductSellHeader" />
+        </EntityType>
+        <EntityType Name="ProductSellHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Serial" Type="Int64" Nullable="false" />
+          <Property Name="OrderNumber" Type="Int64" />
+          <Property Name="InvoiceNumber" Type="Int64" Nullable="false" />
+          <Property Name="WayBillNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CarPlate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CarType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
+          <Property Name="InvoiceDiscount" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="ShippingCost" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SumDiscount" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="fk_PreferentialId_receiver" Type="Guid" />
+          <Property Name="fk_PreferentialId_freight" Type="Guid" />
+          <Property Name="fk_PreferentialId_driver" Type="Guid" />
+          <Property Name="fk_PreferentialId_personnel" Type="Guid" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_ProductSellHeader_Preferential" FromRole="ProductSellHeader" ToRole="Preferential" />
+          <NavigationProperty Name="Preferential1" Relationship="ColDbModel.FK_ProductSellHeader_Preferential1" FromRole="ProductSellHeader" ToRole="Preferential" />
+          <NavigationProperty Name="Preferential2" Relationship="ColDbModel.FK_ProductSellHeader_Preferential2" FromRole="ProductSellHeader" ToRole="Preferential" />
+          <NavigationProperty Name="Preferential3" Relationship="ColDbModel.FK_ProductSellHeader_Preferential3" FromRole="ProductSellHeader" ToRole="Preferential" />
+          <NavigationProperty Name="Preferential4" Relationship="ColDbModel.FK_ProductSellHeader_Preferential4" FromRole="ProductSellHeader" ToRole="Preferential" />
+          <NavigationProperty Name="ProductSell_Detail" Relationship="ColDbModel.FK_ProductSell_Detail_ProductSellHeader" FromRole="ProductSellHeader" ToRole="ProductSell_Detail" />
+        </EntityType>
+        <Association Name="FK_ProductSell_Detail_Commodity">
+          <End Type="ColDbModel.Commodity" Role="Commodity" Multiplicity="1" />
+          <End Type="ColDbModel.ProductSell_Detail" Role="ProductSell_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Commodity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSell_Detail">
+              <PropertyRef Name="fk_CommodityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSellHeader_Preferential">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="1" />
+          <End Type="ColDbModel.ProductSellHeader" Role="ProductSellHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSellHeader">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSellHeader_Preferential1">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="0..1" />
+          <End Type="ColDbModel.ProductSellHeader" Role="ProductSellHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSellHeader">
+              <PropertyRef Name="fk_PreferentialId_driver" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSellHeader_Preferential2">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="0..1" />
+          <End Type="ColDbModel.ProductSellHeader" Role="ProductSellHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSellHeader">
+              <PropertyRef Name="fk_PreferentialId_freight" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSellHeader_Preferential3">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="0..1" />
+          <End Type="ColDbModel.ProductSellHeader" Role="ProductSellHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSellHeader">
+              <PropertyRef Name="fk_PreferentialId_personnel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSellHeader_Preferential4">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="0..1" />
+          <End Type="ColDbModel.ProductSellHeader" Role="ProductSellHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSellHeader">
+              <PropertyRef Name="fk_PreferentialId_receiver" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSell_Detail_ProductSellHeader">
+          <End Type="ColDbModel.ProductSellHeader" Role="ProductSellHeader" Multiplicity="1" />
+          <End Type="ColDbModel.ProductSell_Detail" Role="ProductSell_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductSellHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSell_Detail">
+              <PropertyRef Name="fk_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PreInvoice_Detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="fk_CommodityId" Type="Guid" Nullable="false" />
+          <Property Name="Value" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="fk_HeaderId" Type="Guid" Nullable="false" />
+          <Property Name="Indexer" Type="Int32" Nullable="false" />
+          <Property Name="Fee" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="Discount" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="TaxPercent" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <NavigationProperty Name="Commodity" Relationship="ColDbModel.FK_PreInvoice_Detail_Commodity" FromRole="PreInvoice_Detail" ToRole="Commodity" />
+          <NavigationProperty Name="PreInvoiceHeader" Relationship="ColDbModel.FK_PreInvoice_Detail_PreInvoiceHeader" FromRole="PreInvoice_Detail" ToRole="PreInvoiceHeader" />
+        </EntityType>
+        <EntityType Name="PreInvoiceHeader">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Serial" Type="Int64" Nullable="false" />
+          <Property Name="fk_PreferentialId" Type="Guid" Nullable="false" />
+          <Property Name="InvoiceDiscount" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SumDiscount" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <NavigationProperty Name="Preferential" Relationship="ColDbModel.FK_PreInvoiceHeader_Preferential" FromRole="PreInvoiceHeader" ToRole="Preferential" />
+          <NavigationProperty Name="PreInvoice_Detail" Relationship="ColDbModel.FK_PreInvoice_Detail_PreInvoiceHeader" FromRole="PreInvoiceHeader" ToRole="PreInvoice_Detail" />
+        </EntityType>
+        <Association Name="FK_PreInvoice_Detail_Commodity">
+          <End Type="ColDbModel.Commodity" Role="Commodity" Multiplicity="1" />
+          <End Type="ColDbModel.PreInvoice_Detail" Role="PreInvoice_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Commodity">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PreInvoice_Detail">
+              <PropertyRef Name="fk_CommodityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreInvoiceHeader_Preferential">
+          <End Type="ColDbModel.Preferential" Role="Preferential" Multiplicity="1" />
+          <End Type="ColDbModel.PreInvoiceHeader" Role="PreInvoiceHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Preferential">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PreInvoiceHeader">
+              <PropertyRef Name="fk_PreferentialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PreInvoice_Detail_PreInvoiceHeader">
+          <End Type="ColDbModel.PreInvoiceHeader" Role="PreInvoiceHeader" Multiplicity="1" />
+          <End Type="ColDbModel.PreInvoice_Detail" Role="PreInvoice_Detail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PreInvoiceHeader">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PreInvoice_Detail">
+              <PropertyRef Name="fk_HeaderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2276,15 +3326,6 @@
                 <ScalarProperty Name="NoDoument" ColumnName="NoDoument" />
                 <ScalarProperty Name="Serial" ColumnName="Serial" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="AGroup">
-            <EntityTypeMapping TypeName="ColDbModel.AGroup">
-              <MappingFragment StoreEntitySet="AGroup">
-                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
-                <ScalarProperty Name="GroupCode" ColumnName="GroupCode" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2355,6 +3396,7 @@
           <EntitySetMapping Name="Preferential">
             <EntityTypeMapping TypeName="ColDbModel.Preferential">
               <MappingFragment StoreEntitySet="Preferential">
+                <ScalarProperty Name="fk_CityId" ColumnName="fk_CityId" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
@@ -2551,6 +3593,7 @@
           <EntitySetMapping Name="Commodity">
             <EntityTypeMapping TypeName="ColDbModel.Commodity">
               <MappingFragment StoreEntitySet="Commodity">
+                <ScalarProperty Name="Taxable" ColumnName="Taxable" />
                 <ScalarProperty Name="fk_UnitId" ColumnName="fk_UnitId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="fk_GroupId" ColumnName="fk_GroupId" />
@@ -2646,7 +3689,182 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          <EntitySetMapping Name="NPStorage_Detail">
+            <EntityTypeMapping TypeName="ColDbModel.NPStorage_Detail">
+              <MappingFragment StoreEntitySet="NPStorage_Detail">
+                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
+                <ScalarProperty Name="fk_HeaderId" ColumnName="fk_HeaderId" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="fk_CommodityId" ColumnName="fk_CommodityId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NPStorageHeader">
+            <EntityTypeMapping TypeName="ColDbModel.NPStorageHeader">
+              <MappingFragment StoreEntitySet="NPStorageHeader">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StorageRotation_Detail">
+            <EntityTypeMapping TypeName="ColDbModel.StorageRotation_Detail">
+              <MappingFragment StoreEntitySet="StorageRotation_Detail">
+                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
+                <ScalarProperty Name="fk_HeaderId" ColumnName="fk_HeaderId" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="fk_CommodityId" ColumnName="fk_CommodityId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StorageRotationHeader">
+            <EntityTypeMapping TypeName="ColDbModel.StorageRotationHeader">
+              <MappingFragment StoreEntitySet="StorageRotationHeader">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Order_Detail">
+            <EntityTypeMapping TypeName="ColDbModel.Order_Detail">
+              <MappingFragment StoreEntitySet="Order_Detail">
+                <ScalarProperty Name="TaxPercent" ColumnName="TaxPercent" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Fee" ColumnName="Fee" />
+                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
+                <ScalarProperty Name="fk_HeaderId" ColumnName="fk_HeaderId" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="fk_CommodityId" ColumnName="fk_CommodityId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderHeader">
+            <EntityTypeMapping TypeName="ColDbModel.OrderHeader">
+              <MappingFragment StoreEntitySet="OrderHeader">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
+                <ScalarProperty Name="NoDoument" ColumnName="NoDoument" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductBuy_Detail">
+            <EntityTypeMapping TypeName="ColDbModel.ProductBuy_Detail">
+              <MappingFragment StoreEntitySet="ProductBuy_Detail">
+                <ScalarProperty Name="TaxPercent" ColumnName="TaxPercent" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Fee" ColumnName="Fee" />
+                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
+                <ScalarProperty Name="fk_HeaderId" ColumnName="fk_HeaderId" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="fk_CommodityId" ColumnName="fk_CommodityId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductBuyHeader">
+            <EntityTypeMapping TypeName="ColDbModel.ProductBuyHeader">
+              <MappingFragment StoreEntitySet="ProductBuyHeader">
+                <ScalarProperty Name="SumDiscount" ColumnName="SumDiscount" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ShippingCost" ColumnName="ShippingCost" />
+                <ScalarProperty Name="InvoiceDiscount" ColumnName="InvoiceDiscount" />
+                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
+                <ScalarProperty Name="CarType" ColumnName="CarType" />
+                <ScalarProperty Name="CarPlate" ColumnName="CarPlate" />
+                <ScalarProperty Name="WayBillNumber" ColumnName="WayBillNumber" />
+                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AGroup">
+            <EntityTypeMapping TypeName="ColDbModel.AGroup">
+              <MappingFragment StoreEntitySet="AGroup">
+                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="GroupCode" ColumnName="GroupCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductSell_Detail">
+            <EntityTypeMapping TypeName="ColDbModel.ProductSell_Detail">
+              <MappingFragment StoreEntitySet="ProductSell_Detail">
+                <ScalarProperty Name="TaxPercent" ColumnName="TaxPercent" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Fee" ColumnName="Fee" />
+                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
+                <ScalarProperty Name="fk_HeaderId" ColumnName="fk_HeaderId" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="fk_CommodityId" ColumnName="fk_CommodityId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductSellHeader">
+            <EntityTypeMapping TypeName="ColDbModel.ProductSellHeader">
+              <MappingFragment StoreEntitySet="ProductSellHeader">
+                <ScalarProperty Name="fk_PreferentialId_personnel" ColumnName="fk_PreferentialId_personnel" />
+                <ScalarProperty Name="fk_PreferentialId_driver" ColumnName="fk_PreferentialId_driver" />
+                <ScalarProperty Name="fk_PreferentialId_freight" ColumnName="fk_PreferentialId_freight" />
+                <ScalarProperty Name="fk_PreferentialId_receiver" ColumnName="fk_PreferentialId_receiver" />
+                <ScalarProperty Name="SumDiscount" ColumnName="SumDiscount" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ShippingCost" ColumnName="ShippingCost" />
+                <ScalarProperty Name="InvoiceDiscount" ColumnName="InvoiceDiscount" />
+                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
+                <ScalarProperty Name="CarType" ColumnName="CarType" />
+                <ScalarProperty Name="CarPlate" ColumnName="CarPlate" />
+                <ScalarProperty Name="WayBillNumber" ColumnName="WayBillNumber" />
+                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PreInvoice_Detail">
+            <EntityTypeMapping TypeName="ColDbModel.PreInvoice_Detail">
+              <MappingFragment StoreEntitySet="PreInvoice_Detail">
+                <ScalarProperty Name="TaxPercent" ColumnName="TaxPercent" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Fee" ColumnName="Fee" />
+                <ScalarProperty Name="Indexer" ColumnName="Indexer" />
+                <ScalarProperty Name="fk_HeaderId" ColumnName="fk_HeaderId" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="fk_CommodityId" ColumnName="fk_CommodityId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PreInvoiceHeader">
+            <EntityTypeMapping TypeName="ColDbModel.PreInvoiceHeader">
+              <MappingFragment StoreEntitySet="PreInvoiceHeader">
+                <ScalarProperty Name="SumDiscount" ColumnName="SumDiscount" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="InvoiceDiscount" ColumnName="InvoiceDiscount" />
+                <ScalarProperty Name="fk_PreferentialId" ColumnName="fk_PreferentialId" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

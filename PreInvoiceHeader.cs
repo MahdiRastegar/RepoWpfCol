@@ -12,20 +12,24 @@ namespace WpfCol
     using System;
     using System.Collections.Generic;
     
-    public partial class City
+    public partial class PreInvoiceHeader
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public City()
+        public PreInvoiceHeader()
         {
-            this.Preferential = new HashSet<Preferential>();
+            this.PreInvoice_Detail = new HashSet<PreInvoice_Detail>();
         }
     
         public System.Guid Id { get; set; }
-        public string Name { get; set; }
-        public System.Guid fk_ProvinceId { get; set; }
+        public System.DateTime Date { get; set; }
+        public long Serial { get; set; }
+        public System.Guid fk_PreferentialId { get; set; }
+        public Nullable<decimal> InvoiceDiscount { get; set; }
+        public string Description { get; set; }
+        public decimal SumDiscount { get; set; }
     
-        public virtual Province Province { get; set; }
+        public virtual Preferential Preferential { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Preferential> Preferential { get; set; }
+        public virtual ICollection<PreInvoice_Detail> PreInvoice_Detail { get; set; }
     }
 }

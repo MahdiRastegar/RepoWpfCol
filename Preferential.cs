@@ -24,6 +24,14 @@ namespace WpfCol
             this.CheckRecieveEvent = new HashSet<CheckRecieveEvent>();
             this.PaymentMoney_Detail = new HashSet<PaymentMoney_Detail>();
             this.RecieveMoney_Detail = new HashSet<RecieveMoney_Detail>();
+            this.OrderHeader = new HashSet<OrderHeader>();
+            this.ProductBuyHeader = new HashSet<ProductBuyHeader>();
+            this.ProductSellHeader = new HashSet<ProductSellHeader>();
+            this.ProductSellHeader1 = new HashSet<ProductSellHeader>();
+            this.ProductSellHeader2 = new HashSet<ProductSellHeader>();
+            this.ProductSellHeader3 = new HashSet<ProductSellHeader>();
+            this.ProductSellHeader4 = new HashSet<ProductSellHeader>();
+            this.PreInvoiceHeader = new HashSet<PreInvoiceHeader>();
         }
     
         public System.Guid Id { get; set; }
@@ -38,6 +46,7 @@ namespace WpfCol
         public string Email { get; set; }
         public string Address { get; set; }
         public string Description { get; set; }
+        public Nullable<System.Guid> fk_CityId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PaymentMoneyHeader> PaymentMoneyHeader { get; set; }
@@ -54,5 +63,22 @@ namespace WpfCol
         public virtual ICollection<PaymentMoney_Detail> PaymentMoney_Detail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RecieveMoney_Detail> RecieveMoney_Detail { get; set; }
+        public virtual City City { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OrderHeader> OrderHeader { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductBuyHeader> ProductBuyHeader { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductSellHeader> ProductSellHeader { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductSellHeader> ProductSellHeader1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductSellHeader> ProductSellHeader2 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductSellHeader> ProductSellHeader3 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductSellHeader> ProductSellHeader4 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PreInvoiceHeader> PreInvoiceHeader { get; set; }
     }
 }

@@ -75,9 +75,10 @@
                 <RowDefinition Height="1*" MinHeight="90"/>
                 <RowDefinition Height="1*" MinHeight="90"/>
                 <RowDefinition Height="1*" MinHeight="90"/>
+                <RowDefinition Height="1*" MinHeight="90"/>
                 <RowDefinition Height="25"/>
             </Grid.RowDefinitions>
-            <Border  Name="borderEdit" Visibility="Hidden" Grid.ColumnSpan="2" CornerRadius="5" Margin="4 -6 0 0" Grid.Row="1" Grid.RowSpan="5" BorderThickness="4">
+            <Border  Name="borderEdit" Visibility="Hidden" Grid.ColumnSpan="2" CornerRadius="5" Margin="4 -6 0 0" Grid.Row="1" Grid.RowSpan="6" BorderThickness="4">
                 <Border.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="White" Offset="0"/>
@@ -140,7 +141,8 @@
             <Syncfusion:SfTextInputLayout Name="Sf_txtUnitName" OutlineCornerRadius="8" Hint="نام واحد اندازه گیری" Grid.Row="3"  VerticalAlignment="Center" Margin="30 0" Grid.Column="1"  HorizontalAlignment="Stretch">
                 <TextBox Name="txtUnitName" VerticalContentAlignment="Center"  IsEnabled="True" IsReadOnly="True" Margin="0" FontSize="18"/>
             </Syncfusion:SfTextInputLayout>
-            <DockPanel  Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="15 0 15 -15">
+            <CheckBox Content="مالیات پذیر" Grid.Row="4" Name="checkbox" VerticalAlignment="Center" Margin="31 0"/>
+            <DockPanel  Grid.Row="5" Grid.ColumnSpan="2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="15 0 15 -15">
                 <Grid>
                     <Button Style="{StaticResource CustomButtonStyle}" ToolTip="ذخیره (Ctrl+S)" x:Name="btnConfirm" Width="60" Content="" Click="btnConfirm_Click" FontSize="20" Height="45">
                         <Button.Background>
@@ -178,7 +180,7 @@
                     <Image Source="/Images/Delete.png" IsHitTestVisible="False" Width="37.5" Stretch="Fill" Height="39" Margin="0 0 0 2"/>
                 </Grid>
             </DockPanel>
-            <Grid  Grid.Row="1" Grid.RowSpan="4" Grid.Column="2" Name="gridContainer">
+            <Grid  Grid.Row="1" Grid.RowSpan="5" Grid.Column="2" Name="gridContainer">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="80"/>
                     <RowDefinition/>
@@ -264,6 +266,7 @@
                         <Syncfusion:GridTextColumn MinimumWidth="125" HeaderText="نام گروه" ColumnSizer="Star" MappingName="GroupCommodity.GroupName" />
                         <Syncfusion:GridTextColumn MinimumWidth="140" Width="70" HeaderText="کد واحد اندازه گیری" MappingName="Unit.Code"/>
                         <Syncfusion:GridTextColumn MinimumWidth="125" HeaderText="نام واحد اندازه گیری" ColumnSizer="Star" MappingName="Unit.Name" />
+                        <Syncfusion:GridCheckBoxColumn MinimumWidth="125" HeaderText="مالیات پذیر" ColumnSizer="Star" MappingName="Taxable" />
                     </Syncfusion:SfDataGrid.Columns>
                 </Syncfusion:SfDataGrid>
                 <Syncfusion:SfDataPager x:Name="dataPager" FlowDirection="LeftToRight" VerticalAlignment="Bottom" Margin="0 -30" HorizontalAlignment="Center" UseOnDemandPaging="True"

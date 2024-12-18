@@ -28,8 +28,8 @@ namespace WpfCol
         public System.Guid fk_GroupId { get; set; }
         public Nullable<bool> PermissionView { get; set; }
     
-        public virtual AGroup AGroup { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Moein> Moein { get; set; }
+        public virtual AGroup AGroup { get; set; }
     }
 }

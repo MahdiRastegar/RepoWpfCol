@@ -59,7 +59,7 @@ namespace WpfCol
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var db=new ColDbEntities1();
-            cmbProvince.ItemsSource = db.Province.ToList();
+            cmbProvince.ItemsSource = db.Province.AsNoTracking().ToList();
 
             var M = db.City.AsNoTracking().ToList();
             datagrid.ItemsSource = M;
@@ -89,7 +89,7 @@ namespace WpfCol
             }
             if (!db.SafeSaveChanges())  return;
             var cities = db.City.Include("Province");
-            var M = cities.ToList();
+            var M = cities.AsNoTracking().ToList();
             datagrid.ItemsSource = M;
             if (group == null)
                 Xceed.Wpf.Toolkit.MessageBox.Show("اطلاعات اضافه شد.", "ثبت شهر");
